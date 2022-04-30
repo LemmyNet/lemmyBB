@@ -1,0 +1,11 @@
+[package]
+name = "lemmy_bb"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = { version="4.0.1", features = ["macros"], default-features = false }
+# need to pull from git for actix 4 support
+maud = { git = "https://github.com/lambda-fairy/maud", branch = "main", features = ["actix-web"] }
+log = "0.4.16"
+env_logger = { version = "0.9.0", default-features = false }
