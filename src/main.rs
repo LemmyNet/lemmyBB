@@ -1,3 +1,4 @@
+use actix_files::Files;
 use actix_web::{get, App, HttpServer, Result};
 use lemmy_api_common::post::{GetPosts, GetPostsResponse};
 use lemmy_db_schema::{ListingType, SortType};
@@ -47,6 +48,7 @@ fn header(title: &str) -> Markup {
     html! {
         head {
             title { (title) }
+            link href="./styles/prosilver/stylesheet.css" rel="stylesheet";
         }
         h1 { (title) }
     }
@@ -56,7 +58,10 @@ fn header(title: &str) -> Markup {
 async fn main() -> std::io::Result<()> {
     env_logger::builder().filter(None, LevelFilter::Info).init();
     info!("Listening on http://127.0.0.1:8080");
-    HttpServer::new(|| App::new().service(index))
+    HttpServer::new(|| App::new()
+      .service(index)
+      .service(Files::new("/styles", "assets/styles"))
+    )
         .bind(("127.0.0.1", 8080))?
         .run()
         .await
