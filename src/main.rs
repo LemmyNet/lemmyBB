@@ -1,17 +1,55 @@
-use actix_web::{get, App, HttpServer, Result as AwResult};
+use actix_web::{get, App, HttpServer, Result};
+use lemmy_api_common::post::{GetPosts, GetPostsResponse};
+use lemmy_db_schema::{ListingType, SortType};
 use log::{info, LevelFilter};
-use maud::{html, Markup};
+use maud::{html, Markup, DOCTYPE};
+use once_cell::sync::Lazy;
+use reqwest::Client;
+
+static CLIENT: Lazy<Client> = Lazy::new(Client::new);
 
 #[get("/")]
-async fn index() -> AwResult<Markup> {
+async fn index() -> Result<Markup> {
+    // TODO: should impl Default
+    let params = GetPosts {
+        // TODO: should directly take these enums, not string
+        type_: Some(ListingType::Local.to_string()),
+        sort: Some(SortType::New.to_string()),
+        page: None,
+        limit: None,
+        community_id: None,
+        community_name: None,
+        saved_only: None,
+        auth: None,
+    };
+    let posts = CLIENT
+        .get("https://lemmy.ml/api/v3/post/list")
+        .json(&params)
+        .send()
+        .await
+        .unwrap()
+        .json::<GetPostsResponse>()
+        .await
+        .unwrap();
+
     Ok(html! {
-        h1 { "Hello, world!" }
-        p.intro {
-            "This is an example of the "
-            a href="https://github.com/lambda-fairy/maud" { "Maud" }
-            " template language."
+        (DOCTYPE)
+        html {
+            (header("Hello, world!"))
+            @for post in posts.posts {
+                h2 { (post.post.name) }
+            }
         }
     })
+}
+
+fn header(title: &str) -> Markup {
+    html! {
+        head {
+            title { (title) }
+        }
+        h1 { (title) }
+    }
 }
 
 #[actix_web::main]
