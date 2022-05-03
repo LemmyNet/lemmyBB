@@ -11,17 +11,10 @@ static CLIENT: Lazy<Client> = Lazy::new(Client::new);
 
 #[get("/")]
 async fn index() -> Result<Markup> {
-    // TODO: should impl Default
     let params = GetPosts {
-        // TODO: should directly take these enums, not string
-        type_: Some(ListingType::Local.to_string()),
-        sort: Some(SortType::New.to_string()),
-        page: None,
-        limit: None,
-        community_id: None,
-        community_name: None,
-        saved_only: None,
-        auth: None,
+        type_: Some(ListingType::Local),
+        sort: Some(SortType::New),
+        ..Default::default()
     };
     let posts = CLIENT
         .get("https://lemmy.ml/api/v3/post/list")
