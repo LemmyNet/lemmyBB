@@ -4,13 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-actix-web = { version="4.0.1", features = ["macros"], default-features = false }
-actix-files = "0.6.0"
-# need to pull from git for actix 4 support
-maud = { git = "https://github.com/lambda-fairy/maud", branch = "main", features = ["actix-web"] }
+rouille = { version = "3.5.0", default-features = false }
+maud = "0.23.0"
 log = "0.4.16"
 env_logger = { version = "0.9.0", default-features = false }
-reqwest = { version = "0.11.10", features = ["json"] }
+ureq = { version = "2.4.0", features = ["json"] }
 lemmy_api_common = { git = "https://github.com/LemmyNet/lemmy.git", branch = "api-derive-default" }
 lemmy_db_schema = { git = "https://github.com/LemmyNet/lemmy.git", branch = "api-derive-default" }
 once_cell = "1.10.0"
+anyhow = "1.0.57"

@@ -1,32 +1,32 @@
-use actix_files::Files;
-use actix_web::{get, App, HttpServer, Result};
+use anyhow::Error;
 use lemmy_api_common::post::{GetPosts, GetPostsResponse};
 use lemmy_db_schema::{ListingType, SortType};
 use log::{info, LevelFilter};
 use maud::{html, Markup, DOCTYPE};
 use once_cell::sync::Lazy;
-use reqwest::Client;
+use rouille::{match_assets, router, Response};
+use std::time::Duration;
+use ureq::{Agent, AgentBuilder};
 
-static CLIENT: Lazy<Client> = Lazy::new(Client::new);
+static AGENT: Lazy<Agent> = Lazy::new(|| {
+    AgentBuilder::new()
+        .timeout_read(Duration::from_secs(5))
+        .timeout_write(Duration::from_secs(5))
+        .build()
+});
 
-#[get("/")]
-async fn index() -> Result<Markup> {
+fn index() -> Result<Response, Error> {
     let params = GetPosts {
         type_: Some(ListingType::Local),
         sort: Some(SortType::New),
         ..Default::default()
     };
-    let posts = CLIENT
-        .get("https://lemmy.ml/api/v3/post/list")
-        .json(&params)
-        .send()
-        .await
-        .unwrap()
-        .json::<GetPostsResponse>()
-        .await
-        .unwrap();
+    let posts = AGENT
+        .get("http://localhost:8536/api/v3/post/list")
+        .send_json(&params)?
+        .into_json::<GetPostsResponse>()?;
 
-    Ok(html! {
+    Ok(Response::html(html! {
         (DOCTYPE)
         html {
             (header("Hello, world!"))
@@ -34,7 +34,7 @@ async fn index() -> Result<Markup> {
                 h2 { (post.post.name) }
             }
         }
-    })
+    }))
 }
 
 fn header(title: &str) -> Markup {
@@ -47,15 +47,20 @@ fn header(title: &str) -> Markup {
     }
 }
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    env_logger::builder().filter(None, LevelFilter::Info).init();
+fn main() {
+    env_logger::builder()
+        .filter(None, LevelFilter::Debug)
+        .init();
     info!("Listening on http://127.0.0.1:8080");
-    HttpServer::new(|| App::new()
-      .service(index)
-      .service(Files::new("/styles", "assets/styles"))
-    )
-        .bind(("127.0.0.1", 8080))?
-        .run()
-        .await
+
+    rouille::start_server("127.0.0.1:8080", move |request| {
+        if request.url().starts_with("/styles/") {
+            return match_assets(request, "assets");
+        }
+
+        router!(request,
+            (GET) (/) => { index().unwrap() },
+            _ => Response::empty_404()
+        )
+    });
 }
