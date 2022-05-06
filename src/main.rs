@@ -55,7 +55,7 @@ fn header(title: &str) -> Markup {
 
 fn main() {
     env_logger::builder()
-        .filter(None, LevelFilter::Debug)
+        .filter(Some("lemmy_bb"), LevelFilter::Debug)
         .init();
 
     create_test_items().unwrap();
