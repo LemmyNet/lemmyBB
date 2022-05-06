@@ -1,6 +1,6 @@
 mod api;
 
-use crate::api::{create_post, create_site, get_site, list_posts, login, register};
+use crate::api::{create_post, create_site, get_site, list_posts, register};
 use anyhow::Error;
 use log::{info, LevelFilter};
 use maud::{html, Markup, DOCTYPE};
@@ -20,37 +20,77 @@ fn index() -> Result<Response, Error> {
     Ok(Response::html(html! {
         (DOCTYPE)
         html {
-            (header("Hello, world!"))
-            @for post in list_posts()?.posts {
-                h2 { (post.post.name) }
+            (html_header("Hello, world!"))
+            body id="phpbb" class="nojs notouch section-index ltr" {
+                div id="wrap" class="wrap" {
+                    a id="top" class="top-anchor" accesskey="t" {}
+                    (page_header())
+                    @for post in list_posts()?.posts {
+                        h2 { (post.post.name) }
+                    }
+                }
             }
         }
     }))
 }
 
+fn html_header(title: &str) -> Markup {
+    html! {
+        head {
+            title { (title) }
+            link href="/assets/css/font-awesome.min.css" rel="stylesheet";
+            link href="/assets/styles/prosilver/stylesheet.css" rel="stylesheet";
+        }
+    }
+}
+
+fn page_header() -> Markup {
+    html! {
+        div id="page-header" {
+            div class="headerbar" role="banner" {
+                div class="inner" {
+                    div id="site-description" class="site-description" {
+                        a id="logo" class="logo" href="/" title="Board index" {
+                            span class="site_logo" {}
+                        }
+                        h1 { "yourdomain.com" }
+                        p { "Default username/password: lemmy/lemmylemmy" }
+                        p class="skiplink" { a href="#start_here" { "Skip to content"} }
+                    }
+                    div id="search-box" class="search-box search-header" role="search" {
+                        form action="./search.php" method="get" id="search" {
+                            fieldset {
+                                input name="keywords" id="keywords" type="search" maxlength="128" title="Search for keywords" class="inputbox search tiny" size="20" value="" placeholder="Search…";
+                                button class="button button-search" type="submit" title="Search" {
+                                i class="icon fa-search fa-fw" aria-hidden="true" {}
+                                span class="sr-only" { "Search" }
+                                }
+                                a href="./search.php" class="button button-search-end" title="Advanced search" {
+                                i class="icon fa-cog fa-fw" aria-hidden="true" {}
+                                span class="sr-only" { "Advanced search" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 fn create_test_items() -> Result<(), Error> {
     let site = get_site()?;
-    let _auth = if site.site_view.is_none() {
+    if site.site_view.is_none() {
         let auth = register()?.jwt.unwrap();
         create_site(auth.clone())?;
         create_post("test 1", auth.clone())?;
         create_post("test 2", auth.clone())?;
-        create_post("test 3", auth.clone())?;
-        auth
+        create_post("test 3", auth)?;
     } else {
-        login()?.jwt.unwrap()
-    };
-    Ok(())
-}
-
-fn header(title: &str) -> Markup {
-    html! {
-        head {
-            title { (title) }
-            link href="./styles/prosilver/stylesheet.css" rel="stylesheet";
-        }
-        h1 { (title) }
+        // TODO: this is too slow and blocks startup
+        //login()?.jwt.unwrap();
     }
+    Ok(())
 }
 
 fn main() {
@@ -62,8 +102,8 @@ fn main() {
 
     info!("Listening on http://127.0.0.1:8080");
     rouille::start_server("127.0.0.1:8080", move |request| {
-        if request.url().starts_with("/styles/") {
-            return match_assets(request, "assets");
+        if request.url().starts_with("/assets/") {
+            return match_assets(request, ".");
         }
 
         router!(request,
