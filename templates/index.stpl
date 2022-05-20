@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-gb">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title><%= site.site.name %></title>
+
+<!--
+	phpBB style name: prosilver
+	Based on style:   prosilver (this is the default phpBB3 style)
+	Original author:  Tom Beddard ( http://www.subBlue.com/ )
+	Modified by:
+-->
+
+        <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="/assets/styles/prosilver/stylesheet.css" rel="stylesheet" />
+    </head>
+    <body id="phpbb" class="nojs notouch section-viewforum ltr">
+        <div id="wrap" class="wrap">
+            <a id="top" class="top-anchor" accesskey="t"></a>
+            <div id="page-header">
+                <div class="headerbar" role="banner">
+                    <div class="inner">
+                        <div id="site-description" class="site-description">
+                            <a id="logo" class="logo" href="./index.php" title="Board index">
+                                <span class="site_logo"></span>
+                            </a>
+                            <h1><%= site.site.name %></h1>
+                            <% if let Some(description) = site.site.description { %>
+                                <p><%= description %></p>
+                            <% } %>
+                        </div>
+
+                        <div id="search-box" class="search-box search-header" role="search">
+                            <form action="./search.php" method="get" id="search">
+                                <fieldset>
+                                    <input name="keywords" id="keywords" type="search" maxlength="128" title="Search for keywords" class="inputbox search tiny" size="20" value="" placeholder="Search…" />
+                                    <button class="button button-search" type="submit" title="Search"><i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span></button>
+                                    <a href="./search.php" class="button button-search-end" title="Advanced search"> <i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">Advanced search</span> </a>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar" role="navigation">
+                    <div class="inner">
+                        <ul id="nav-main" class="nav-main linklist" role="menubar">
+                            <li id="quick-links" class="quick-links dropdown-container responsive-menu" data-skip-responsive="true">
+                                <a href="#" class="dropdown-trigger"> <i class="icon fa-bars fa-fw" aria-hidden="true"></i><span>Quick links</span> </a>
+                                <div class="dropdown">
+                                    <div class="pointer"><div class="pointer-inner"></div></div>
+                                    <ul class="dropdown-contents" role="menu">
+                                        <li class="separator"></li>
+                                        <li>
+                                            <a href="./search.php?search_id=unanswered" role="menuitem"> <i class="icon fa-file-o fa-fw icon-gray" aria-hidden="true"></i><span>Unanswered topics</span> </a>
+                                        </li>
+                                        <li>
+                                            <a href="./search.php?search_id=active_topics" role="menuitem"> <i class="icon fa-file-o fa-fw icon-blue" aria-hidden="true"></i><span>Active topics</span> </a>
+                                        </li>
+                                        <li class="separator"></li>
+                                        <li>
+                                            <a href="./search.php" role="menuitem"> <i class="icon fa-search fa-fw" aria-hidden="true"></i><span>Search</span> </a>
+                                        </li>
+
+                                        <li class="separator"></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li data-skip-responsive="true">
+                                <a href="/33x/app.php/help/faq" rel="help" title="Frequently Asked Questions" role="menuitem"> <i class="icon fa-question-circle fa-fw" aria-hidden="true"></i><span>FAQ</span> </a>
+                            </li>
+
+                            <li class="rightside" data-skip-responsive="true">
+                                <a href="./ucp.php?mode=login&amp;redirect=viewforum.php%3Ff%3D2" title="Login" accesskey="x" role="menuitem"> <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>Login</span> </a>
+                            </li>
+                            <li class="rightside" data-skip-responsive="true">
+                                <a href="./ucp.php?mode=register" role="menuitem"> <i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i><span>Register</span> </a>
+                            </li>
+                        </ul>
+
+                        <ul id="nav-breadcrumbs" class="nav-breadcrumbs linklist navlinks" role="menubar">
+                            <li class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+                                <span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope>
+                                    <a itemprop="item" href="./index.php" accesskey="h" data-navbar-reference="index"><i class="icon fa-home fa-fw"></i><span itemprop="name">Board index</span></a><meta itemprop="position" content="1" />
+                                </span>
+
+                                <span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope data-forum-id="1">
+                                    <a itemprop="item" href="./viewforum.php?f=1"><span itemprop="name">Your first category</span></a><meta itemprop="position" content="2" />
+                                </span>
+
+                                <span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope data-forum-id="2">
+                                    <a itemprop="item" href="./viewforum.php?f=2"><span itemprop="name">Your first forum</span></a><meta itemprop="position" content="3" />
+                                </span>
+                            </li>
+
+                            <li class="rightside responsive-search">
+                                <a href="./search.php" title="View the advanced search options" role="menuitem"> <i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span> </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <a id="start_here" class="anchor"></a>
+            <div id="page-body" class="page-body" role="main">
+                <h2 class="forum-title"><a href="./viewforum.php?f=2">Your first forum</a></h2>
+                <div>
+                    <!-- NOTE: remove the style="display: none" when you want to have the forum description on the forum body -->
+                    <div style="display: none !important;">Description of your first forum.<br /></div>
+                </div>
+
+                <div class="action-bar bar-top">
+                    <a href="./posting.php?mode=post&amp;f=2" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
+
+                    <div class="search-box" role="search">
+                        <form method="get" id="forum-search" action="./search.php">
+                            <fieldset>
+                                <input class="inputbox search tiny" type="search" name="keywords" id="search_keywords" size="20" placeholder="Search this forum…" />
+                                <button class="button button-search" type="submit" title="Search"><i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span></button>
+                                <a href="./search.php?fid%5B%5D=2" class="button button-search-end" title="Advanced search"> <i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">Advanced search</span> </a>
+                                <input type="hidden" name="fid[0]" value="2" />
+                            </fieldset>
+                        </form>
+                    </div>
+
+                    <div class="pagination">1 topic &bull; Page <strong>1</strong> of <strong>1</strong></div>
+                </div>
+
+                <div class="forumbg">
+                    <div class="inner">
+                        <ul class="topiclist">
+                            <li class="header">
+                                <dl class="row-item">
+                                    <dt><div class="list-inner">Topics</div></dt>
+                                    <dd class="posts">Replies</dd>
+                                    <dd class="views">Views</dd>
+                                    <dd class="lastpost"><span>Last post</span></dd>
+                                </dl>
+                            </li>
+                        </ul>
+                        <ul class="topiclist topics">
+                            <% for post in posts.iter() { %>
+                            <li class="row bg1">
+                                <dl class="row-item topic_read">
+                                    <dt title="No unread posts">
+                                        <div class="list-inner">
+                                            <a href="./viewtopic.php?t=1" class="topictitle"><%= post.post.name %></a> <br />
+
+                                            <div class="topic-poster left-box">
+                                                by <a href="./memberlist.php?mode=viewprofile&amp;u=2"><%= post.creator.name %></a> &raquo;
+                                                <time datetime="2019-12-31T14:34:17+00:00"><%= post.post.published.to_string() %></time>
+                                            </div>
+                                        </div>
+                                    </dt>
+                                    <dd class="posts">0 <dfn>Replies</dfn></dd>
+                                    <dd class="views">2 <dfn>Views</dfn></dd>
+                                    <dd class="lastpost">
+                                        <span>
+                                            <dfn>Last post </dfn>by <a href="./memberlist.php?mode=viewprofile&amp;u=2" style="color: #aa0000;" class="username-coloured">administrator</a>
+                                            <a href="./viewtopic.php?p=1#p1" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
+                                            <time datetime="2019-12-31T14:34:17+00:00">Tue Dec 31, 2019 2:34 pm</time>
+                                        </span>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="action-bar bar-bottom">
+                    <a href="./posting.php?mode=post&amp;f=2" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
+
+                    <form method="post" action="./viewforum.php?f=2">
+                        <div class="dropdown-container dropdown-container-left dropdown-button-control sort-tools">
+                            <span title="Display and sorting options" class="button button-secondary dropdown-trigger dropdown-select">
+                                <i class="icon fa-sort-amount-asc fa-fw" aria-hidden="true"></i>
+                                <span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+                            </span>
+                            <div class="dropdown hidden">
+                                <div class="pointer"><div class="pointer-inner"></div></div>
+                                <div class="dropdown-contents">
+                                    <fieldset class="display-options">
+                                        <label>
+                                            Display:
+                                            <select name="st" id="st">
+                                                <option value="0" selected="selected">All Topics</option>
+                                                <option value="1">1 day</option>
+                                                <option value="7">7 days</option>
+                                                <option value="14">2 weeks</option>
+                                                <option value="30">1 month</option>
+                                                <option value="90">3 months</option>
+                                                <option value="180">6 months</option>
+                                                <option value="365">1 year</option>
+                                            </select>
+                                        </label>
+                                        <label>
+                                            Sort by:
+                                            <select name="sk" id="sk">
+                                                <option value="a">Author</option>
+                                                <option value="t" selected="selected">Post time</option>
+                                                <option value="r">Replies</option>
+                                                <option value="s">Subject</option>
+                                                <option value="v">Views</option>
+                                            </select>
+                                        </label>
+                                        <label>
+                                            Direction:
+                                            <select name="sd" id="sd">
+                                                <option value="a">Ascending</option>
+                                                <option value="d" selected="selected">Descending</option>
+                                            </select>
+                                        </label>
+                                        <hr class="dashed" />
+                                        <input type="submit" class="button2" name="sort" value="Go" />
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="pagination">1 topic &bull; Page <strong>1</strong> of <strong>1</strong></div>
+                </div>
+
+                <div class="action-bar actions-jump">
+                    <p class="jumpbox-return">
+                        <a href="./index.php" class="left-box arrow-left" accesskey="r"> <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to Board Index</span> </a>
+                    </p>
+
+                    <div class="jumpbox dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">
+                        <span title="Jump to" class="button button-secondary dropdown-trigger dropdown-select">
+                            <span>Jump to</span>
+                            <span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+                        </span>
+                        <div class="dropdown">
+                            <div class="pointer"><div class="pointer-inner"></div></div>
+                            <ul class="dropdown-contents">
+                                <li>
+                                    <a href="./viewforum.php?f=1" class="jumpbox-cat-link"> <span> Your first category</span></a>
+                                </li>
+                                <li>
+                                    <a href="./viewforum.php?f=2" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Your first forum</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-block permissions">
+                    <h3>Forum permissions</h3>
+                    <p>
+                        You <strong>cannot</strong> post new topics in this forum<br />
+                        You <strong>cannot</strong> reply to topics in this forum<br />
+                        You <strong>cannot</strong> edit your posts in this forum<br />
+                        You <strong>cannot</strong> delete your posts in this forum<br />
+                    </p>
+                </div>
+            </div>
+
+            <div id="page-footer" class="page-footer" role="contentinfo">
+                <div class="navbar" role="navigation">
+                    <div class="inner">
+                        <ul id="nav-footer" class="nav-footer linklist" role="menubar">
+                            <li class="breadcrumbs">
+                                <span class="crumb">
+                                    <a href="./index.php" data-navbar-reference="index"><i class="icon fa-home fa-fw" aria-hidden="true"></i><span>Board index</span></a>
+                                </span>
+                            </li>
+
+                            <li class="rightside">All times are <span title="UTC">UTC</span></li>
+                            <li class="rightside">
+                                <a href="./ucp.php?mode=delete_cookies" data-ajax="true" data-refresh="true" role="menuitem"> <i class="icon fa-trash fa-fw" aria-hidden="true"></i><span>Delete cookies</span> </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="copyright">
+                    <p class="footer-row">
+                        <span class="footer-copyright">Powered by <a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Limited</span>
+                    </p>
+                    <p class="footer-row" role="menu">
+                        <a class="footer-link" href="./ucp.php?mode=privacy" title="Privacy" role="menuitem">
+                            <span class="footer-link-text">Privacy</span>
+                        </a>
+                        |
+                        <a class="footer-link" href="./ucp.php?mode=terms" title="Terms" role="menuitem">
+                            <span class="footer-link-text">Terms</span>
+                        </a>
+                    </p>
+                </div>
+
+                <div
+                    id="darkenwrapper"
+                    class="darkenwrapper"
+                    data-ajax-error-title="AJAX error"
+                    data-ajax-error-text="Something went wrong when processing your request."
+                    data-ajax-error-text-abort="User aborted request."
+                    data-ajax-error-text-timeout="Your request timed out; please try again."
+                    data-ajax-error-text-parsererror="Something went wrong with the request and the server returned an invalid reply."
+                >
+                    <div id="darken" class="darken">&nbsp;</div>
+                </div>
+
+                <div id="phpbb_alert" class="phpbb_alert" data-l-err="Error" data-l-timeout-processing-req="Request timed out.">
+                    <a href="#" class="alert_close">
+                        <i class="icon fa-times-circle fa-fw" aria-hidden="true"></i>
+                    </a>
+                    <h3 class="alert_title">&nbsp;</h3>
+                    <p class="alert_text"></p>
+                </div>
+                <div id="phpbb_confirm" class="phpbb_alert">
+                    <a href="#" class="alert_close">
+                        <i class="icon fa-times-circle fa-fw" aria-hidden="true"></i>
+                    </a>
+                    <div class="alert_text"></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <a id="bottom" class="anchor" accesskey="z"></a>
+        </div>
+    </body>
+</html>

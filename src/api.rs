@@ -46,7 +46,8 @@ pub fn get_site() -> Result<GetSiteResponse, Error> {
 
 pub fn create_site(auth: Sensitive<String>) -> Result<SiteResponse, Error> {
     let params = CreateSite {
-        name: "lemmy".to_string(),
+        name: "lemmyBB".to_string(),
+        description: Some("Welcome to lemmyBB, enjoy your stay!".to_string()),
         auth,
         ..Default::default()
     };
