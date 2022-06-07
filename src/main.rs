@@ -1,38 +1,36 @@
+#[macro_use]
+extern crate rocket;
+
 mod api;
+mod error;
 
-use crate::api::{create_post, create_site, get_site, list_posts, register};
-use anyhow::Error;
+use crate::{
+    api::{create_post, create_site, get_site, list_posts, register},
+    error::ErrorPage,
+};
 use lemmy_db_views::structs::{PostView, SiteView};
-use log::{info, LevelFilter};
-use once_cell::sync::Lazy;
-use rouille::{match_assets, router, Response};
-use sailfish::TemplateOnce;
-use std::time::Duration;
-use ureq::{Agent, AgentBuilder};
+use log::LevelFilter;
+use rocket::fs::{relative, FileServer};
+use rocket_dyn_templates::Template;
+use serde::Serialize;
 
-pub static AGENT: Lazy<Agent> = Lazy::new(|| {
-    AgentBuilder::new()
-        .timeout_read(Duration::from_secs(5))
-        .timeout_write(Duration::from_secs(5))
-        .build()
-});
-
-#[derive(TemplateOnce)] // automatically implement `TemplateOnce` trait
-#[template(path = "../templates/index.stpl")] // specify the path to template
+#[derive(Serialize)]
 struct IndexTemplate {
     // data to be passed to the template
     site: SiteView,
     posts: Vec<PostView>,
 }
 
-fn index() -> Result<Response, Error> {
+#[get("/")]
+fn index() -> Result<Template, ErrorPage> {
     let site = get_site()?.site_view.unwrap();
     let posts = list_posts()?.posts;
     let ctx = IndexTemplate { site, posts };
-    Ok(Response::html(ctx.render_once()?))
+    // TODO: this silently swallows error messages
+    Ok(Template::render("index", ctx))
 }
 
-fn create_test_items() -> Result<(), Error> {
+fn create_test_items() -> Result<(), ErrorPage> {
     let site = get_site()?;
     if site.site_view.is_none() {
         let auth = register()?.jwt.unwrap();
@@ -47,22 +45,21 @@ fn create_test_items() -> Result<(), Error> {
     Ok(())
 }
 
-fn main() {
+#[main]
+async fn main() {
     env_logger::builder()
+        .filter_level(LevelFilter::Warn)
         .filter(Some("lemmy_bb"), LevelFilter::Debug)
+        .filter(Some("rocket"), LevelFilter::Info)
         .init();
 
     create_test_items().unwrap();
 
-    info!("Listening on http://127.0.0.1:8080");
-    rouille::start_server("127.0.0.1:8080", move |request| {
-        if request.url().starts_with("/assets/") {
-            return match_assets(request, ".");
-        }
-
-        router!(request,
-            (GET) (/) => { index().unwrap() },
-            _ => Response::empty_404()
-        )
-    });
+    info!("Listening on http://127.0.0.1:8000");
+    let _ = rocket::build()
+        .attach(Template::fairing())
+        .mount("/", routes![index])
+        .mount("/assets", FileServer::from(relative!("assets")))
+        .launch()
+        .await;
 }

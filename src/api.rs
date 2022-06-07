@@ -1,4 +1,3 @@
-use crate::AGENT;
 use anyhow::Error;
 use lemmy_api_common::{
     person::{Login, LoginResponse, Register},
@@ -7,9 +6,19 @@ use lemmy_api_common::{
     site::{CreateSite, GetSiteResponse, SiteResponse},
 };
 use lemmy_db_schema::{newtypes::CommunityId, ListingType, SortType};
+use once_cell::sync::Lazy;
+use std::time::Duration;
+use ureq::{Agent, AgentBuilder};
 
 static LEMMY_BACKEND: &str = "http://localhost:8536";
 static LEMMY_API_VERSION: &str = "/api/v3";
+
+pub static AGENT: Lazy<Agent> = Lazy::new(|| {
+    AgentBuilder::new()
+        .timeout_read(Duration::from_secs(5))
+        .timeout_write(Duration::from_secs(5))
+        .build()
+});
 
 fn gen_request_url(path: &str) -> String {
     format!("{}{}{}", LEMMY_BACKEND, LEMMY_API_VERSION, path)
@@ -51,7 +60,6 @@ pub fn create_site(auth: Sensitive<String>) -> Result<SiteResponse, Error> {
         auth,
         ..Default::default()
     };
-    dbg!(&params);
     Ok(AGENT
         .post(&gen_request_url("/site"))
         .send_json(&params)?

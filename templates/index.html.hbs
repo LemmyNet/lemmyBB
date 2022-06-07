@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <title><%= site.site.name %></title>
+        <title>{{ site.site.name }}</title>
 
 <!--
 	phpBB style name: prosilver
@@ -26,10 +26,10 @@
                             <a id="logo" class="logo" href="./index.php" title="Board index">
                                 <span class="site_logo"></span>
                             </a>
-                            <h1><%= site.site.name %></h1>
-                            <% if let Some(description) = site.site.description { %>
-                                <p><%= description %></p>
-                            <% } %>
+                            <h1>{{ site.site.name }}</h1>
+                            {{#if site.site.description }}
+                                <p>{{ site.site.description }}</p>
+                            {{/if}}
                         </div>
 
                         <div id="search-box" class="search-box search-header" role="search">
@@ -141,16 +141,16 @@
                             </li>
                         </ul>
                         <ul class="topiclist topics">
-                            <% for post in posts.iter() { %>
+                            {{#each posts}}
                             <li class="row bg1">
                                 <dl class="row-item topic_read">
                                     <dt title="No unread posts">
                                         <div class="list-inner">
-                                            <a href="./viewtopic.php?t=1" class="topictitle"><%= post.post.name %></a> <br />
+                                            <a href="./viewtopic.php?t=1" class="topictitle">{{ this.post.name }}</a> <br />
 
                                             <div class="topic-poster left-box">
-                                                by <a href="./memberlist.php?mode=viewprofile&amp;u=2"><%= post.creator.name %></a> &raquo;
-                                                <time datetime="2019-12-31T14:34:17+00:00"><%= post.post.published.to_string() %></time>
+                                                by <a href="./memberlist.php?mode=viewprofile&amp;u=2">{{ this.creator.name }}</a> &raquo;
+                                                <time datetime="2019-12-31T14:34:17+00:00">{{ this.post.published.to_string }}</time>
                                             </div>
                                         </div>
                                     </dt>
@@ -165,7 +165,7 @@
                                     </dd>
                                 </dl>
                             </li>
-                            <% } %>
+                            {{/each}}
                         </ul>
                     </div>
                 </div>
