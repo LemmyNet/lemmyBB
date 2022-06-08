@@ -8,8 +8,8 @@ use crate::{
     api::{create_post, create_site, get_site, list_posts, register},
     error::ErrorPage,
 };
-use lemmy_db_views::structs::{PostView, SiteView};
-use log::LevelFilter;
+use lemmy_api_common::lemmy_db_views::structs::{PostView, SiteView};
+use log::{info, LevelFilter};
 use rocket::fs::{relative, FileServer};
 use rocket_dyn_templates::Template;
 use serde::Serialize;

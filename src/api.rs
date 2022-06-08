@@ -1,11 +1,11 @@
 use anyhow::Error;
 use lemmy_api_common::{
+    lemmy_db_schema::{newtypes::CommunityId, ListingType, SortType},
     person::{Login, LoginResponse, Register},
     post::{CreatePost, GetPosts, GetPostsResponse, PostResponse},
     sensitive::Sensitive,
     site::{CreateSite, GetSiteResponse, SiteResponse},
 };
-use lemmy_db_schema::{newtypes::CommunityId, ListingType, SortType};
 use once_cell::sync::Lazy;
 use std::time::Duration;
 use ureq::{Agent, AgentBuilder};
