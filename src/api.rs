@@ -7,6 +7,7 @@ use lemmy_api_common::{
     site::{CreateSite, GetSiteResponse, SiteResponse},
 };
 use once_cell::sync::Lazy;
+use serde::{de::DeserializeOwned, Serialize};
 use std::time::Duration;
 use ureq::{Agent, AgentBuilder};
 
@@ -30,27 +31,21 @@ pub fn list_posts() -> Result<GetPostsResponse, Error> {
         sort: Some(SortType::New),
         ..Default::default()
     };
-    Ok(AGENT
-        .get(&gen_request_url("/post/list"))
-        .send_json(&params)?
-        .into_json()?)
+    get("/post/list", Some(params))
 }
 
 pub fn create_post(title: &str, auth: Sensitive<String>) -> Result<PostResponse, Error> {
-    let create = CreatePost {
+    let params = CreatePost {
         name: title.to_string(),
         community_id: CommunityId(2),
         auth,
         ..Default::default()
     };
-    Ok(AGENT
-        .post(&gen_request_url("/post"))
-        .send_json(&create)?
-        .into_json()?)
+    post("/post", &params)
 }
 
 pub fn get_site() -> Result<GetSiteResponse, Error> {
-    Ok(AGENT.get(&gen_request_url("/site")).call()?.into_json()?)
+    get::<GetSiteResponse, ()>("/site", None)
 }
 
 pub fn create_site(auth: Sensitive<String>) -> Result<SiteResponse, Error> {
@@ -60,10 +55,7 @@ pub fn create_site(auth: Sensitive<String>) -> Result<SiteResponse, Error> {
         auth,
         ..Default::default()
     };
-    Ok(AGENT
-        .post(&gen_request_url("/site"))
-        .send_json(&params)?
-        .into_json()?)
+    post("/site", &params)
 }
 
 pub fn register() -> Result<LoginResponse, Error> {
@@ -74,10 +66,7 @@ pub fn register() -> Result<LoginResponse, Error> {
         password_verify: pass,
         ..Default::default()
     };
-    Ok(AGENT
-        .post(&gen_request_url("/user/register"))
-        .send_json(&params)?
-        .into_json()?)
+    post("/user/register", &params)
 }
 
 pub fn login() -> Result<LoginResponse, Error> {
@@ -85,8 +74,29 @@ pub fn login() -> Result<LoginResponse, Error> {
         username_or_email: Sensitive::new("lemmy".to_string()),
         password: Sensitive::new("lemmylemmy".to_string()),
     };
+    post("/user/login", &params)
+}
+
+fn post<T, Params>(path: &str, params: Params) -> Result<T, Error>
+where
+    T: DeserializeOwned,
+    Params: Serialize,
+{
     Ok(AGENT
-        .post(&gen_request_url("/user/login"))
+        .post(&gen_request_url(path))
         .send_json(&params)?
         .into_json()?)
+}
+
+fn get<T, Params>(path: &str, params: Option<Params>) -> Result<T, Error>
+where
+    T: DeserializeOwned,
+    Params: Serialize,
+{
+    let r = AGENT.get(&gen_request_url(path));
+    let r = match params {
+        Some(p) => r.send_json(&p)?,
+        None => r.call()?,
+    };
+    Ok(r.into_json()?)
 }
