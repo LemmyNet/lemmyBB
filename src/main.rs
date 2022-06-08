@@ -8,6 +8,7 @@ use crate::{
     api::{create_post, create_site, get_site, list_posts, register},
     error::ErrorPage,
 };
+use anyhow::Error;
 use lemmy_api_common::lemmy_db_views::structs::{PostView, SiteView};
 use log::{info, LevelFilter};
 use rocket::fs::{relative, FileServer};
@@ -30,7 +31,7 @@ fn index() -> Result<Template, ErrorPage> {
     Ok(Template::render("index", ctx))
 }
 
-fn create_test_items() -> Result<(), ErrorPage> {
+fn create_test_items() -> Result<(), Error> {
     let site = get_site()?;
     if site.site_view.is_none() {
         let auth = register()?.jwt.unwrap();
@@ -46,14 +47,14 @@ fn create_test_items() -> Result<(), ErrorPage> {
 }
 
 #[main]
-async fn main() {
+async fn main() -> Result<(), Error> {
     env_logger::builder()
         .filter_level(LevelFilter::Warn)
         .filter(Some("lemmy_bb"), LevelFilter::Debug)
         .filter(Some("rocket"), LevelFilter::Info)
         .init();
 
-    create_test_items().unwrap();
+    create_test_items()?;
 
     info!("Listening on http://127.0.0.1:8000");
     let _ = rocket::build()
@@ -61,5 +62,6 @@ async fn main() {
         .mount("/", routes![index])
         .mount("/assets", FileServer::from(relative!("assets")))
         .launch()
-        .await;
+        .await?;
+    Ok(())
 }
