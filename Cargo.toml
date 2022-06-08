@@ -7,10 +7,7 @@ edition = "2021"
 log = "0.4.16"
 env_logger = { version = "0.9.0", default-features = false }
 ureq = { version = "2.4.0", features = ["json"] }
-# TODO: api_common should just reexport all other crates
 lemmy_api_common = { git = "https://github.com/LemmyNet/lemmy.git" }
-lemmy_db_schema = { git = "https://github.com/LemmyNet/lemmy.git" }
-lemmy_db_views = { git = "https://github.com/LemmyNet/lemmy.git" }
 once_cell = "1.10.0"
 anyhow = "1.0.57"
 rocket = "0.5.0-rc.2"
