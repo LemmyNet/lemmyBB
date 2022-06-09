@@ -5,7 +5,7 @@ mod api;
 mod error;
 
 use crate::{
-    api::{create_post, create_site, get_site, list_posts, login, register},
+    api::{create_post, create_site, get_site, list_posts, login, register, resolve_object},
     error::ErrorPage,
 };
 use anyhow::Error;
@@ -32,16 +32,18 @@ async fn index() -> Result<Template, ErrorPage> {
 }
 
 async fn create_test_items() -> Result<(), Error> {
-    let site = get_site().await;
-    if site.is_err() {
+    resolve_object("https://lemmy.ml/c/opensource".to_string()).await?;
+    resolve_object("https://lemmy.ml/c/announcements".to_string()).await?;
+    resolve_object("https://lemmy.ml/c/asklemmy".to_string()).await?;
+
+    // broken
+    let site = get_site().await?;
+    if site.site_view.is_none() {
         let auth = register().await?.jwt.unwrap();
         create_site(auth.clone()).await?;
-        create_post("test 1", auth.clone()).await?;
-        create_post("test 2", auth.clone()).await?;
-        create_post("test 3", auth).await?;
     } else {
         // TODO: this is too slow and blocks startup
-        //login().await?.jwt.unwrap();
+        login().await?.jwt.unwrap();
     }
     Ok(())
 }

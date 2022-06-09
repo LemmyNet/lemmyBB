@@ -4,15 +4,12 @@ use lemmy_api_common::{
     person::{Login, LoginResponse, Register},
     post::{CreatePost, GetPosts, GetPostsResponse, PostResponse},
     sensitive::Sensitive,
-    site::{CreateSite, GetSiteResponse, SiteResponse},
+    site::{CreateSite, GetSiteResponse, ResolveObject, ResolveObjectResponse, SiteResponse},
 };
 use once_cell::sync::Lazy;
 use reqwest::Client;
 use serde::{de::DeserializeOwned, Serialize};
-use std::{
-    fmt::{Debug, Display},
-    time::Duration,
-};
+use std::{fmt::Debug, time::Duration};
 
 static LEMMY_BACKEND: &str = "http://localhost:8536";
 static LEMMY_API_VERSION: &str = "/api/v3";
@@ -31,7 +28,7 @@ fn gen_request_url(path: &str) -> String {
 
 pub async fn list_posts() -> Result<GetPostsResponse, Error> {
     let params = GetPosts {
-        type_: Some(ListingType::Local),
+        type_: Some(ListingType::All),
         sort: Some(SortType::New),
         ..Default::default()
     };
@@ -81,19 +78,29 @@ pub async fn login() -> Result<LoginResponse, Error> {
     post("/user/login", &params).await
 }
 
+pub async fn resolve_object(query: String) -> Result<ResolveObjectResponse, Error> {
+    let params = ResolveObject {
+        q: query,
+        auth: None,
+    };
+    get("/resolve_object", Some(params)).await
+}
+
 async fn post<T, Params>(path: &str, params: Params) -> Result<T, Error>
 where
     T: DeserializeOwned,
     Params: Serialize + Debug,
 {
     info!("post {}, params {:?}", &path, &params);
-    Ok(CLIENT
+    let res = CLIENT
         .post(&gen_request_url(path))
         .json(&params)
         .send()
         .await?
-        .json()
-        .await?)
+        .text()
+        .await?;
+    info!("post {} response: {}", &path, &res);
+    Ok(serde_json::from_str(&res)?)
 }
 
 async fn get<T, Params>(path: &str, params: Option<Params>) -> Result<T, Error>
@@ -102,9 +109,9 @@ where
     Params: Serialize + Debug,
 {
     info!("get {}, params {:?}", &path, &params);
-    let r = CLIENT.post(&gen_request_url(path));
+    let r = CLIENT.get(&gen_request_url(path));
     let r = match params {
-        Some(p) => r.json(&p),
+        Some(p) => r.query(&p),
         None => r,
     };
     Ok(r.send().await?.json().await?)
