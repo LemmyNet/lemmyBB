@@ -5,7 +5,7 @@ mod api;
 mod error;
 
 use crate::{
-    api::{create_post, create_site, get_site, list_posts, register},
+    api::{create_post, create_site, get_site, list_posts, login, register},
     error::ErrorPage,
 };
 use anyhow::Error;
@@ -23,25 +23,25 @@ struct IndexTemplate {
 }
 
 #[get("/")]
-fn index() -> Result<Template, ErrorPage> {
-    let site = get_site()?.site_view.unwrap();
-    let posts = list_posts()?.posts;
+async fn index() -> Result<Template, ErrorPage> {
+    let site = get_site().await?.site_view.unwrap();
+    let posts = list_posts().await?.posts;
     let ctx = IndexTemplate { site, posts };
     // TODO: this silently swallows error messages
     Ok(Template::render("index", ctx))
 }
 
-fn create_test_items() -> Result<(), Error> {
-    let site = get_site()?;
-    if site.site_view.is_none() {
-        let auth = register()?.jwt.unwrap();
-        create_site(auth.clone())?;
-        create_post("test 1", auth.clone())?;
-        create_post("test 2", auth.clone())?;
-        create_post("test 3", auth)?;
+async fn create_test_items() -> Result<(), Error> {
+    let site = get_site().await;
+    if site.is_err() {
+        let auth = register().await?.jwt.unwrap();
+        create_site(auth.clone()).await?;
+        create_post("test 1", auth.clone()).await?;
+        create_post("test 2", auth.clone()).await?;
+        create_post("test 3", auth).await?;
     } else {
         // TODO: this is too slow and blocks startup
-        //login()?.jwt.unwrap();
+        //login().await?.jwt.unwrap();
     }
     Ok(())
 }
@@ -54,7 +54,7 @@ async fn main() -> Result<(), Error> {
         .filter(Some("rocket"), LevelFilter::Info)
         .init();
 
-    create_test_items()?;
+    create_test_items().await?;
 
     info!("Listening on http://127.0.0.1:8000");
     let _ = rocket::build()

@@ -7,58 +7,62 @@ use lemmy_api_common::{
     site::{CreateSite, GetSiteResponse, SiteResponse},
 };
 use once_cell::sync::Lazy;
+use reqwest::Client;
 use serde::{de::DeserializeOwned, Serialize};
-use std::time::Duration;
-use ureq::{Agent, AgentBuilder};
+use std::{
+    fmt::{Debug, Display},
+    time::Duration,
+};
 
 static LEMMY_BACKEND: &str = "http://localhost:8536";
 static LEMMY_API_VERSION: &str = "/api/v3";
 
-pub static AGENT: Lazy<Agent> = Lazy::new(|| {
-    AgentBuilder::new()
-        .timeout_read(Duration::from_secs(5))
-        .timeout_write(Duration::from_secs(5))
+static CLIENT: Lazy<Client> = Lazy::new(|| {
+    Client::builder()
+        .timeout(Duration::from_secs(5))
+        .connect_timeout(Duration::from_secs(5))
         .build()
+        .expect("build client")
 });
 
 fn gen_request_url(path: &str) -> String {
     format!("{}{}{}", LEMMY_BACKEND, LEMMY_API_VERSION, path)
 }
 
-pub fn list_posts() -> Result<GetPostsResponse, Error> {
+pub async fn list_posts() -> Result<GetPostsResponse, Error> {
     let params = GetPosts {
         type_: Some(ListingType::Local),
         sort: Some(SortType::New),
         ..Default::default()
     };
-    get("/post/list", Some(params))
+    get("/post/list", Some(params)).await
 }
 
-pub fn create_post(title: &str, auth: Sensitive<String>) -> Result<PostResponse, Error> {
+pub async fn create_post(title: &str, auth: Sensitive<String>) -> Result<PostResponse, Error> {
     let params = CreatePost {
         name: title.to_string(),
         community_id: CommunityId(2),
         auth,
         ..Default::default()
     };
-    post("/post", &params)
+    post("/post", &params).await
 }
 
-pub fn get_site() -> Result<GetSiteResponse, Error> {
-    get::<GetSiteResponse, ()>("/site", None)
+pub async fn get_site() -> Result<GetSiteResponse, Error> {
+    get::<GetSiteResponse, ()>("/site", None).await
 }
 
-pub fn create_site(auth: Sensitive<String>) -> Result<SiteResponse, Error> {
+pub async fn create_site(auth: Sensitive<String>) -> Result<SiteResponse, Error> {
     let params = CreateSite {
         name: "lemmyBB".to_string(),
         description: Some("Welcome to lemmyBB, enjoy your stay!".to_string()),
         auth,
         ..Default::default()
     };
-    post("/site", &params)
+    post("/site", &params).await
 }
 
-pub fn register() -> Result<LoginResponse, Error> {
+pub async fn register() -> Result<LoginResponse, Error> {
     let pass = Sensitive::new("lemmylemmy".to_string());
     let params = Register {
         username: "lemmy".to_string(),
@@ -66,37 +70,42 @@ pub fn register() -> Result<LoginResponse, Error> {
         password_verify: pass,
         ..Default::default()
     };
-    post("/user/register", &params)
+    post("/user/register", &params).await
 }
 
-pub fn login() -> Result<LoginResponse, Error> {
+pub async fn login() -> Result<LoginResponse, Error> {
     let params = Login {
         username_or_email: Sensitive::new("lemmy".to_string()),
         password: Sensitive::new("lemmylemmy".to_string()),
     };
-    post("/user/login", &params)
+    post("/user/login", &params).await
 }
 
-fn post<T, Params>(path: &str, params: Params) -> Result<T, Error>
+async fn post<T, Params>(path: &str, params: Params) -> Result<T, Error>
 where
     T: DeserializeOwned,
-    Params: Serialize,
+    Params: Serialize + Debug,
 {
-    Ok(AGENT
+    info!("post {}, params {:?}", &path, &params);
+    Ok(CLIENT
         .post(&gen_request_url(path))
-        .send_json(&params)?
-        .into_json()?)
+        .json(&params)
+        .send()
+        .await?
+        .json()
+        .await?)
 }
 
-fn get<T, Params>(path: &str, params: Option<Params>) -> Result<T, Error>
+async fn get<T, Params>(path: &str, params: Option<Params>) -> Result<T, Error>
 where
     T: DeserializeOwned,
-    Params: Serialize,
+    Params: Serialize + Debug,
 {
-    let r = AGENT.get(&gen_request_url(path));
+    info!("get {}, params {:?}", &path, &params);
+    let r = CLIENT.post(&gen_request_url(path));
     let r = match params {
-        Some(p) => r.send_json(&p)?,
-        None => r.call()?,
+        Some(p) => r.json(&p),
+        None => r,
     };
-    Ok(r.into_json()?)
+    Ok(r.send().await?.json().await?)
 }
