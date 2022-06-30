@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-gb">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{{ site.site.name }}</title>
+
+    <!--
+        phpBB style name: prosilver
+        Based on style:   prosilver (this is the default phpBB3 style)
+        Original author:  Tom Beddard ( http://www.subBlue.com/ )
+        Modified by:
+    -->
+
+    <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/assets/styles/prosilver/stylesheet.css" rel="stylesheet" />
+</head>
+<body id="phpbb" class="nojs notouch section-viewforum ltr">
+<div id="wrap" class="wrap">
+    <a id="top" class="top-anchor" accesskey="t"></a>
+    <div id="page-header">
+        <div class="headerbar" role="banner">
+            <div class="inner">
+                <div id="site-description" class="site-description">
+                    <a id="logo" class="logo" href="./" title="Board index">
+                        <span class="site_logo"></span>
+                    </a>
+                    <h1>{{ site.site.name }}</h1>
+                    {{#if site.site.description }}
+                        <p>{{ site.site.description }}</p>
+                    {{/if}}
+                </div>
+
+                <div id="search-box" class="search-box search-header" role="search">
+                    <form action="./search.php" method="get" id="search">
+                        <fieldset>
+                            <input name="keywords" id="keywords" type="search" maxlength="128" title="Search for keywords" class="inputbox search tiny" size="20" value="" placeholder="Search…" />
+                            <button class="button button-search" type="submit" title="Search"><i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span></button>
+                            <a href="./search.php" class="button button-search-end" title="Advanced search"> <i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">Advanced search</span> </a>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="navbar" role="navigation">
+            <div class="inner">
+                <ul id="nav-main" class="nav-main linklist" role="menubar">
+                    <li id="quick-links" class="quick-links dropdown-container responsive-menu" data-skip-responsive="true">
+                        <a href="#" class="dropdown-trigger"> <i class="icon fa-bars fa-fw" aria-hidden="true"></i><span>Quick links</span> </a>
+                        <div class="dropdown">
+                            <div class="pointer"><div class="pointer-inner"></div></div>
+                            <ul class="dropdown-contents" role="menu">
+                                <li class="separator"></li>
+                                <li>
+                                    <a href="./search.php?search_id=unanswered" role="menuitem"> <i class="icon fa-file-o fa-fw icon-gray" aria-hidden="true"></i><span>Unanswered topics</span> </a>
+                                </li>
+                                <li>
+                                    <a href="./search.php?search_id=active_topics" role="menuitem"> <i class="icon fa-file-o fa-fw icon-blue" aria-hidden="true"></i><span>Active topics</span> </a>
+                                </li>
+                                <li class="separator"></li>
+                                <li>
+                                    <a href="./search.php" role="menuitem"> <i class="icon fa-search fa-fw" aria-hidden="true"></i><span>Search</span> </a>
+                                </li>
+
+                                <li class="separator"></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li data-skip-responsive="true">
+                        <a href="/33x/app.php/help/faq" rel="help" title="Frequently Asked Questions" role="menuitem"> <i class="icon fa-question-circle fa-fw" aria-hidden="true"></i><span>FAQ</span> </a>
+                    </li>
+
+                    <li class="rightside" data-skip-responsive="true">
+                        <a href="./ucp.php?mode=login&amp;redirect=viewforum.php%3Ff%3D2" title="Login" accesskey="x" role="menuitem"> <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>Login</span> </a>
+                    </li>
+                    <li class="rightside" data-skip-responsive="true">
+                        <a href="./ucp.php?mode=register" role="menuitem"> <i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i><span>Register</span> </a>
+                    </li>
+                </ul>
+
+                <ul id="nav-breadcrumbs" class="nav-breadcrumbs linklist navlinks" role="menubar">
+                    <li class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+                                <span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope>
+                                    <a itemprop="item" href="./" accesskey="h" data-navbar-reference="index"><i class="icon fa-home fa-fw"></i><span itemprop="name">Board index</span></a><meta itemprop="position" content="1" />
+                                </span>
+
+                        <span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope data-forum-id="1">
+                                    <a itemprop="item" href="./viewforum.php?f=1"><span itemprop="name">Your first category</span></a><meta itemprop="position" content="2" />
+                                </span>
+
+                        <span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope data-forum-id="2">
+                                    <a itemprop="item" href="./viewforum.php?f=2"><span itemprop="name">Your first forum</span></a><meta itemprop="position" content="3" />
+                                </span>
+                    </li>
+
+                    <li class="rightside responsive-search">
+                        <a href="./search.php" title="View the advanced search options" role="menuitem"> <i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span> </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>

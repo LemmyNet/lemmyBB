@@ -1,8 +1,12 @@
 use anyhow::Error;
 use lemmy_api_common::{
-    lemmy_db_schema::{newtypes::CommunityId, ListingType, SortType},
+    lemmy_db_schema::{
+        newtypes::{CommunityId, PostId},
+        ListingType,
+        SortType,
+    },
     person::{Login, LoginResponse, Register},
-    post::{CreatePost, GetPosts, GetPostsResponse, PostResponse},
+    post::{CreatePost, GetPost, GetPostResponse, GetPosts, GetPostsResponse, PostResponse},
     sensitive::Sensitive,
     site::{CreateSite, GetSiteResponse, ResolveObject, ResolveObjectResponse, SiteResponse},
 };
@@ -33,6 +37,14 @@ pub async fn list_posts() -> Result<GetPostsResponse, Error> {
         ..Default::default()
     };
     get("/post/list", Some(params)).await
+}
+
+pub async fn get_post(id: i32) -> Result<GetPostResponse, Error> {
+    let params = GetPost {
+        id: PostId(id),
+        auth: None,
+    };
+    get("/post", Some(params)).await
 }
 
 pub async fn create_post(title: &str, auth: Sensitive<String>) -> Result<PostResponse, Error> {

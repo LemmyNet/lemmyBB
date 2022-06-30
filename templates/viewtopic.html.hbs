@@ -1,0 +1,203 @@
+{{> header }}
+
+    <a id="start_here" class="anchor"></a>
+    <div id="page-body" class="page-body" role="main">
+
+
+    <h2 class="topic-title"><a href="./viewtopic?t={{ post.post_view.post.id }}">{{ post.post_view.post.name }}</a></h2>
+    <!-- NOTE: remove the style="display: none" when you want to have the forum description on the topic body -->
+    <div style="display: none !important;">Description of your first forum.<br /></div>
+
+
+    <div class="action-bar bar-top">
+
+        <a href="./posting.php?mode=reply&amp;t=1" class="button" title="Post a reply">
+            <span>Post Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
+        </a>
+
+        <div class="dropdown-container dropdown-button-control topic-tools">
+		<span title="Topic tools" class="button button-secondary dropdown-trigger dropdown-select">
+			<i class="icon fa-wrench fa-fw" aria-hidden="true"></i>
+			<span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+		</span>
+            <div class="dropdown">
+                <div class="pointer"><div class="pointer-inner"></div></div>
+                <ul class="dropdown-contents">
+                    <li>
+                        <a href="./viewtopic.php?t=1&amp;view=print" title="Print view" accesskey="p">
+                            <i class="icon fa-print fa-fw" aria-hidden="true"></i><span>Print view</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="search-box" role="search">
+            <form method="get" id="topic-search" action="./search.php">
+                <fieldset>
+                    <input class="inputbox search tiny"  type="search" name="keywords" id="search_keywords" size="20" placeholder="Search this topic…" />
+                    <button class="button button-search" type="submit" title="Search">
+                        <i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span>
+                    </button>
+                    <a href="./search.php" class="button button-search-end" title="Advanced search">
+                        <i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">Advanced search</span>
+                    </a>
+                    <input type="hidden" name="t" value="1" />
+                    <input type="hidden" name="sf" value="msgonly" />
+
+                </fieldset>
+            </form>
+        </div>
+
+        <div class="pagination">
+            1 post
+            &bull; Page <strong>1</strong> of <strong>1</strong>
+        </div>
+    </div>
+
+    <div id="p1" class="post has-profile bg2">
+        <div class="inner">
+
+            <dl class="postprofile" id="profile1">
+                <dt class="has-profile-rank no-avatar">
+                    <div class="avatar-container">
+                    </div>
+                    <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{post.post_view.creator.name}}</a>							</dt>
+
+                <dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2&amp;sr=posts">1</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Tue Dec 31, 2019 2:34 pm</dd>
+            </dl>
+
+            <div class="postbody">
+                <div id="post_content1">
+
+                    <h3 class="first">
+                        <a href="./viewtopic?p={{ post.post_view.post.id }}#p1">{{post.post_view.post.name}}</a>
+                    </h3>
+                    <ul class="post-buttons">
+                        <li>
+                            <a href="./posting.php?mode=quote&amp;p=1" title="Reply with quote" class="button button-icon-only">
+                                <i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="author">
+                        <a class="unread" href="./viewtopic.php?p=1#p1" title="Post">
+                            <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+                        </a>
+                        <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{post.post_view.creator.name}}</a></strong> &raquo; </span><time datetime="2019-12-31T14:34:17+00:00">Tue Dec 31, 2019 2:34 pm</time>
+                    </p>
+                    <div class="content">{{ post.post_view.post.body }}</div>
+                </div>
+            </div>
+
+            <div class="back2top">
+                <a href="#top" class="top" title="Top">
+                    <i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+                    <span class="sr-only">Top</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    {{#each post.comments}}
+    <div id="p2" class="post has-profile bg2">
+        <div class="inner">
+
+            <dl class="postprofile" id="profile1">
+                <dt class="has-profile-rank no-avatar">
+                    <div class="avatar-container">
+                    </div>
+                    <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{this.creator.name}}</a>							</dt>
+
+                <dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2&amp;sr=posts">1</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Tue Dec 31, 2019 2:34 pm</dd>
+            </dl>
+
+            <div class="postbody">
+                <div id="post_content2">
+
+                    <h3>
+                        <a href="./viewtopic?p={{this.post.id}}#p1">{{this.post.name}}</a>
+                    </h3>
+                    <ul class="post-buttons">
+                        <li>
+                            <a href="./posting.php?mode=quote&amp;p=1" title="Reply with quote" class="button button-icon-only">
+                                <i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="author">
+                        <a class="unread" href="./viewtopic.php?p=1#p1" title="Post">
+                            <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+                        </a>
+                        <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username-">{{this.creator.name}}</a></strong> &raquo; </span><time datetime="2019-12-31T14:34:17+00:00">Tue Dec 31, 2019 2:34 pm</time>
+                    </p>
+                    <div class="content">{{this.comment.content}}</div>
+                </div>
+            </div>
+
+            <div class="back2top">
+                <a href="#top" class="top" title="Top">
+                    <i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+                    <span class="sr-only">Top</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+    {{/each}}
+
+    <div class="action-bar bar-bottom">
+
+        <a href="./posting.php?mode=reply&amp;t=1" class="button" title="Post a reply">
+            <span>Post Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
+        </a>
+
+        <div class="dropdown-container dropdown-button-control topic-tools">
+		<span title="Topic tools" class="button button-secondary dropdown-trigger dropdown-select">
+			<i class="icon fa-wrench fa-fw" aria-hidden="true"></i>
+			<span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+		</span>
+            <div class="dropdown">
+                <div class="pointer"><div class="pointer-inner"></div></div>
+                <ul class="dropdown-contents">
+                    <li>
+                        <a href="./viewtopic.php?t=1&amp;view=print" title="Print view" accesskey="p">
+                            <i class="icon fa-print fa-fw" aria-hidden="true"></i><span>Print view</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="pagination">
+            1 post
+            &bull; Page <strong>1</strong> of <strong>1</strong>
+        </div>
+    </div>
+
+    <div class="action-bar actions-jump">
+        <p class="jumpbox-return">
+            <a href="./viewforum.php?f=2" class="left-box arrow-left" accesskey="r">
+                <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to “Your first forum”</span>
+            </a>
+        </p>
+
+        <div class="jumpbox dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">
+			<span title="Jump to" class="button button-secondary dropdown-trigger dropdown-select">
+				<span>Jump to</span>
+				<span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+			</span>
+            <div class="dropdown">
+                <div class="pointer"><div class="pointer-inner"></div></div>
+                <ul class="dropdown-contents">
+                    <li><a href="./viewforum.php?f=1" class="jumpbox-cat-link"> <span> Your first category</span></a></li>
+                    <li><a href="./viewforum.php?f=2" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Your first forum</span></a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+{{> footer }}
