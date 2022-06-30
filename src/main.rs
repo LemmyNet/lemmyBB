@@ -5,7 +5,7 @@ mod api;
 mod error;
 
 use crate::{
-    api::{create_post, create_site, get_site, list_posts, login, register, resolve_object},
+    api::{create_site, get_site, list_posts, login, register, resolve_object},
     error::ErrorPage,
 };
 use anyhow::Error;
@@ -14,6 +14,7 @@ use log::{info, LevelFilter};
 use rocket::fs::{relative, FileServer};
 use rocket_dyn_templates::Template;
 use serde::Serialize;
+use std::thread::spawn;
 
 #[derive(Serialize)]
 struct IndexTemplate {
@@ -27,24 +28,29 @@ async fn index() -> Result<Template, ErrorPage> {
     let site = get_site().await?.site_view.unwrap();
     let posts = list_posts().await?.posts;
     let ctx = IndexTemplate { site, posts };
-    // TODO: this silently swallows error messages
     Ok(Template::render("index", ctx))
 }
 
 async fn create_test_items() -> Result<(), Error> {
-    resolve_object("https://lemmy.ml/c/opensource".to_string()).await?;
-    resolve_object("https://lemmy.ml/c/announcements".to_string()).await?;
-    resolve_object("https://lemmy.ml/c/asklemmy".to_string()).await?;
+    //TODO: these usually fail with timeout, as http_fetch_retry_limit is reached
+    resolve_object("https://lemmy.ml/c/opensource".to_string())
+        .await
+        .ok();
+    resolve_object("https://lemmy.ml/c/announcements".to_string())
+        .await
+        .ok();
+    resolve_object("https://lemmy.ml/c/asklemmy".to_string())
+        .await
+        .ok();
 
-    // broken
     let site = get_site().await?;
-    if site.site_view.is_none() {
+    let _jwt = if site.site_view.is_none() {
         let auth = register().await?.jwt.unwrap();
         create_site(auth.clone()).await?;
+        auth
     } else {
-        // TODO: this is too slow and blocks startup
-        login().await?.jwt.unwrap();
-    }
+        login().await?.jwt.unwrap()
+    };
     Ok(())
 }
 
@@ -56,7 +62,7 @@ async fn main() -> Result<(), Error> {
         .filter(Some("rocket"), LevelFilter::Info)
         .init();
 
-    create_test_items().await?;
+    spawn(|| create_test_items());
 
     info!("Listening on http://127.0.0.1:8000");
     let _ = rocket::build()
