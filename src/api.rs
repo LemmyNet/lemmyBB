@@ -82,10 +82,10 @@ pub async fn register() -> Result<LoginResponse, Error> {
     post("/user/register", &params).await
 }
 
-pub async fn login() -> Result<LoginResponse, Error> {
+pub async fn login(username_or_email: &str, password: &str) -> Result<LoginResponse, Error> {
     let params = Login {
-        username_or_email: Sensitive::new("lemmy".to_string()),
-        password: Sensitive::new("lemmylemmy".to_string()),
+        username_or_email: Sensitive::new(username_or_email.to_string()),
+        password: Sensitive::new(password.to_string()),
     };
     post("/user/login", &params).await
 }
