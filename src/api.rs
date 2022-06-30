@@ -1,21 +1,21 @@
 use anyhow::Error;
 use lemmy_api_common::{
-    lemmy_db_schema::{
-        newtypes::{CommunityId, PostId},
-        ListingType,
-        SortType,
-    },
     person::{Login, LoginResponse, Register},
     post::{CreatePost, GetPost, GetPostResponse, GetPosts, GetPostsResponse, PostResponse},
     sensitive::Sensitive,
     site::{CreateSite, GetSiteResponse, ResolveObject, ResolveObjectResponse, SiteResponse},
+};
+use lemmy_db_schema::{
+    newtypes::{CommunityId, PostId},
+    ListingType,
+    SortType,
 };
 use once_cell::sync::Lazy;
 use reqwest::Client;
 use serde::{de::DeserializeOwned, Serialize};
 use std::{fmt::Debug, time::Duration};
 
-static LEMMY_BACKEND: &str = "http://localhost:8536";
+static LEMMY_BACKEND: &str = "http://lemmy.ml";
 static LEMMY_API_VERSION: &str = "/api/v3";
 
 static CLIENT: Lazy<Client> = Lazy::new(|| {
@@ -33,7 +33,7 @@ fn gen_request_url(path: &str) -> String {
 pub async fn list_posts() -> Result<GetPostsResponse, Error> {
     let params = GetPosts {
         type_: Some(ListingType::All),
-        sort: Some(SortType::New),
+        sort: Some(SortType::NewComments),
         ..Default::default()
     };
     get("/post/list", Some(params)).await

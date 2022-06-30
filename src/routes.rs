@@ -2,10 +2,8 @@ use crate::{
     api::{get_post, get_site, list_posts, login},
     error::ErrorPage,
 };
-use lemmy_api_common::{
-    lemmy_db_views::structs::{PostView, SiteView},
-    post::GetPostResponse,
-};
+use lemmy_api_common::post::GetPostResponse;
+use lemmy_db_views::structs::{PostView, SiteView};
 use rocket::{
     form::Form,
     http::{Cookie, CookieJar},
@@ -37,7 +35,9 @@ struct ViewTopicTemplate {
 #[get("/viewtopic?<t>")]
 pub async fn view_topic(t: i32) -> Result<Template, ErrorPage> {
     let site = get_site().await?.site_view.unwrap();
-    let post = get_post(t).await?;
+    let mut post = get_post(t).await?;
+    post.comments
+        .sort_by(|a, b| a.comment.published.cmp(&b.comment.published));
     let ctx = ViewTopicTemplate { site, post };
     Ok(Template::render("viewtopic", ctx))
 }

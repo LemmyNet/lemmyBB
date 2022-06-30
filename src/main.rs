@@ -40,7 +40,7 @@ async fn main() -> Result<(), Error> {
         .filter(Some("rocket"), LevelFilter::Info)
         .init();
 
-    create_test_items().await?;
+    //create_test_items().await?;
 
     info!("Listening on http://127.0.0.1:8000");
     let _ = rocket::build()
