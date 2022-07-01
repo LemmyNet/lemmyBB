@@ -2,11 +2,9 @@
 
             <a id="start_here" class="anchor"></a>
             <div id="page-body" class="page-body" role="main">
-                <h2 class="forum-title"><a href="./viewforum.php?f=2">Your first forum</a></h2>
-                <div>
-                    <!-- NOTE: remove the style="display: none" when you want to have the forum description on the forum body -->
-                    <div style="display: none !important;">Description of your first forum.<br /></div>
-                </div>
+                <p>
+                    {{site.site.sidebar}}
+                </p>
 
                 <div class="action-bar bar-top">
                     <a href="./posting.php?mode=post&amp;f=2" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
@@ -141,16 +139,6 @@
                             </ul>
                         </div>
                     </div>
-                </div>
-
-                <div class="stat-block permissions">
-                    <h3>Forum permissions</h3>
-                    <p>
-                        You <strong>cannot</strong> post new topics in this forum<br />
-                        You <strong>cannot</strong> reply to topics in this forum<br />
-                        You <strong>cannot</strong> edit your posts in this forum<br />
-                        You <strong>cannot</strong> delete your posts in this forum<br />
-                    </p>
                 </div>
             </div>
 

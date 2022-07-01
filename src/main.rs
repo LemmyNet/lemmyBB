@@ -42,9 +42,13 @@ async fn main() -> Result<(), Error> {
 
     //create_test_items().await?;
 
+    let template_fairing = Template::custom(|engines| {
+        engines.handlebars.set_strict_mode(true);
+    });
+
     info!("Listening on http://127.0.0.1:8000");
     let _ = rocket::build()
-        .attach(Template::fairing())
+        .attach(template_fairing)
         .mount("/", routes![view_forum, view_topic, login_page, do_login])
         .mount("/assets", FileServer::from(relative!("assets")))
         .launch()
