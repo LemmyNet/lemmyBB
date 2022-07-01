@@ -2,6 +2,17 @@
 
 A Lemmy frontend inspired by [phpBB](https://www.phpbb.com/).
 
+## Usage
+
+You can easily run lemmyBB on your local computer, to browse a remote Lemmy instance. Cargo (Rust compiler) and git need to be installed. Then run the following commands. Replace lemmy.ml with your own instance.
+
+```
+git clone https://github.com/Nutomic/lemmyBB.git
+LEMMY_INTERNAL_HOST=https://lemmy.ml cargo run
+```
+
+You can also run lemmyBB on a server. Please open an issue for more details.
+
 ## Development
 
 Follow the instructions for [Local Lemmy Development](https://join-lemmy.org/docs/en/contributing/local_development.html). You need the Lemmy backend source code and a cargo installation, along with PostgreSQL. Lemmy-ui is not necessary, but can be useful for testing.

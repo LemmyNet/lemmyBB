@@ -5,12 +5,13 @@ mod api;
 mod error;
 mod routes;
 
-use crate::api::{create_site, get_site, register, resolve_object};
+use crate::api::{create_site, get_site, register, resolve_object, LEMMY_BACKEND};
 use anyhow::Error;
 use log::{info, LevelFilter};
 use rocket::fs::{relative, FileServer};
 use rocket_dyn_templates::Template;
 use routes::{do_login, login_page, view_forum, view_topic};
+use std::env;
 
 async fn create_test_items() -> Result<(), Error> {
     //TODO: these usually fail with timeout, as http_fetch_retry_limit is reached
@@ -41,6 +42,11 @@ async fn main() -> Result<(), Error> {
         .init();
 
     //create_test_items().await?;
+
+    match env::var("LEMMY_INTERNAL_HOST") {
+        Ok(o) => LEMMY_BACKEND.set(o).unwrap(),
+        Err(_) => panic!("LEMMY_INTERNAL_HOST environment variable is required"),
+    }
 
     let template_fairing = Template::custom(|engines| {
         engines.handlebars.set_strict_mode(true);

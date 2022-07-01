@@ -10,14 +10,14 @@ use lemmy_db_schema::{
     ListingType,
     SortType,
 };
-use once_cell::sync::Lazy;
+use once_cell::sync::{Lazy, OnceCell};
 use reqwest::Client;
 use serde::{de::DeserializeOwned, Serialize};
-use std::{fmt::Debug, time::Duration};
+use std::{env, fmt::Debug, ops::Deref, time::Duration};
 
-static LEMMY_BACKEND: &str = "http://lemmy.ml";
 static LEMMY_API_VERSION: &str = "/api/v3";
 
+pub static LEMMY_BACKEND: OnceCell<String> = OnceCell::new();
 static CLIENT: Lazy<Client> = Lazy::new(|| {
     Client::builder()
         .timeout(Duration::from_secs(5))
@@ -27,7 +27,12 @@ static CLIENT: Lazy<Client> = Lazy::new(|| {
 });
 
 fn gen_request_url(path: &str) -> String {
-    format!("{}{}{}", LEMMY_BACKEND, LEMMY_API_VERSION, path)
+    format!(
+        "{}{}{}",
+        LEMMY_BACKEND.get().unwrap(),
+        LEMMY_API_VERSION,
+        path
+    )
 }
 
 pub async fn list_posts() -> Result<GetPostsResponse, Error> {
