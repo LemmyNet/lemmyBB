@@ -1,19 +1,15 @@
 use anyhow::Error;
 use lemmy_api_common::{
-    person::{Login, LoginResponse, Register},
-    post::{CreatePost, GetPost, GetPostResponse, GetPosts, GetPostsResponse, PostResponse},
+    person::{Login, LoginResponse},
+    post::{GetPost, GetPostResponse, GetPosts, GetPostsResponse},
     sensitive::Sensitive,
-    site::{CreateSite, GetSiteResponse, ResolveObject, ResolveObjectResponse, SiteResponse},
+    site::GetSiteResponse,
 };
-use lemmy_db_schema::{
-    newtypes::{CommunityId, PostId},
-    ListingType,
-    SortType,
-};
+use lemmy_db_schema::{newtypes::PostId, ListingType, SortType};
 use once_cell::sync::{Lazy, OnceCell};
 use reqwest::Client;
 use serde::{de::DeserializeOwned, Serialize};
-use std::{env, fmt::Debug, ops::Deref, time::Duration};
+use std::{fmt::Debug, time::Duration};
 
 static LEMMY_API_VERSION: &str = "/api/v3";
 
@@ -52,39 +48,8 @@ pub async fn get_post(id: i32) -> Result<GetPostResponse, Error> {
     get("/post", Some(params)).await
 }
 
-pub async fn create_post(title: &str, auth: Sensitive<String>) -> Result<PostResponse, Error> {
-    let params = CreatePost {
-        name: title.to_string(),
-        community_id: CommunityId(2),
-        auth,
-        ..Default::default()
-    };
-    post("/post", &params).await
-}
-
 pub async fn get_site() -> Result<GetSiteResponse, Error> {
     get::<GetSiteResponse, ()>("/site", None).await
-}
-
-pub async fn create_site(auth: Sensitive<String>) -> Result<SiteResponse, Error> {
-    let params = CreateSite {
-        name: "lemmyBB".to_string(),
-        description: Some("Welcome to lemmyBB, enjoy your stay!".to_string()),
-        auth,
-        ..Default::default()
-    };
-    post("/site", &params).await
-}
-
-pub async fn register() -> Result<LoginResponse, Error> {
-    let pass = Sensitive::new("lemmylemmy".to_string());
-    let params = Register {
-        username: "lemmy".to_string(),
-        password: pass.clone(),
-        password_verify: pass,
-        ..Default::default()
-    };
-    post("/user/register", &params).await
 }
 
 pub async fn login(username_or_email: &str, password: &str) -> Result<LoginResponse, Error> {
@@ -93,14 +58,6 @@ pub async fn login(username_or_email: &str, password: &str) -> Result<LoginRespo
         password: Sensitive::new(password.to_string()),
     };
     post("/user/login", &params).await
-}
-
-pub async fn resolve_object(query: String) -> Result<ResolveObjectResponse, Error> {
-    let params = ResolveObject {
-        q: query,
-        auth: None,
-    };
-    get("/resolve_object", Some(params)).await
 }
 
 async fn post<T, Params>(path: &str, params: Params) -> Result<T, Error>
