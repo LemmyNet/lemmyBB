@@ -14,7 +14,7 @@ use std::{fmt::Debug, time::Duration};
 static LEMMY_API_VERSION: &str = "/api/v3";
 
 pub static LEMMY_BACKEND: OnceCell<String> = OnceCell::new();
-static CLIENT: Lazy<Client> = Lazy::new(|| {
+pub static CLIENT: Lazy<Client> = Lazy::new(|| {
     Client::builder()
         .timeout(Duration::from_secs(5))
         .connect_timeout(Duration::from_secs(5))

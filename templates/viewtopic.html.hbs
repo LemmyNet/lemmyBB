@@ -93,7 +93,16 @@
                         <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{post.post_view.creator.name}}</a></strong> &raquo; </span>
                         <time datetime="{{timestamp post.post_view.post.published}}">{{timestamp post.post_view.post.published}}</time>
                     </p>
-                    <div class="content">{{{markdown post.post_view.post.body}}}</div>
+                    <div class="content">
+                        {{#if post.post_view.post.url}}
+                            {{#if is_image_url}}
+                                <img src="{{post.post_view.post.url}}" />
+                            {{else}}
+                                <a href="{{post.post_view.post.url}}">{{post.post_view.post.url}}</a>
+                            {{/if}}
+                        {{/if}}
+                        {{{markdown post.post_view.post.body}}}
+                    </div>
                 </div>
             </div>
 

@@ -898,6 +898,7 @@ dependencies = [
  "rocket_dyn_templates",
  "serde",
  "serde_json",
+ "url",
 ]
 
 [[package]]
