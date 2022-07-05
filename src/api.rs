@@ -33,8 +33,9 @@ fn gen_request_url(path: &str) -> String {
 
 pub async fn list_posts() -> Result<GetPostsResponse, Error> {
     let params = GetPosts {
-        type_: Some(ListingType::All),
+        type_: Some(ListingType::Local),
         sort: Some(SortType::NewComments),
+        limit: Some(20),
         ..Default::default()
     };
     get("/post/list", Some(params)).await
