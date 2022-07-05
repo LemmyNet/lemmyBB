@@ -7,11 +7,36 @@ mod routes;
 
 use crate::api::LEMMY_BACKEND;
 use anyhow::Error;
+use chrono::NaiveDateTime;
 use log::{info, LevelFilter};
 use rocket::fs::{relative, FileServer};
-use rocket_dyn_templates::Template;
+use rocket_dyn_templates::{handlebars::handlebars_helper, Template};
 use routes::{do_login, login_page, view_forum, view_topic};
 use std::env;
+
+// Converts markdown to html. Use some hacks to change the generated html, so that text size
+// and style are consistent with phpBB:
+// - remove outer <p> wrapper
+// - use <br /><br /> for newlines
+handlebars_helper!(markdown: |md: Option<String>| {
+    match md {
+    Some(mut o) => {
+            o = o.replace("\n\n", "\\\n");
+            let mut comrak = comrak::ComrakOptions::default();
+            comrak.extension.autolink = true;
+            let mut x = comrak::markdown_to_html(&o, &comrak);
+            x = x.replace(r"<p>", "");
+            x = x.replace(r"</p>", "");
+            x = x.replace("<br />", "<br /><br />");
+            x
+    }
+        None => "".to_string()
+        }
+});
+
+handlebars_helper!(timestamp: |ts: NaiveDateTime| {
+    ts.format("%a %h %d, %Y %H:%M").to_string()
+});
 
 #[main]
 async fn main() -> Result<(), Error> {
@@ -29,7 +54,11 @@ async fn main() -> Result<(), Error> {
     }
 
     let template_fairing = Template::custom(|engines| {
-        engines.handlebars.set_strict_mode(true);
+        let reg = &mut engines.handlebars;
+        reg.set_strict_mode(true);
+
+        reg.register_helper("markdown", Box::new(markdown));
+        reg.register_helper("timestamp", Box::new(timestamp));
     });
 
     info!("Listening on http://127.0.0.1:8000");

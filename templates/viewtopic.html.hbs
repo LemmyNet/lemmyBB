@@ -70,7 +70,7 @@
                     <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{post.post_view.creator.name}}</a>							</dt>
 
                 <dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2&amp;sr=posts">?</a></dd>
-                <dd class="profile-joined"><strong>Joined:</strong> {{post.post_view.creator.published}}</dd>
+                <dd class="profile-joined"><strong>Joined:</strong> {{timestamp post.post_view.creator.published}}</dd>
             </dl>
 
             <div class="postbody">
@@ -90,9 +90,10 @@
                         <a class="unread" href="./viewtopic.php?p=1#p1" title="Post">
                             <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
                         </a>
-                        <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{post.post_view.creator.name}}</a></strong> &raquo; </span><time datetime="2019-12-31T14:34:17+00:00">Tue Dec 31, 2019 2:34 pm</time>
+                        <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{post.post_view.creator.name}}</a></strong> &raquo; </span>
+                        <time datetime="{{timestamp post.post_view.post.published}}">{{timestamp post.post_view.post.published}}</time>
                     </p>
-                    <div class="content">{{ post.post_view.post.body }}</div>
+                    <div class="content">{{{markdown post.post_view.post.body}}}</div>
                 </div>
             </div>
 
@@ -121,7 +122,8 @@
                     </div>
                     <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{this.creator.name}}</a>							</dt>
 
-                <dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2&amp;sr=posts">1</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Tue Dec 31, 2019 2:34 pm</dd>
+                <dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2&amp;sr=posts">1</a></dd>
+                <dd class="profile-joined"><strong>Joined:</strong> {{timestamp this.creator.published}}</dd>
             </dl>
 
             <div class="postbody">
@@ -141,9 +143,10 @@
                         <a class="unread" href="./viewtopic.php?p=1#p1" title="Post">
                             <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
                         </a>
-                        <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username-">{{this.creator.name}}</a></strong> &raquo; </span><time datetime="2019-12-31T14:34:17+00:00">Tue Dec 31, 2019 2:34 pm</time>
+                        <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username-">{{this.creator.name}}</a></strong> &raquo; </span>
+                        <time datetime="{{timestamp this.comment.published}}">{{timestamp this.comment.published}}</time>
                     </p>
-                    <div class="content">{{this.comment.content}}</div>
+                    <div class="content">{{{markdown this.comment.content}}}</div>
                 </div>
             </div>
 
