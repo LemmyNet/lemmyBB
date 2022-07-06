@@ -4,7 +4,7 @@ use lemmy_api_common::{
     person::{Login, LoginResponse},
     post::{GetPost, GetPostResponse, GetPosts, GetPostsResponse},
     sensitive::Sensitive,
-    site::GetSiteResponse,
+    site::{GetSite, GetSiteResponse},
 };
 use lemmy_db_schema::{newtypes::PostId, ListingType, SortType};
 use once_cell::sync::{Lazy, OnceCell};
@@ -32,40 +32,42 @@ fn gen_request_url(path: &str) -> String {
     )
 }
 
-pub async fn list_posts() -> Result<GetPostsResponse, Error> {
+pub async fn list_posts(auth: Option<Sensitive<String>>) -> Result<GetPostsResponse, Error> {
     let params = GetPosts {
         type_: Some(ListingType::Local),
         sort: Some(SortType::NewComments),
         limit: Some(20),
+        auth,
         ..Default::default()
     };
-    get("/post/list", Some(params)).await
+    get("/post/list", params).await
 }
 
-pub async fn get_post(id: i32) -> Result<GetPostResponse, Error> {
+pub async fn get_post(id: i32, auth: Option<Sensitive<String>>) -> Result<GetPostResponse, Error> {
     let params = GetPost {
         id: PostId(id),
-        auth: None,
+        auth,
     };
-    get("/post", Some(params)).await
+    get("/post", params).await
 }
 
 pub async fn create_comment(
     post_id: i32,
     content: String,
-    auth: &str,
+    auth: Sensitive<String>,
 ) -> Result<CommentResponse, Error> {
     let params = CreateComment {
         post_id: PostId(post_id),
         content,
-        auth: Sensitive::new(auth.to_string()),
+        auth,
         ..Default::default()
     };
-    post("/comment", Some(params)).await
+    post("/comment", params).await
 }
 
-pub async fn get_site() -> Result<GetSiteResponse, Error> {
-    get::<GetSiteResponse, ()>("/site", None).await
+pub async fn get_site(auth: Option<Sensitive<String>>) -> Result<GetSiteResponse, Error> {
+    let params = GetSite { auth };
+    get("/site", params).await
 }
 
 pub async fn login(username_or_email: &str, password: &str) -> Result<LoginResponse, Error> {
@@ -93,16 +95,12 @@ where
     Ok(serde_json::from_str(&res)?)
 }
 
-async fn get<T, Params>(path: &str, params: Option<Params>) -> Result<T, Error>
+async fn get<T, Params>(path: &str, params: Params) -> Result<T, Error>
 where
     T: DeserializeOwned,
     Params: Serialize + Debug,
 {
     info!("get {}, params {:?}", &path, &params);
-    let r = CLIENT.get(&gen_request_url(path));
-    let r = match params {
-        Some(p) => r.query(&p),
-        None => r,
-    };
+    let r = CLIENT.get(&gen_request_url(path)).query(&params);
     Ok(r.send().await?.json().await?)
 }

@@ -2,6 +2,7 @@ use crate::{
     api::{create_comment, get_post, get_site, list_posts, login, CLIENT},
     error::ErrorPage,
 };
+use lemmy_api_common::sensitive::Sensitive;
 use reqwest::header::HeaderName;
 use rocket::{
     form::Form,
@@ -11,18 +12,24 @@ use rocket::{
 use rocket_dyn_templates::{context, Template};
 use url::Url;
 
+fn auth(cookies: &CookieJar<'_>) -> Option<Sensitive<String>> {
+    cookies
+        .get("jwt")
+        .map(|c| Sensitive::new(c.value().to_string()))
+}
+
 #[get("/")]
-pub async fn view_forum() -> Result<Template, ErrorPage> {
-    let site = get_site().await?.site_view.unwrap();
-    let posts = list_posts().await?.posts;
+pub async fn view_forum(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = get_site(auth(cookies)).await?.site_view.unwrap();
+    let posts = list_posts(auth(cookies)).await?.posts;
     let ctx = context! { site, posts };
     Ok(Template::render("viewforum", ctx))
 }
 
 #[get("/viewtopic?<t>")]
-pub async fn view_topic(t: i32) -> Result<Template, ErrorPage> {
-    let site = get_site().await?.site_view.unwrap();
-    let mut post = get_post(t).await?;
+pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = get_site(auth(cookies)).await?.site_view.unwrap();
+    let mut post = get_post(t, auth(cookies)).await?;
 
     // show oldest comments first
     post.comments
@@ -49,8 +56,8 @@ pub async fn view_topic(t: i32) -> Result<Template, ErrorPage> {
 }
 
 #[get("/login")]
-pub async fn login_page() -> Result<Template, ErrorPage> {
-    let site = get_site().await?.site_view.unwrap();
+pub async fn login_page(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = get_site(auth(cookies)).await?.site_view.unwrap();
     Ok(Template::render("login", context!(site)))
 }
 
@@ -75,9 +82,9 @@ pub async fn do_login(
 }
 
 #[get("/posting?<t>")]
-pub async fn posting(t: i32) -> Result<Template, ErrorPage> {
-    let post = get_post(t).await?;
-    let site = get_site().await?.site_view.unwrap();
+pub async fn posting(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let post = get_post(t, auth(cookies)).await?;
+    let site = get_site(auth(cookies)).await?.site_view.unwrap();
     Ok(Template::render("posting", context!(site, post)))
 }
 
@@ -92,6 +99,6 @@ pub async fn do_post(
     form: Form<PostForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Redirect, ErrorPage> {
-    create_comment(t, form.message.clone(), cookies.get("jwt").unwrap().value()).await?;
+    create_comment(t, form.message.clone(), auth(cookies).unwrap()).await?;
     Ok(Redirect::to(uri!(view_topic(t))))
 }
