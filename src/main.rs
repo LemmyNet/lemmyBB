@@ -5,7 +5,10 @@ mod api;
 mod error;
 mod routes;
 
-use crate::{api::LEMMY_BACKEND, routes::do_post};
+use crate::{
+    api::LEMMY_BACKEND,
+    routes::{do_post, logout},
+};
 use anyhow::Error;
 use chrono::NaiveDateTime;
 use log::LevelFilter;
@@ -66,7 +69,7 @@ async fn main() -> Result<(), Error> {
         .attach(template_fairing)
         .mount(
             "/",
-            routes![view_forum, view_topic, login_page, do_login, posting, do_post],
+            routes![view_forum, view_topic, login_page, do_login, posting, do_post, logout],
         )
         .mount("/assets", FileServer::from(relative!("assets")))
         .launch()

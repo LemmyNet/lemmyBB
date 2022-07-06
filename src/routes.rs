@@ -20,7 +20,7 @@ fn auth(cookies: &CookieJar<'_>) -> Option<Sensitive<String>> {
 
 #[get("/")]
 pub async fn view_forum(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?.site_view.unwrap();
+    let site = get_site(auth(cookies)).await?;
     let posts = list_posts(auth(cookies)).await?.posts;
     let ctx = context! { site, posts };
     Ok(Template::render("viewforum", ctx))
@@ -28,7 +28,7 @@ pub async fn view_forum(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> 
 
 #[get("/viewtopic?<t>")]
 pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?.site_view.unwrap();
+    let site = get_site(auth(cookies)).await?;
     let mut post = get_post(t, auth(cookies)).await?;
 
     // show oldest comments first
@@ -57,7 +57,7 @@ pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, Err
 
 #[get("/login")]
 pub async fn login_page(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?.site_view.unwrap();
+    let site = get_site(auth(cookies)).await?;
     Ok(Template::render("login", context!(site)))
 }
 
@@ -83,8 +83,8 @@ pub async fn do_login(
 
 #[get("/posting?<t>")]
 pub async fn posting(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = get_site(auth(cookies)).await?;
     let post = get_post(t, auth(cookies)).await?;
-    let site = get_site(auth(cookies)).await?.site_view.unwrap();
     Ok(Template::render("posting", context!(site, post)))
 }
 
@@ -101,4 +101,11 @@ pub async fn do_post(
 ) -> Result<Redirect, ErrorPage> {
     create_comment(t, form.message.clone(), auth(cookies).unwrap()).await?;
     Ok(Redirect::to(uri!(view_topic(t))))
+}
+
+#[get("/logout")]
+pub async fn logout(cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
+    // simply delete the cookie
+    cookies.remove(Cookie::named("jwt"));
+    Ok(Redirect::to(uri!(view_forum)))
 }

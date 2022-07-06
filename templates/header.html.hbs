@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>{{ site.site.name }}</title>
+    <title>{{ site.site_view.site.name }}</title>
 
     <!--
         phpBB style name: prosilver
@@ -26,9 +26,9 @@
                     <a id="logo" class="logo" href="./" title="Board index">
                         <span class="site_logo"></span>
                     </a>
-                    <h1>{{ site.site.name }}</h1>
-                    {{#if site.site.description }}
-                        <p>{{ site.site.description }}</p>
+                    <h1>{{ site.site_view.site.name }}</h1>
+                    {{#if site.site_view.site.description }}
+                        <p>{{ site.site_view.site.description }}</p>
                     {{/if}}
                 </div>
 
@@ -72,12 +72,77 @@
                         <a href="/33x/app.php/help/faq" rel="help" title="Frequently Asked Questions" role="menuitem"> <i class="icon fa-question-circle fa-fw" aria-hidden="true"></i><span>FAQ</span> </a>
                     </li>
 
+                    {{#if site.my_user}}
+                            <li id="username_logged_in" class="rightside " data-skip-responsive="true">
+                                <div class="header-profile dropdown-container">
+                                    <a href="./ucp.php" class="header-avatar dropdown-trigger dropdown-toggle">
+                                        <span class="username">{{site.my_user.local_user_view.person.name}}</span>
+                                    </a>
+                                    <div class="dropdown">
+                                        <div class="pointer"><div class="pointer-inner"></div></div>
+                                        <ul class="dropdown-contents" role="menu">
+
+                                            <li>
+                                                <a href="./ucp.php" title="User Control Panel" role="menuitem">
+                                                    <i class="icon fa-sliders fa-fw" aria-hidden="true"></i><span>User Control Panel</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="./memberlist.php?mode=viewprofile&amp;u=2" title="Profile" role="menuitem">
+                                                    <i class="icon fa-user fa-fw" aria-hidden="true"></i><span>Profile</span>
+                                                </a>
+                                            </li>
+
+
+                                            <li class="separator"></li>
+                                            <li>
+                                                <a href="/logout" title="Logout" accesskey="x" role="menuitem">
+                                                    <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>Logout</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="rightside" data-skip-responsive="true">
+                                <a href="./ucp.php?i=pm&amp;folder=inbox" role="menuitem">
+                                    <i class="icon fa-inbox fa-fw" aria-hidden="true"></i><span>Private messages </span><strong class="badge hidden">0</strong>
+                                </a>
+                            </li>
+                            <li class="dropdown-container dropdown-right rightside" data-skip-responsive="true">
+                                <a href="./ucp.php?i=ucp_notifications" id="notification_list_button" class="dropdown-trigger dropdown-toggle">
+                                    <i class="icon fa-bell fa-fw" aria-hidden="true"></i><span>Notifications </span><strong class="badge hidden">0</strong>
+                                </a>
+                                <div id="notification_list" class="dropdown dropdown-extended notification_list">
+                                    <div class="pointer"><div class="pointer-inner"></div></div>
+                                    <div class="dropdown-contents">
+                                        <div class="header">
+                                            Notifications
+                                            <span class="header_settings">
+				<a href="./ucp.php?i=ucp_notifications&amp;mode=notification_options">Settings</a>
+							</span>
+                                        </div>
+
+                                        <ul>
+                                            <li class="no_notifications">
+                                                You have no notifications
+                                            </li>
+                                        </ul>
+
+                                        <div class="footer">
+                                            <a href="./ucp.php?i=ucp_notifications"><span>See All</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                    {{else}}
                     <li class="rightside" data-skip-responsive="true">
                         <a href="./login" title="Login" accesskey="x" role="menuitem"> <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>Login</span> </a>
                     </li>
                     <li class="rightside" data-skip-responsive="true">
                         <a href="./ucp.php?mode=register" role="menuitem"> <i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i><span>Register</span> </a>
                     </li>
+                    {{/if}}
                 </ul>
 
                 <ul id="nav-breadcrumbs" class="nav-breadcrumbs linklist navlinks" role="menubar">
