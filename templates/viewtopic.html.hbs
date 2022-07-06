@@ -97,8 +97,12 @@
                         {{#if post.post_view.post.url}}
                             {{#if is_image_url}}
                                 <img src="{{post.post_view.post.url}}" />
+                                <br />
+                                <br />
                             {{else}}
                                 <a href="{{post.post_view.post.url}}">{{post.post_view.post.url}}</a>
+                                <br />
+                                <br />
                             {{/if}}
                         {{/if}}
                         {{{markdown post.post_view.post.body}}}

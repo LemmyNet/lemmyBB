@@ -23,8 +23,19 @@ pub async fn view_forum() -> Result<Template, ErrorPage> {
 pub async fn view_topic(t: i32) -> Result<Template, ErrorPage> {
     let site = get_site().await?.site_view.unwrap();
     let mut post = get_post(t).await?;
+
+    // show oldest comments first
     post.comments
         .sort_by(|a, b| a.comment.published.cmp(&b.comment.published));
+
+    // simply ignore deleted/removed comments
+    post.comments = post
+        .comments
+        .into_iter()
+        .filter(|c| !c.comment.deleted && !c.comment.removed)
+        .collect();
+
+    // determine if post.url should be rendered as <img> or <a href>
     let mut is_image_url = false;
     if let Some(ref url) = post.post_view.post.url {
         // TODO: use HEAD request once that is supported by pictrs/lemmy
@@ -32,6 +43,7 @@ pub async fn view_topic(t: i32) -> Result<Template, ErrorPage> {
         let content_type = &image.headers()[HeaderName::from_static("content-type")];
         is_image_url = content_type.to_str()?.starts_with("image/");
     }
+
     let ctx = context! { site, post, is_image_url };
     Ok(Template::render("viewtopic", ctx))
 }

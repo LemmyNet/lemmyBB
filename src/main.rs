@@ -18,6 +18,7 @@ use std::env;
 // and style are consistent with phpBB:
 // - remove outer <p> wrapper
 // - use <br /><br /> for newlines
+// TODO: this currently breaks block quotes and maybe other things
 handlebars_helper!(markdown: |md: Option<String>| {
     match md {
     Some(mut o) => {
