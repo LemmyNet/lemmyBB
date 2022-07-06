@@ -1,5 +1,5 @@
 use crate::{
-    api::{get_post, get_site, list_posts, login, CLIENT},
+    api::{create_comment, get_post, get_site, list_posts, login, CLIENT},
     error::ErrorPage,
 };
 use reqwest::header::HeaderName;
@@ -72,4 +72,26 @@ pub async fn do_login(
         .into_inner();
     cookies.add(Cookie::new("jwt", jwt));
     Ok(Redirect::to(uri!(view_forum)))
+}
+
+#[get("/posting?<t>")]
+pub async fn posting(t: i32) -> Result<Template, ErrorPage> {
+    let post = get_post(t).await?;
+    let site = get_site().await?.site_view.unwrap();
+    Ok(Template::render("posting", context!(site, post)))
+}
+
+#[derive(FromForm)]
+pub struct PostForm {
+    message: String,
+}
+
+#[post("/do_post?<t>", data = "<form>")]
+pub async fn do_post(
+    t: i32,
+    form: Form<PostForm>,
+    cookies: &CookieJar<'_>,
+) -> Result<Redirect, ErrorPage> {
+    create_comment(t, form.message.clone(), cookies.get("jwt").unwrap().value()).await?;
+    Ok(Redirect::to(uri!(view_topic(t))))
 }

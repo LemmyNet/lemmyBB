@@ -5,13 +5,13 @@ mod api;
 mod error;
 mod routes;
 
-use crate::api::LEMMY_BACKEND;
+use crate::{api::LEMMY_BACKEND, routes::do_post};
 use anyhow::Error;
 use chrono::NaiveDateTime;
-use log::{info, LevelFilter};
+use log::LevelFilter;
 use rocket::fs::{relative, FileServer};
 use rocket_dyn_templates::{handlebars::handlebars_helper, Template};
-use routes::{do_login, login_page, view_forum, view_topic};
+use routes::{do_login, login_page, posting, view_forum, view_topic};
 use std::env;
 
 // Converts markdown to html. Use some hacks to change the generated html, so that text size
@@ -62,10 +62,12 @@ async fn main() -> Result<(), Error> {
         reg.register_helper("timestamp", Box::new(timestamp));
     });
 
-    info!("Listening on http://127.0.0.1:8000");
     let _ = rocket::build()
         .attach(template_fairing)
-        .mount("/", routes![view_forum, view_topic, login_page, do_login])
+        .mount(
+            "/",
+            routes![view_forum, view_topic, login_page, do_login, posting, do_post],
+        )
         .mount("/assets", FileServer::from(relative!("assets")))
         .launch()
         .await?;

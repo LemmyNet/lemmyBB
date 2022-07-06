@@ -1,5 +1,6 @@
 use anyhow::Error;
 use lemmy_api_common::{
+    comment::{CommentResponse, CreateComment},
     person::{Login, LoginResponse},
     post::{GetPost, GetPostResponse, GetPosts, GetPostsResponse},
     sensitive::Sensitive,
@@ -47,6 +48,20 @@ pub async fn get_post(id: i32) -> Result<GetPostResponse, Error> {
         auth: None,
     };
     get("/post", Some(params)).await
+}
+
+pub async fn create_comment(
+    post_id: i32,
+    content: String,
+    auth: &str,
+) -> Result<CommentResponse, Error> {
+    let params = CreateComment {
+        post_id: PostId(post_id),
+        content,
+        auth: Sensitive::new(auth.to_string()),
+        ..Default::default()
+    };
+    post("/comment", Some(params)).await
 }
 
 pub async fn get_site() -> Result<GetSiteResponse, Error> {
