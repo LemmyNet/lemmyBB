@@ -3,15 +3,13 @@
 <a id="start_here" class="anchor"></a>
 <div id="page-body" class="page-body" role="main">
 
-
+    {{#unless post}}
+    <form id="postform" method="post" action="./do_post">
+    {{else}}
     <h2 class="posting-title"><a href="./viewtopic?t={{post.post_view.post.id}}">{{post.post_view.post.name}}</a></h2>
 
-
-    <form id="postform" method="post" action="./do_post?t={{post.post_view.post.id}}">
-
-
-
-
+    <form id="postform" method="post" action="./do_comment?t={{post.post_view.post.id}}">
+    {{/unless}}
 
         <div class="panel" id="postingbox">
             <div class="inner">
@@ -33,14 +31,21 @@
 
 
 
+                    {{#unless post}}
                     <dl style="clear: left;">
                         <dt><label for="subject">Subject:</label></dt>
                         <dd>
-                            <input type="text" name="subject" id="subject" size="45" maxlength="124" tabindex="2" value="Re: test attach" class="inputbox autowidth" />
+                            <input type="text" name="subject" id="subject" size="45" maxlength="124" tabindex="2" class="inputbox autowidth" />
                         </dd>
                     </dl>
 
-
+                    <dl style="clear: left;">
+                        <dt><label for="subject">Community:</label></dt>
+                        <dd>
+                            <input type="text" name="community_name" id="community_name" size="45" maxlength="124" tabindex="2" placeholder="startrek@lemmy.ml" class="inputbox autowidth" />
+                        </dd>
+                    </dl>
+                    {{/unless}}
 
                     <script>
 	var form_name = 'postform';

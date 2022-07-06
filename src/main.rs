@@ -7,14 +7,23 @@ mod routes;
 
 use crate::{
     api::LEMMY_BACKEND,
-    routes::{do_post, logout},
+    routes::{
+        comment,
+        do_comment,
+        do_login,
+        do_post,
+        login_page,
+        logout,
+        post,
+        view_forum,
+        view_topic,
+    },
 };
 use anyhow::Error;
 use chrono::NaiveDateTime;
 use log::LevelFilter;
 use rocket::fs::{relative, FileServer};
 use rocket_dyn_templates::{handlebars::handlebars_helper, Template};
-use routes::{do_login, login_page, posting, view_forum, view_topic};
 use std::env;
 
 // Converts markdown to html. Use some hacks to change the generated html, so that text size
@@ -69,7 +78,10 @@ async fn main() -> Result<(), Error> {
         .attach(template_fairing)
         .mount(
             "/",
-            routes![view_forum, view_topic, login_page, do_login, posting, do_post, logout],
+            routes![
+                view_forum, view_topic, login_page, do_login, post, do_post, comment, do_comment,
+                logout
+            ],
         )
         .mount("/assets", FileServer::from(relative!("assets")))
         .launch()

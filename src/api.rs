@@ -1,12 +1,17 @@
 use anyhow::Error;
 use lemmy_api_common::{
     comment::{CommentResponse, CreateComment},
+    community::{GetCommunity, GetCommunityResponse},
     person::{Login, LoginResponse},
-    post::{GetPost, GetPostResponse, GetPosts, GetPostsResponse},
+    post::{CreatePost, GetPost, GetPostResponse, GetPosts, GetPostsResponse, PostResponse},
     sensitive::Sensitive,
     site::{GetSite, GetSiteResponse},
 };
-use lemmy_db_schema::{newtypes::PostId, ListingType, SortType};
+use lemmy_db_schema::{
+    newtypes::{CommunityId, PostId},
+    ListingType,
+    SortType,
+};
 use once_cell::sync::{Lazy, OnceCell};
 use reqwest::Client;
 use serde::{de::DeserializeOwned, Serialize};
@@ -51,6 +56,22 @@ pub async fn get_post(id: i32, auth: Option<Sensitive<String>>) -> Result<GetPos
     get("/post", params).await
 }
 
+pub async fn create_post(
+    name: String,
+    body: String,
+    community_id: CommunityId,
+    auth: Sensitive<String>,
+) -> Result<PostResponse, Error> {
+    let params = CreatePost {
+        name,
+        body: Some(body),
+        community_id,
+        auth,
+        ..Default::default()
+    };
+    post("/post", params).await
+}
+
 pub async fn create_comment(
     post_id: i32,
     content: String,
@@ -68,6 +89,18 @@ pub async fn create_comment(
 pub async fn get_site(auth: Option<Sensitive<String>>) -> Result<GetSiteResponse, Error> {
     let params = GetSite { auth };
     get("/site", params).await
+}
+
+pub async fn get_community(
+    name: String,
+    auth: Option<Sensitive<String>>,
+) -> Result<GetCommunityResponse, Error> {
+    let params = GetCommunity {
+        name: Some(name),
+        auth,
+        ..Default::default()
+    };
+    get("/community", params).await
 }
 
 pub async fn login(username_or_email: &str, password: &str) -> Result<LoginResponse, Error> {

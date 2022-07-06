@@ -1,5 +1,14 @@
 use crate::{
-    api::{create_comment, get_post, get_site, list_posts, login, CLIENT},
+    api::{
+        create_comment,
+        create_post,
+        get_community,
+        get_post,
+        get_site,
+        list_posts,
+        login,
+        CLIENT,
+    },
     error::ErrorPage,
 };
 use lemmy_api_common::sensitive::Sensitive;
@@ -81,22 +90,48 @@ pub async fn do_login(
     Ok(Redirect::to(uri!(view_forum)))
 }
 
-#[get("/posting?<t>")]
-pub async fn posting(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+#[get("/post")]
+pub async fn post(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let site = get_site(auth(cookies)).await?;
-    let post = get_post(t, auth(cookies)).await?;
-    Ok(Template::render("posting", context!(site, post)))
+    Ok(Template::render("editor", context!(site)))
 }
 
 #[derive(FromForm)]
 pub struct PostForm {
+    subject: String,
+    message: String,
+    community_name: String,
+}
+
+#[post("/do_post", data = "<form>")]
+pub async fn do_post(form: Form<PostForm>, cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
+    let community = get_community(form.community_name.clone(), auth(cookies)).await?;
+    let post = create_post(
+        form.subject.clone(),
+        form.message.clone(),
+        community.community_view.community.id,
+        auth(cookies).unwrap(),
+    )
+    .await?;
+    Ok(Redirect::to(uri!(view_topic(post.post_view.post.id.0))))
+}
+
+#[get("/comment?<t>")]
+pub async fn comment(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = get_site(auth(cookies)).await?;
+    let post = get_post(t, auth(cookies)).await?;
+    Ok(Template::render("editor", context!(site, post)))
+}
+
+#[derive(FromForm)]
+pub struct CommentForm {
     message: String,
 }
 
-#[post("/do_post?<t>", data = "<form>")]
-pub async fn do_post(
+#[post("/do_comment?<t>", data = "<form>")]
+pub async fn do_comment(
     t: i32,
-    form: Form<PostForm>,
+    form: Form<CommentForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Redirect, ErrorPage> {
     create_comment(t, form.message.clone(), auth(cookies).unwrap()).await?;
