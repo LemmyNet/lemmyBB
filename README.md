@@ -1,4 +1,5 @@
 # lemmyBB
+[![Build Status](https://cloud.drone.io/api/badges/LemmyNet/activitypub-federation-rust/status.svg)](https://cloud.drone.io/Nutomic/lemmyBB)
 
 A Lemmy frontend inspired by [phpBB](https://www.phpbb.com/).
 
