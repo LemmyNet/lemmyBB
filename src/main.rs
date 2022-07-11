@@ -28,6 +28,38 @@ use rocket::{
 use rocket_dyn_templates::{handlebars::handlebars_helper, Template};
 use std::env;
 
+#[main]
+async fn main() -> Result<(), Error> {
+    env_logger::builder()
+        .filter_level(LevelFilter::Warn)
+        .filter(Some("lemmy_bb"), LevelFilter::Debug)
+        .filter(Some("rocket"), LevelFilter::Info)
+        .init();
+    let _ = init_rocket().launch().await?;
+    Ok(())
+}
+
+fn init_rocket() -> Rocket<Build> {
+    let template_fairing = Template::custom(|engines| {
+        let reg = &mut engines.handlebars;
+        reg.set_strict_mode(true);
+
+        reg.register_helper("markdown", Box::new(markdown));
+        reg.register_helper("timestamp", Box::new(timestamp));
+    });
+
+    rocket::build()
+        .attach(template_fairing)
+        .mount(
+            "/",
+            routes![
+                view_forum, view_topic, login_page, do_login, post, do_post, comment, do_comment,
+                logout
+            ],
+        )
+        .mount("/assets", FileServer::from(relative!("assets")))
+}
+
 // Converts markdown to html. Use some hacks to change the generated html, so that text size
 // and style are consistent with phpBB:
 // - remove outer <p> wrapper
@@ -52,36 +84,3 @@ handlebars_helper!(markdown: |md: Option<String>| {
 handlebars_helper!(timestamp: |ts: NaiveDateTime| {
     ts.format("%a %h %d, %Y %H:%M").to_string()
 });
-
-fn init_rocket() -> Rocket<Build> {
-    let template_fairing = Template::custom(|engines| {
-        let reg = &mut engines.handlebars;
-        reg.set_strict_mode(true);
-
-        reg.register_helper("markdown", Box::new(markdown));
-        reg.register_helper("timestamp", Box::new(timestamp));
-    });
-
-    rocket::build()
-        .attach(template_fairing)
-        .mount(
-            "/",
-            routes![
-                view_forum, view_topic, login_page, do_login, post, do_post, comment, do_comment,
-                logout
-            ],
-        )
-        .mount("/assets", FileServer::from(relative!("assets")))
-}
-
-#[main]
-async fn main() -> Result<(), Error> {
-    env_logger::builder()
-        .filter_level(LevelFilter::Warn)
-        .filter(Some("lemmy_bb"), LevelFilter::Debug)
-        .filter(Some("rocket"), LevelFilter::Info)
-        .init();
-
-    let _ = init_rocket().launch().await?;
-    Ok(())
-}
