@@ -12,14 +12,13 @@ use lemmy_db_schema::{
     ListingType,
     SortType,
 };
-use once_cell::sync::{Lazy, OnceCell};
+use once_cell::sync::Lazy;
 use reqwest::Client;
 use serde::{de::DeserializeOwned, Serialize};
-use std::{fmt::Debug, time::Duration};
+use std::{env, fmt::Debug, time::Duration};
 
 static LEMMY_API_VERSION: &str = "/api/v3";
 
-pub static LEMMY_BACKEND: OnceCell<String> = OnceCell::new();
 pub static CLIENT: Lazy<Client> = Lazy::new(|| {
     Client::builder()
         .timeout(Duration::from_secs(5))
@@ -29,12 +28,10 @@ pub static CLIENT: Lazy<Client> = Lazy::new(|| {
 });
 
 fn gen_request_url(path: &str) -> String {
-    format!(
-        "{}{}{}",
-        LEMMY_BACKEND.get().unwrap(),
-        LEMMY_API_VERSION,
-        path
-    )
+    let lemmy_backend = env::var("LEMMY_INTERNAL_HOST")
+        .unwrap_or_else(|_| panic!("LEMMY_INTERNAL_HOST environment variable is required"));
+
+    format!("{}{}{}", lemmy_backend, LEMMY_API_VERSION, path)
 }
 
 pub async fn list_posts(auth: Option<Sensitive<String>>) -> Result<GetPostsResponse, Error> {

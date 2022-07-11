@@ -4,25 +4,27 @@ extern crate rocket;
 mod api;
 mod error;
 mod routes;
+mod test;
 
-use crate::{
-    api::LEMMY_BACKEND,
-    routes::{
-        comment,
-        do_comment,
-        do_login,
-        do_post,
-        login_page,
-        logout,
-        post,
-        view_forum,
-        view_topic,
-    },
+use crate::routes::{
+    comment,
+    do_comment,
+    do_login,
+    do_post,
+    login_page,
+    logout,
+    post,
+    view_forum,
+    view_topic,
 };
 use anyhow::Error;
 use chrono::NaiveDateTime;
 use log::LevelFilter;
-use rocket::fs::{relative, FileServer};
+use rocket::{
+    fs::{relative, FileServer},
+    Build,
+    Rocket,
+};
 use rocket_dyn_templates::{handlebars::handlebars_helper, Template};
 use std::env;
 
@@ -51,21 +53,7 @@ handlebars_helper!(timestamp: |ts: NaiveDateTime| {
     ts.format("%a %h %d, %Y %H:%M").to_string()
 });
 
-#[main]
-async fn main() -> Result<(), Error> {
-    env_logger::builder()
-        .filter_level(LevelFilter::Warn)
-        .filter(Some("lemmy_bb"), LevelFilter::Debug)
-        .filter(Some("rocket"), LevelFilter::Info)
-        .init();
-
-    //create_test_items().await?;
-
-    match env::var("LEMMY_INTERNAL_HOST") {
-        Ok(o) => LEMMY_BACKEND.set(o).unwrap(),
-        Err(_) => panic!("LEMMY_INTERNAL_HOST environment variable is required"),
-    }
-
+fn init_rocket() -> Rocket<Build> {
     let template_fairing = Template::custom(|engines| {
         let reg = &mut engines.handlebars;
         reg.set_strict_mode(true);
@@ -74,7 +62,7 @@ async fn main() -> Result<(), Error> {
         reg.register_helper("timestamp", Box::new(timestamp));
     });
 
-    let _ = rocket::build()
+    rocket::build()
         .attach(template_fairing)
         .mount(
             "/",
@@ -84,7 +72,16 @@ async fn main() -> Result<(), Error> {
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets")))
-        .launch()
-        .await?;
+}
+
+#[main]
+async fn main() -> Result<(), Error> {
+    env_logger::builder()
+        .filter_level(LevelFilter::Warn)
+        .filter(Some("lemmy_bb"), LevelFilter::Debug)
+        .filter(Some("rocket"), LevelFilter::Info)
+        .init();
+
+    let _ = init_rocket().launch().await?;
     Ok(())
 }
