@@ -1,8 +1,8 @@
 use crate::init_rocket;
 use log::LevelFilter;
 use rocket::{http::uri::Origin, local::blocking::Client};
-use std::env;
 use serial_test::serial;
+use std::env;
 
 #[ctor::ctor]
 fn init() {
