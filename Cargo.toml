@@ -21,4 +21,5 @@ chrono = "0.4.19"
 url = "2.2.2"
 
 [dev-dependencies]
+serial_test = "0.6.0"
 ctor = "0.1.22"

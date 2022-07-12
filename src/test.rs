@@ -2,6 +2,7 @@ use crate::init_rocket;
 use log::LevelFilter;
 use rocket::{http::uri::Origin, local::blocking::Client};
 use std::env;
+use serial_test::serial;
 
 #[ctor::ctor]
 fn init() {
@@ -17,26 +18,31 @@ fn test_with_uri(uri: Origin) {
 }
 
 #[test]
+#[serial]
 fn test_viewforum() {
     test_with_uri(uri!("/"))
 }
 
 #[test]
+#[serial]
 fn test_viewtopic() {
     test_with_uri(uri!("/viewtopic?t=360976"))
 }
 
 #[test]
+#[serial]
 fn test_login() {
     test_with_uri(uri!("/login"))
 }
 
 #[test]
+#[serial]
 fn test_post() {
     test_with_uri(uri!("/post"))
 }
 
 #[test]
+#[serial]
 fn test_comment() {
     test_with_uri(uri!("/comment?t=360976"))
 }
