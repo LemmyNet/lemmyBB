@@ -4,6 +4,7 @@ extern crate rocket;
 mod api;
 mod error;
 mod routes;
+#[cfg(test)]
 mod test;
 
 use crate::routes::{
