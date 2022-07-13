@@ -4,29 +4,32 @@ extern crate rocket;
 mod api;
 mod error;
 mod routes;
+mod template_helpers;
 #[cfg(test)]
 mod test;
 
-use crate::routes::{
-    comment,
-    do_comment,
-    do_login,
-    do_post,
-    login_page,
-    logout,
-    post,
-    view_forum,
-    view_topic,
+use crate::{
+    routes::{
+        comment,
+        do_comment,
+        do_login,
+        do_post,
+        login_page,
+        logout,
+        post,
+        view_forum,
+        view_topic,
+    },
+    template_helpers::{handlebars_helper_vec_length, markdown, modulo, sum, timestamp},
 };
 use anyhow::Error;
-use chrono::NaiveDateTime;
 use log::LevelFilter;
 use rocket::{
     fs::{relative, FileServer},
     Build,
     Rocket,
 };
-use rocket_dyn_templates::{handlebars::handlebars_helper, Template};
+use rocket_dyn_templates::Template;
 use std::env;
 
 #[main]
@@ -47,6 +50,9 @@ fn init_rocket() -> Rocket<Build> {
 
         reg.register_helper("markdown", Box::new(markdown));
         reg.register_helper("timestamp", Box::new(timestamp));
+        reg.register_helper("sum", Box::new(sum));
+        reg.register_helper("mod", Box::new(modulo));
+        reg.register_helper("length", Box::new(handlebars_helper_vec_length));
     });
 
     rocket::build()
@@ -60,28 +66,3 @@ fn init_rocket() -> Rocket<Build> {
         )
         .mount("/assets", FileServer::from(relative!("assets")))
 }
-
-// Converts markdown to html. Use some hacks to change the generated html, so that text size
-// and style are consistent with phpBB:
-// - remove outer <p> wrapper
-// - use <br /><br /> for newlines
-// TODO: this currently breaks block quotes and maybe other things
-handlebars_helper!(markdown: |md: Option<String>| {
-    match md {
-    Some(mut o) => {
-            o = o.replace("\n\n", "\\\n");
-            let mut comrak = comrak::ComrakOptions::default();
-            comrak.extension.autolink = true;
-            let mut x = comrak::markdown_to_html(&o, &comrak);
-            x = x.replace(r"<p>", "");
-            x = x.replace(r"</p>", "");
-            x = x.replace("<br />", "<br /><br />");
-            x
-    }
-        None => "".to_string()
-        }
-});
-
-handlebars_helper!(timestamp: |ts: NaiveDateTime| {
-    ts.format("%a %h %d, %Y %H:%M").to_string()
-});

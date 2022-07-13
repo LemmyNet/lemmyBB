@@ -50,7 +50,7 @@
         </div>
 
         <div class="pagination">
-            1 post
+            {{length post.comments}} comments
             &bull; Page <strong>1</strong> of <strong>1</strong>
         </div>
     </div>
@@ -121,10 +121,10 @@
     </div>
 
     {{#each post.comments}}
-    <div id="p2" class="post has-profile bg2">
+    <div id="p{{sum @index 2}}" class="post has-profile bg{{sum (mod @index 2) 1}}">
         <div class="inner">
 
-            <dl class="postprofile" id="profile1">
+            <dl class="postprofile">
                 <dt class="has-profile-rank">
                     <div class="avatar-container">
                         {{#if this.creator.avatar}}
@@ -140,27 +140,24 @@
             </dl>
 
             <div class="postbody">
-                <div id="post_content2">
-
-                    <h3>
-                        <a href="./viewtopic?p={{this.post.id}}#p1">{{this.post.name}}</a>
-                    </h3>
-                    <ul class="post-buttons">
-                        <li>
-                            <a href="./posting.php?mode=quote&amp;p=1" title="Reply with quote" class="button button-icon-only">
-                                <i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <p class="author">
-                        <a class="unread" href="./viewtopic.php?p=1#p1" title="Post">
-                            <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+                <h3>
+                    <a href="./viewtopic?p={{this.post.id}}#p1">{{this.post.name}}</a>
+                </h3>
+                <ul class="post-buttons">
+                    <li>
+                        <a href="./posting.php?mode=quote&amp;p=1" title="Reply with quote" class="button button-icon-only">
+                            <i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
                         </a>
-                        <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username-">{{this.creator.name}}</a></strong> &raquo; </span>
-                        <time datetime="{{timestamp this.comment.published}}">{{timestamp this.comment.published}}</time>
-                    </p>
-                    <div class="content">{{{markdown this.comment.content}}}</div>
-                </div>
+                    </li>
+                </ul>
+                <p class="author">
+                    <a class="unread" href="./viewtopic.php?p=1#p1" title="Post">
+                        <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+                    </a>
+                    <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username-">{{this.creator.name}}</a></strong> &raquo; </span>
+                    <time datetime="{{timestamp this.comment.published}}">{{timestamp this.comment.published}}</time>
+                </p>
+                <div class="content">{{{markdown this.comment.content}}}</div>
             </div>
 
             <div class="back2top">
@@ -176,7 +173,7 @@
 
     <div class="action-bar bar-bottom">
 
-        <a href="./comment?t={{ post.post_view.post.id }}" class="button" title="Post a reply">
+        <a href="./comment?t={{post.post_view.post.id}}" class="button" title="Post a reply">
             <span>Post Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
         </a>
 
@@ -198,7 +195,7 @@
         </div>
 
         <div class="pagination">
-            1 post
+            {{length post.comments}} comments
             &bull; Page <strong>1</strong> of <strong>1</strong>
         </div>
     </div>

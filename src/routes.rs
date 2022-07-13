@@ -31,6 +31,7 @@ fn auth(cookies: &CookieJar<'_>) -> Option<Sensitive<String>> {
 pub async fn view_forum(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let site = get_site(auth(cookies)).await?;
     let posts = list_posts(auth(cookies)).await?.posts;
+    posts.len();
     let ctx = context! { site, posts };
     Ok(Template::render("viewforum", ctx))
 }
