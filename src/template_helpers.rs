@@ -55,9 +55,9 @@ pub fn handlebars_helper_vec_length(
         .as_ref()
         .and_then(|v| v.value().as_array())
         .map(|arr| arr.len())
-        .ok_or_else(|| RenderError::new(
-            "Param 0 with 'array' type is required for array_length helper",
-        ))?;
+        .ok_or_else(|| {
+            RenderError::new("Param 0 with 'array' type is required for array_length helper")
+        })?;
 
     out.write(length.to_string().as_ref())?;
 
