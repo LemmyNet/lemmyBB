@@ -1,145 +1,142 @@
 {{> header }}
 
-            <a id="start_here" class="anchor"></a>
-            <div id="page-body" class="page-body" role="main">
-                <p>
-                    {{{markdown site.site_view.site.sidebar}}}
-                </p>
+<p>
+    {{{markdown site.site_view.site.sidebar}}}
+</p>
 
-                <div class="action-bar bar-top">
-                    <a href="./post" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
+<div class="action-bar bar-top">
+    <a href="./post" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
-                    <div class="search-box" role="search">
-                        <form method="get" id="forum-search" action="./search.php">
-                            <fieldset>
-                                <input class="inputbox search tiny" type="search" name="keywords" id="search_keywords" size="20" placeholder="Search this forum…" />
-                                <button class="button button-search" type="submit" title="Search"><i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span></button>
-                                <a href="./search.php?fid%5B%5D=2" class="button button-search-end" title="Advanced search"> <i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">Advanced search</span> </a>
-                                <input type="hidden" name="fid[0]" value="2" />
-                            </fieldset>
-                        </form>
-                    </div>
+    <div class="search-box" role="search">
+        <form method="get" id="forum-search" action="./search.php">
+            <fieldset>
+                <input class="inputbox search tiny" type="search" name="keywords" id="search_keywords" size="20" placeholder="Search this forum…" />
+                <button class="button button-search" type="submit" title="Search"><i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span></button>
+                <a href="./search.php?fid%5B%5D=2" class="button button-search-end" title="Advanced search"> <i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">Advanced search</span> </a>
+                <input type="hidden" name="fid[0]" value="2" />
+            </fieldset>
+        </form>
+    </div>
 
-                    <div class="pagination">{{length posts}} posts &bull; Page <strong>1</strong> of <strong>1</strong></div>
-                </div>
+    <div class="pagination">{{length posts}} posts &bull; Page <strong>1</strong> of <strong>1</strong></div>
+</div>
 
-                <div class="forumbg">
-                    <div class="inner">
-                        <ul class="topiclist">
-                            <li class="header">
-                                <dl class="row-item">
-                                    <dt><div class="list-inner">Topics</div></dt>
-                                    <dd class="posts">Replies</dd>
-                                    <dd class="lastpost"><span>Last post</span></dd>
-                                </dl>
-                            </li>
-                        </ul>
-                        <ul class="topiclist topics">
-                            {{#each posts}}
-                            <li class="row bg1">
-                                <dl class="row-item topic_read">
-                                    <dt title="No unread posts">
-                                        <div class="list-inner">
-                                            <a href="./viewtopic?t={{this.post.id}}" class="topictitle">{{ this.post.name }}</a> <br />
+<div class="forumbg">
+    <div class="inner">
+        <ul class="topiclist">
+            <li class="header">
+                <dl class="row-item">
+                    <dt><div class="list-inner">Topics</div></dt>
+                    <dd class="posts">Replies</dd>
+                    <dd class="lastpost"><span>Last post</span></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="topiclist topics">
+            {{#each posts}}
+            <li class="row bg1">
+                <dl class="row-item topic_read">
+                    <dt title="No unread posts">
+                        <div class="list-inner">
+                            <a href="./viewtopic?t={{this.post.id}}" class="topictitle">{{ this.post.name }}</a> <br />
 
-                                            <div class="topic-poster left-box">
-                                                by <a href="./memberlist.php?mode=viewprofile&amp;u=2">{{ this.creator.name }}</a> &raquo;
-                                                <time datetime="{{timestamp this.post.published }}">{{timestamp this.post.published }}</time>
-                                            </div>
-                                        </div>
-                                    </dt>
-                                    <dd class="posts">{{ this.counts.comments }}<dfn>Replies</dfn></dd>
-                                    <dd class="lastpost">
-                                        <span>
-                                            <dfn>Last post </dfn>by <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">?</a>
-                                            <a href="./viewtopic?t={{this.post.id}}#p{{sum this.counts.comments 1}}" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
-                                            <time datetime="2019-12-31T14:34:17+00:00">?</time>
-                                        </span>
-                                    </dd>
-                                </dl>
-                            </li>
-                            {{/each}}
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="action-bar bar-bottom">
-                    <a href="./post" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
-
-                    <form method="post" action="./viewforum.php?f=2">
-                        <div class="dropdown-container dropdown-container-left dropdown-button-control sort-tools">
-                            <span title="Display and sorting options" class="button button-secondary dropdown-trigger dropdown-select">
-                                <i class="icon fa-sort-amount-asc fa-fw" aria-hidden="true"></i>
-                                <span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
-                            </span>
-                            <div class="dropdown hidden">
-                                <div class="pointer"><div class="pointer-inner"></div></div>
-                                <div class="dropdown-contents">
-                                    <fieldset class="display-options">
-                                        <label>
-                                            Display:
-                                            <select name="st" id="st">
-                                                <option value="0" selected="selected">All Topics</option>
-                                                <option value="1">1 day</option>
-                                                <option value="7">7 days</option>
-                                                <option value="14">2 weeks</option>
-                                                <option value="30">1 month</option>
-                                                <option value="90">3 months</option>
-                                                <option value="180">6 months</option>
-                                                <option value="365">1 year</option>
-                                            </select>
-                                        </label>
-                                        <label>
-                                            Sort by:
-                                            <select name="sk" id="sk">
-                                                <option value="a">Author</option>
-                                                <option value="t" selected="selected">Post time</option>
-                                                <option value="r">Replies</option>
-                                                <option value="s">Subject</option>
-                                                <option value="v">Views</option>
-                                            </select>
-                                        </label>
-                                        <label>
-                                            Direction:
-                                            <select name="sd" id="sd">
-                                                <option value="a">Ascending</option>
-                                                <option value="d" selected="selected">Descending</option>
-                                            </select>
-                                        </label>
-                                        <hr class="dashed" />
-                                        <input type="submit" class="button2" name="sort" value="Go" />
-                                    </fieldset>
-                                </div>
+                            <div class="topic-poster left-box">
+                                by <a href="./memberlist.php?mode=viewprofile&amp;u=2">{{ this.creator.name }}</a> &raquo;
+                                <time datetime="{{timestamp this.post.published }}">{{timestamp this.post.published }}</time>
                             </div>
                         </div>
-                    </form>
-
-                    <div class="pagination">{{length posts}} posts &bull; Page <strong>1</strong> of <strong>1</strong></div>
-                </div>
-
-                <div class="action-bar actions-jump">
-                    <p class="jumpbox-return">
-                        <a href="./index.php" class="left-box arrow-left" accesskey="r"> <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to Board Index</span> </a>
-                    </p>
-
-                    <div class="jumpbox dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">
-                        <span title="Jump to" class="button button-secondary dropdown-trigger dropdown-select">
-                            <span>Jump to</span>
-                            <span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+                    </dt>
+                    <dd class="posts">{{ this.counts.comments }}<dfn>Replies</dfn></dd>
+                    <dd class="lastpost">
+                        <span>
+                            <dfn>Last post </dfn>by <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">?</a>
+                            <a href="./viewtopic?t={{this.post.id}}#p{{sum this.counts.comments 1}}" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
+                            <time datetime="2019-12-31T14:34:17+00:00">?</time>
                         </span>
-                        <div class="dropdown">
-                            <div class="pointer"><div class="pointer-inner"></div></div>
-                            <ul class="dropdown-contents">
-                                <li>
-                                    <a href="./viewforum.php?f=1" class="jumpbox-cat-link"> <span> Your first category</span></a>
-                                </li>
-                                <li>
-                                    <a href="./viewforum.php?f=2" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Your first forum</span></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    </dd>
+                </dl>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</div>
+
+<div class="action-bar bar-bottom">
+    <a href="./post" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
+
+    <form method="post" action="./viewforum.php?f=2">
+        <div class="dropdown-container dropdown-container-left dropdown-button-control sort-tools">
+            <span title="Display and sorting options" class="button button-secondary dropdown-trigger dropdown-select">
+                <i class="icon fa-sort-amount-asc fa-fw" aria-hidden="true"></i>
+                <span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+            </span>
+            <div class="dropdown hidden">
+                <div class="pointer"><div class="pointer-inner"></div></div>
+                <div class="dropdown-contents">
+                    <fieldset class="display-options">
+                        <label>
+                            Display:
+                            <select name="st" id="st">
+                                <option value="0" selected="selected">All Topics</option>
+                                <option value="1">1 day</option>
+                                <option value="7">7 days</option>
+                                <option value="14">2 weeks</option>
+                                <option value="30">1 month</option>
+                                <option value="90">3 months</option>
+                                <option value="180">6 months</option>
+                                <option value="365">1 year</option>
+                            </select>
+                        </label>
+                        <label>
+                            Sort by:
+                            <select name="sk" id="sk">
+                                <option value="a">Author</option>
+                                <option value="t" selected="selected">Post time</option>
+                                <option value="r">Replies</option>
+                                <option value="s">Subject</option>
+                                <option value="v">Views</option>
+                            </select>
+                        </label>
+                        <label>
+                            Direction:
+                            <select name="sd" id="sd">
+                                <option value="a">Ascending</option>
+                                <option value="d" selected="selected">Descending</option>
+                            </select>
+                        </label>
+                        <hr class="dashed" />
+                        <input type="submit" class="button2" name="sort" value="Go" />
+                    </fieldset>
                 </div>
             </div>
+        </div>
+    </form>
+
+    <div class="pagination">{{length posts}} posts &bull; Page <strong>1</strong> of <strong>1</strong></div>
+</div>
+
+<div class="action-bar actions-jump">
+    <p class="jumpbox-return">
+        <a href="./index.php" class="left-box arrow-left" accesskey="r"> <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to Board Index</span> </a>
+    </p>
+
+    <div class="jumpbox dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">
+        <span title="Jump to" class="button button-secondary dropdown-trigger dropdown-select">
+            <span>Jump to</span>
+            <span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+        </span>
+        <div class="dropdown">
+            <div class="pointer"><div class="pointer-inner"></div></div>
+            <ul class="dropdown-contents">
+                <li>
+                    <a href="./viewforum.php?f=1" class="jumpbox-cat-link"> <span> Your first category</span></a>
+                </li>
+                <li>
+                    <a href="./viewforum.php?f=2" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Your first forum</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 {{> footer }}

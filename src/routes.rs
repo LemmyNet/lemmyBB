@@ -5,6 +5,7 @@ use crate::{
         get_community,
         get_post,
         get_site,
+        list_communities,
         list_posts,
         login,
         CLIENT,
@@ -28,10 +29,20 @@ fn auth(cookies: &CookieJar<'_>) -> Option<Sensitive<String>> {
 }
 
 #[get("/")]
-pub async fn view_forum(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+pub async fn index(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let site = get_site(auth(cookies)).await?;
-    let posts = list_posts(auth(cookies)).await?.posts;
-    posts.len();
+    let mut communities = list_communities(auth(cookies)).await?;
+    communities
+        .communities
+        .sort_unstable_by_key(|c| c.community.id.0);
+    let ctx = context! { site, communities };
+    Ok(Template::render("index", ctx))
+}
+
+#[get("/viewforum?<f>")]
+pub async fn view_forum(f: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = get_site(auth(cookies)).await?;
+    let posts = list_posts(f, auth(cookies)).await?.posts;
     let ctx = context! { site, posts };
     Ok(Template::render("viewforum", ctx))
 }
@@ -42,8 +53,7 @@ pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, Err
     let mut post = get_post(t, auth(cookies)).await?;
 
     // show oldest comments first
-    post.comments
-        .sort_by(|a, b| a.comment.published.cmp(&b.comment.published));
+    post.comments.sort_unstable_by_key(|a| a.comment.published);
 
     // simply ignore deleted/removed comments
     post.comments = post
@@ -88,7 +98,7 @@ pub async fn do_login(
         .unwrap()
         .into_inner();
     cookies.add(Cookie::new("jwt", jwt));
-    Ok(Redirect::to(uri!(view_forum)))
+    Ok(Redirect::to(uri!(index)))
 }
 
 #[get("/post")]
@@ -143,5 +153,5 @@ pub async fn do_comment(
 pub async fn logout(cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
     // simply delete the cookie
     cookies.remove(Cookie::named("jwt"));
-    Ok(Redirect::to(uri!(view_forum)))
+    Ok(Redirect::to(uri!(index)))
 }

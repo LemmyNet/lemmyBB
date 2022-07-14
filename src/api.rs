@@ -1,7 +1,7 @@
 use anyhow::Error;
 use lemmy_api_common::{
     comment::{CommentResponse, CreateComment},
-    community::{GetCommunity, GetCommunityResponse},
+    community::{GetCommunity, GetCommunityResponse, ListCommunities, ListCommunitiesResponse},
     person::{Login, LoginResponse},
     post::{CreatePost, GetPost, GetPostResponse, GetPosts, GetPostsResponse, PostResponse},
     sensitive::Sensitive,
@@ -34,9 +34,13 @@ fn gen_request_url(path: &str) -> String {
     format!("{}{}{}", lemmy_backend, LEMMY_API_VERSION, path)
 }
 
-pub async fn list_posts(auth: Option<Sensitive<String>>) -> Result<GetPostsResponse, Error> {
+pub async fn list_posts(
+    community_id: i32,
+    auth: Option<Sensitive<String>>,
+) -> Result<GetPostsResponse, Error> {
     let params = GetPosts {
-        type_: Some(ListingType::Local),
+        community_id: Some(CommunityId(community_id)),
+        type_: Some(ListingType::Community),
         sort: Some(SortType::NewComments),
         limit: Some(20),
         auth,
@@ -86,6 +90,19 @@ pub async fn create_comment(
 pub async fn get_site(auth: Option<Sensitive<String>>) -> Result<GetSiteResponse, Error> {
     let params = GetSite { auth };
     get("/site", params).await
+}
+
+pub async fn list_communities(
+    auth: Option<Sensitive<String>>,
+) -> Result<ListCommunitiesResponse, Error> {
+    let params = ListCommunities {
+        type_: Some(ListingType::All),
+        sort: Some(SortType::TopMonth),
+        page: None,
+        limit: Some(50),
+        auth,
+    };
+    get("/community/list", params).await
 }
 
 pub async fn get_community(

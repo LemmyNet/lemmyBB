@@ -1,0 +1,51 @@
+{{> header }}
+
+<div class="forabg">
+    <div class="inner">
+        <ul class="topiclist">
+            <li class="header">
+                <dl class="row-item">
+                    <dt><div class="list-inner"><a href="./viewforum.php?f=1">Your first category</a></div></dt>
+                    <dd class="topics">Posts</dd>
+                    <dd class="posts">Comments</dd>
+                    <dd class="lastpost"><span>Last comment</span></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="topiclist forums">
+
+        {{#each communities.communities}}
+            <li class="row">
+                <dl class="row-item forum_read">
+                    <dt title="No unread posts">
+                        <div class="list-inner">
+                            <a href="./viewforum?f={{this.community.id}}" class="forumtitle">{{this.community.title}}</a>
+                            <br>short description
+                            <div class="responsive-show" style="display: none;">
+                                Topics: <strong>?</strong>
+                            </div>
+                        </div>
+                    </dt>
+                    <dd class="topics">{{this.counts.posts}} <dfn>Posts</dfn></dd>
+                    <dd class="posts">{{this.counts.comments}} <dfn>Comments</dfn></dd>
+                    <dd class="lastpost">
+                            <span>
+                                <dfn>Last comment</dfn>
+                                <a href="./viewtopic.php?p=3#p3" title="test attach" class="lastsubject">?</a> <br>
+                                by <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">?</a>
+                                <a href="./viewtopic.php?p=3#p3" title="View the latest comment">
+                                <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">View the latest comment</span>
+                                </a>
+                                <br><time datetime="2022-07-01T13:31:06+00:00">?</time>
+                            </span>
+                    </dd>
+                </dl>
+            </li>
+            {{/each}}
+
+        </ul>
+
+    </div>
+</div>
+
+{{> footer }}

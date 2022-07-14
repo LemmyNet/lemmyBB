@@ -19,8 +19,14 @@ fn test_with_uri(uri: Origin) {
 
 #[test]
 #[serial]
-fn test_viewforum() {
+fn test_index() {
     test_with_uri(uri!("/"))
+}
+
+#[test]
+#[serial]
+fn test_viewforum() {
+    test_with_uri(uri!("/viewforum?f=8"))
 }
 
 #[test]
