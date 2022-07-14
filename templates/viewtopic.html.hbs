@@ -83,7 +83,7 @@
                     </li>
                 </ul>
                 <p class="author">
-                    <a class="unread" href="./viewtopic.php?p=1#p1" title="Post">
+                    <a class="unread" href="./viewtopic?t={{post.post_view.post.id}}#p1" title="Post">
                         <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
                     </a>
                     <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{post.post_view.creator.name}}</a></strong> &raquo; </span>
@@ -147,11 +147,17 @@
                 </li>
             </ul>
             <p class="author">
-                <a class="unread" href="./viewtopic.php?p=1#p1" title="Post">
+                <a class="unread" href="./viewtopic?t={{this.post.id}}#p{{sum @index 2}}" title="Post">
                     <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
                 </a>
-                <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username-">{{this.creator.name}}</a></strong> &raquo; </span>
+                <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{this.creator.name}}</a></strong> &raquo; </span>
                 <time datetime="{{timestamp this.comment.published}}">{{timestamp this.comment.published}}</time>
+                {{#if this.comment.parent_id}}
+                    {{ ../site.site_view.site.name }}
+                    {{#with (comment_index this.comment.id ../post.comments) as | pos |}}
+                        <span style="float: right; margin-right: 48px">Responding to <a href="./viewtopic?t={{../this.post.id}}#p{{pos}}">#{{pos}}</a></span>
+                    {{/with}}
+                {{/if}}
             </p>
             <div class="content">{{{markdown this.comment.content}}}</div>
         </div>

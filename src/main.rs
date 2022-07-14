@@ -21,7 +21,14 @@ use crate::{
         view_forum,
         view_topic,
     },
-    template_helpers::{handlebars_helper_vec_length, markdown, modulo, sum, timestamp},
+    template_helpers::{
+        comment_index,
+        handlebars_helper_vec_length,
+        markdown,
+        modulo,
+        sum,
+        timestamp,
+    },
 };
 use anyhow::Error;
 use log::LevelFilter;
@@ -39,6 +46,7 @@ async fn main() -> Result<(), Error> {
         .filter_level(LevelFilter::Warn)
         .filter(Some("lemmy_bb"), LevelFilter::Debug)
         .filter(Some("rocket"), LevelFilter::Info)
+        .filter(Some("handlebars"), LevelFilter::Info)
         .init();
     let _ = init_rocket().launch().await?;
     Ok(())
@@ -53,6 +61,7 @@ fn init_rocket() -> Rocket<Build> {
         reg.register_helper("timestamp", Box::new(timestamp));
         reg.register_helper("sum", Box::new(sum));
         reg.register_helper("mod", Box::new(modulo));
+        reg.register_helper("comment_index", Box::new(comment_index));
         reg.register_helper("length", Box::new(handlebars_helper_vec_length));
     });
 

@@ -1,4 +1,6 @@
 use chrono::NaiveDateTime;
+use lemmy_db_schema::newtypes::CommentId;
+use lemmy_db_views::structs::CommentView;
 use rocket_dyn_templates::handlebars::{
     handlebars_helper,
     Context,
@@ -40,6 +42,11 @@ handlebars_helper!(markdown: |md: Option<String>| {
     }
         None => "".to_string()
         }
+});
+
+// Returns position of comment in thread. vec is assumed to be sorted
+handlebars_helper!(comment_index: |comment_id: CommentId, comments: Vec<CommentView>| {
+    comments.iter().position(|c| c.comment.id == comment_id).unwrap()
 });
 
 // https://github.com/sunng87/handlebars-rust/issues/43?ysclid=l5jxaw92um440916198#issuecomment-427482841
