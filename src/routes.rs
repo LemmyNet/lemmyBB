@@ -3,7 +3,8 @@ use crate::{
         create_comment,
         create_post,
         get_community,
-        get_last_replies_in_thread,
+        get_last_reply_in_community,
+        get_last_reply_in_thread,
         get_post,
         get_site,
         list_communities,
@@ -39,18 +40,27 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     communities
         .communities
         .sort_unstable_by_key(|c| c.community.id.0);
-    let ctx = context! { site, communities };
+    let last_replies = join_all(
+        communities
+            .communities
+            .iter()
+            .map(|c| get_last_reply_in_community(c.community.id, auth(cookies))),
+    )
+    .await
+    .into_iter()
+    .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
+    let ctx = context! { site, communities, last_replies };
     Ok(Template::render("index", ctx))
 }
 
 #[get("/viewforum?<f>")]
 pub async fn view_forum(f: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let site = get_site(auth(cookies)).await?;
-    let posts = list_posts(f, auth(cookies)).await?.posts;
+    let posts = list_posts(f, 20, auth(cookies)).await?.posts;
     let last_replies = join_all(
         posts
             .iter()
-            .map(|p| get_last_replies_in_thread(p, auth(cookies))),
+            .map(|p| get_last_reply_in_thread(p, auth(cookies))),
     )
     .await
     .into_iter()

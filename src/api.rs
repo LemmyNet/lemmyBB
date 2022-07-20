@@ -1,7 +1,8 @@
 use anyhow::Error;
 use chrono::NaiveDateTime;
+use futures::{future::join_all, join};
 use lemmy_api_common::{
-    comment::{CommentResponse, CreateComment},
+    comment::{CommentResponse, CreateComment, GetComments, GetCommentsResponse},
     community::{GetCommunity, GetCommunityResponse, ListCommunities, ListCommunitiesResponse},
     person::{GetPersonDetails, GetPersonDetailsResponse, Login, LoginResponse},
     post::{CreatePost, GetPost, GetPostResponse, GetPosts, GetPostsResponse, PostResponse},
@@ -39,13 +40,14 @@ fn gen_request_url(path: &str) -> String {
 
 pub async fn list_posts(
     community_id: i32,
+    limit: i64,
     auth: Option<Sensitive<String>>,
 ) -> Result<GetPostsResponse, Error> {
     let params = GetPosts {
         community_id: Some(CommunityId(community_id)),
         type_: Some(ListingType::Community),
         sort: Some(SortType::NewComments),
-        limit: Some(20),
+        limit: Some(limit),
         auth,
         ..Default::default()
     };
@@ -85,6 +87,7 @@ pub async fn create_post(
 pub struct PostOrComment {
     title: String,
     creator: PersonSafe,
+    post_id: PostId,
     reply_position: i32,
     time: NaiveDateTime,
 }
@@ -93,7 +96,7 @@ fn generate_comment_title(post_title: &str) -> String {
     format!("Re: {}", post_title)
 }
 
-pub async fn get_last_replies_in_thread(
+pub async fn get_last_reply_in_thread(
     post: &PostView,
     auth: Option<Sensitive<String>>,
 ) -> Result<PostOrComment, Error> {
@@ -101,6 +104,7 @@ pub async fn get_last_replies_in_thread(
         Ok(PostOrComment {
             title: post.post.name.clone(),
             creator: post.creator.clone(),
+            post_id: post.post.id,
             reply_position: 1,
             time: post.post.published,
         })
@@ -111,10 +115,70 @@ pub async fn get_last_replies_in_thread(
         Ok(PostOrComment {
             title: generate_comment_title(&post.post_view.post.name),
             creator: creator.person_view.person,
+            post_id: post.post_view.post.id,
             reply_position: (post.comments.len() + 1) as i32,
             time: post.comments.last().unwrap().comment.published,
         })
     }
+}
+
+pub async fn get_last_reply_in_community(
+    community_id: CommunityId,
+    auth: Option<Sensitive<String>>,
+) -> Result<Option<PostOrComment>, Error> {
+    let (comment, post) = join!(
+        list_comments(community_id, auth.clone()),
+        list_posts(community_id.0, 1, auth.clone())
+    );
+    let (comment, post): (GetCommentsResponse, GetPostsResponse) = (comment?, post?);
+    let comment = join_all(comment.comments.first().map(|c| async {
+        let p = get_post(c.post.id.0, auth).await;
+        PostOrComment {
+            title: generate_comment_title(&c.post.name),
+            creator: c.creator.clone(),
+            post_id: c.post.id,
+            reply_position: (p.unwrap().post_view.counts.comments + 1) as i32,
+            time: c.comment.published,
+        }
+    }))
+    .await
+    .pop();
+    let post = post.posts.first().map(|p| PostOrComment {
+        title: p.post.name.clone(),
+        creator: p.creator.clone(),
+        post_id: p.post.id,
+        reply_position: 1,
+        time: p.post.published,
+    });
+    // return data for post or comment, depending which is newer
+    Ok(if let Some(comment) = comment {
+        if let Some(post) = post {
+            if post.time > comment.time {
+                Some(post)
+            } else {
+                Some(comment)
+            }
+        } else {
+            Some(comment)
+        }
+    } else {
+        None
+    })
+}
+
+pub async fn list_comments(
+    community_id: CommunityId,
+    auth: Option<Sensitive<String>>,
+) -> Result<GetCommentsResponse, Error> {
+    let params = GetComments {
+        sort: Some(SortType::NewComments),
+        type_: Some(ListingType::Community),
+        limit: Some(1),
+        community_id: Some(community_id),
+        auth,
+        ..Default::default()
+    };
+    get("/comment/list", params).await
 }
 
 pub async fn create_comment(
@@ -143,7 +207,7 @@ pub async fn list_communities(
         type_: Some(ListingType::All),
         sort: Some(SortType::TopMonth),
         page: None,
-        limit: Some(50),
+        limit: Some(10),
         auth,
     };
     get("/community/list", params).await
