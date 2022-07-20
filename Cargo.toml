@@ -19,6 +19,7 @@ serde_json = { version = "1.0.79" }
 comrak = { version = "0.12.1", default-features = false }
 chrono = "0.4.19"
 url = "2.2.2"
+futures = "0.3"
 
 [dev-dependencies]
 serial_test = "0.6.0"

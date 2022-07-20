@@ -1,17 +1,20 @@
 use anyhow::Error;
+use chrono::NaiveDateTime;
 use lemmy_api_common::{
     comment::{CommentResponse, CreateComment},
     community::{GetCommunity, GetCommunityResponse, ListCommunities, ListCommunitiesResponse},
-    person::{Login, LoginResponse},
+    person::{GetPersonDetails, GetPersonDetailsResponse, Login, LoginResponse},
     post::{CreatePost, GetPost, GetPostResponse, GetPosts, GetPostsResponse, PostResponse},
     sensitive::Sensitive,
     site::{GetSite, GetSiteResponse},
 };
 use lemmy_db_schema::{
-    newtypes::{CommunityId, PostId},
+    newtypes::{CommunityId, PersonId, PostId},
+    source::person::PersonSafe,
     ListingType,
     SortType,
 };
+use lemmy_db_views::structs::PostView;
 use once_cell::sync::Lazy;
 use reqwest::Client;
 use serde::{de::DeserializeOwned, Serialize};
@@ -54,7 +57,12 @@ pub async fn get_post(id: i32, auth: Option<Sensitive<String>>) -> Result<GetPos
         id: PostId(id),
         auth,
     };
-    get("/post", params).await
+    let mut post: GetPostResponse = get("/post", params).await?;
+
+    // show oldest comments first
+    post.comments.sort_unstable_by_key(|a| a.comment.published);
+
+    Ok(post)
 }
 
 pub async fn create_post(
@@ -71,6 +79,42 @@ pub async fn create_post(
         ..Default::default()
     };
     post("/post", params).await
+}
+
+#[derive(Serialize, Debug)]
+pub struct PostOrComment {
+    title: String,
+    creator: PersonSafe,
+    reply_position: i32,
+    time: NaiveDateTime,
+}
+
+fn generate_comment_title(post_title: &str) -> String {
+    format!("Re: {}", post_title)
+}
+
+pub async fn get_last_replies_in_thread(
+    post: &PostView,
+    auth: Option<Sensitive<String>>,
+) -> Result<PostOrComment, Error> {
+    if post.counts.comments == 0 {
+        Ok(PostOrComment {
+            title: post.post.name.clone(),
+            creator: post.creator.clone(),
+            reply_position: 1,
+            time: post.post.published,
+        })
+    } else {
+        let post = get_post(post.post.id.0, auth.clone()).await?;
+        let creator_id = post.comments.last().unwrap().comment.creator_id;
+        let creator = get_person(creator_id, auth).await?;
+        Ok(PostOrComment {
+            title: generate_comment_title(&post.post_view.post.name),
+            creator: creator.person_view.person,
+            reply_position: (post.comments.len() + 1) as i32,
+            time: post.comments.last().unwrap().comment.published,
+        })
+    }
 }
 
 pub async fn create_comment(
@@ -103,6 +147,18 @@ pub async fn list_communities(
         auth,
     };
     get("/community/list", params).await
+}
+
+pub async fn get_person(
+    person_id: PersonId,
+    auth: Option<Sensitive<String>>,
+) -> Result<GetPersonDetailsResponse, Error> {
+    let params = GetPersonDetails {
+        person_id: Some(person_id),
+        auth,
+        ..Default::default()
+    };
+    get("/user", params).await
 }
 
 pub async fn get_community(

@@ -3,15 +3,19 @@ use crate::{
         create_comment,
         create_post,
         get_community,
+        get_last_replies_in_thread,
         get_post,
         get_site,
         list_communities,
         list_posts,
         login,
+        PostOrComment,
         CLIENT,
     },
     error::ErrorPage,
+    Error,
 };
+use futures::future::join_all;
 use lemmy_api_common::sensitive::Sensitive;
 use reqwest::header::HeaderName;
 use rocket::{
@@ -43,7 +47,15 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
 pub async fn view_forum(f: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let site = get_site(auth(cookies)).await?;
     let posts = list_posts(f, auth(cookies)).await?.posts;
-    let ctx = context! { site, posts };
+    let last_replies = join_all(
+        posts
+            .iter()
+            .map(|p| get_last_replies_in_thread(p, auth(cookies))),
+    )
+    .await
+    .into_iter()
+    .collect::<Result<Vec<PostOrComment>, Error>>()?;
+    let ctx = context! { site, posts, last_replies };
     Ok(Template::render("viewforum", ctx))
 }
 
@@ -51,9 +63,6 @@ pub async fn view_forum(f: i32, cookies: &CookieJar<'_>) -> Result<Template, Err
 pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let site = get_site(auth(cookies)).await?;
     let mut post = get_post(t, auth(cookies)).await?;
-
-    // show oldest comments first
-    post.comments.sort_unstable_by_key(|a| a.comment.published);
 
     // simply ignore deleted/removed comments
     post.comments = post

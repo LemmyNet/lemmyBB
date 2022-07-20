@@ -11,8 +11,12 @@ use rocket_dyn_templates::handlebars::{
     RenderError,
 };
 
-handlebars_helper!(timestamp: |ts: NaiveDateTime| {
-    ts.format("%a %h %d, %Y %H:%M").to_string()
+handlebars_helper!(timestamp_machine: |ts: NaiveDateTime| {
+    ts.format("%Y-%m-%dT%H:%M:%S%.f+00:00").to_string()
+});
+
+handlebars_helper!(timestamp_human: |ts: NaiveDateTime| {
+    ts.format("%c").to_string()
 });
 
 handlebars_helper!(sum: |a: i32, b: i32| {

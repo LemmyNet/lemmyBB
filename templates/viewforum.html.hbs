@@ -38,21 +38,23 @@
                 <dl class="row-item topic_read">
                     <dt title="No unread posts">
                         <div class="list-inner">
-                            <a href="./viewtopic?t={{this.post.id}}" class="topictitle">{{ this.post.name }}</a> <br />
+                            <a href="./viewtopic?t={{this.post.id}}" class="topictitle">{{this.post.name}}</a> <br />
 
                             <div class="topic-poster left-box">
-                                by <a href="./memberlist.php?mode=viewprofile&amp;u=2">{{ this.creator.name }}</a> &raquo;
-                                <time datetime="{{timestamp this.post.published }}">{{timestamp this.post.published }}</time>
+                                by <a href="./memberlist.php?mode=viewprofile&amp;u=2">{{this.creator.name}}</a> &raquo;
+                                <time datetime="{{timestamp_machine this.post.published }}">{{timestamp_human this.post.published}}</time>
                             </div>
                         </div>
                     </dt>
-                    <dd class="posts">{{ this.counts.comments }}<dfn>Replies</dfn></dd>
+                    <dd class="posts">{{this.counts.comments}}<dfn>Replies</dfn></dd>
                     <dd class="lastpost">
+                        {{#with (lookup ../last_replies @index)}}
                         <span>
-                            <dfn>Last post </dfn>by <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">?</a>
-                            <a href="./viewtopic?t={{this.post.id}}#p{{sum this.counts.comments 1}}" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
-                            <time datetime="2019-12-31T14:34:17+00:00">?</time>
+                            <dfn>Last post </dfn>by <a href="./memberlist.php?mode=viewprofile&amp;u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
+                            <a href="./viewtopic?t={{../this.post.id}}#p{{this.reply_position}}" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
+                            <time datetime="{{timestamp_machine this.time}}">{{timestamp_human this.time}}</time>
                         </span>
+                        {{/with}}
                     </dd>
                 </dl>
             </li>
