@@ -2,6 +2,7 @@ use crate::{
     api::{
         create_comment,
         create_post,
+        get_captcha,
         get_community,
         get_last_reply_in_community,
         get_last_reply_in_thread,
@@ -10,6 +11,7 @@ use crate::{
         list_communities,
         list_posts,
         login,
+        register,
         PostOrComment,
         CLIENT,
     },
@@ -23,6 +25,7 @@ use rocket::{
     form::Form,
     http::{Cookie, CookieJar},
     response::Redirect,
+    Either,
 };
 use rocket_dyn_templates::{context, Template};
 use url::Url;
@@ -118,6 +121,58 @@ pub async fn do_login(
         .into_inner();
     cookies.add(Cookie::new("jwt", jwt));
     Ok(Redirect::to(uri!(index)))
+}
+
+#[get("/register")]
+pub async fn register_page() -> Result<Template, ErrorPage> {
+    let site = get_site(None).await?;
+    let captcha = get_captcha().await?;
+    Ok(Template::render("register", context!(site, captcha)))
+}
+
+#[derive(FromForm)]
+pub struct RegisterForm {
+    pub username: String,
+    pub password: String,
+    pub password_verify: String,
+    pub show_nsfw: bool,
+    pub email: Option<String>,
+    pub captcha_uuid: Option<String>,
+    pub captcha_answer: Option<String>,
+    pub honeypot: Option<String>,
+    pub application_answer: Option<String>,
+    pub refresh_captcha: Option<String>,
+}
+
+#[post("/do_register", data = "<form>")]
+pub async fn do_register(
+    mut form: Form<RegisterForm>,
+    cookies: &CookieJar<'_>,
+) -> Result<Either<Template, Redirect>, ErrorPage> {
+    if form.refresh_captcha.is_some() {
+        // user requested new captcha, so reload page
+        return Ok(Either::Right(Redirect::to(uri!(register_page))));
+    }
+
+    // empty fields gets parsed into Some(""), convert that to None
+    form.captcha_answer = form.captcha_answer.clone().filter(|h| !h.is_empty());
+    form.honeypot = form.honeypot.clone().filter(|h| !h.is_empty());
+    form.email = form.email.clone().filter(|h| !h.is_empty());
+    form.application_answer = form.application_answer.clone().filter(|h| !h.is_empty());
+
+    let res = register(form.into_inner()).await?;
+    let message = if let Some(jwt) = res.jwt {
+        cookies.add(Cookie::new("jwt", jwt.into_inner()));
+        "Registration successful"
+    } else if res.verify_email_sent {
+        "Registration successful, confirm your email address"
+    } else {
+        "Registration successful, wait for admin approval"
+    };
+
+    let site = get_site(None).await?;
+    let ctx = context!(site, message);
+    Ok(Either::Left(Template::render("message", ctx)))
 }
 
 #[get("/post")]

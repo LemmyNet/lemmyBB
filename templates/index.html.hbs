@@ -20,7 +20,7 @@
                     <dt title="No unread posts">
                         <div class="list-inner">
                             <a href="./viewforum?f={{this.community.id}}" class="forumtitle">{{this.community.title}}</a>
-                            <br>short description
+                            <br>{{this.community.description}}
                             <div class="responsive-show" style="display: none;">
                                 Topics: <strong>?</strong>
                             </div>
@@ -29,17 +29,19 @@
                     <dd class="topics">{{this.counts.posts}} <dfn>Posts</dfn></dd>
                     <dd class="posts">{{this.counts.comments}} <dfn>Comments</dfn></dd>
                     <dd class="lastpost">
-                            {{#with (lookup ../last_replies @index)}}
+                        {{#if lookup ../last_replies @index}}
+                        {{#with lookup ../last_replies @index}}
                             <span>
-                                <dfn>Last comment</dfn>
-                                <a href="./viewtopic?t={{this.post_id}}#p{{this.reply_position}}" title="{{this.title}}" class="lastsubject">{{this.title}}</a> <br>
-                                by <a href="./memberlist.php?mode=viewprofile&amp;u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
+                            <dfn>Last comment</dfn>
+                            <a href="./viewtopic?t={{this.post_id}}#p{{this.reply_position}}" title="{{this.title}}" class="lastsubject">{{this.title}}</a> <br>
+                            by <a href="./memberlist.php?mode=viewprofile&amp;u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
                                 <a href="./viewtopic?t={{this.post_id}}#p{{this.reply_position}}" title="View the latest comment">
-                                <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">View the latest comment</span>
+                            <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">View the latest comment</span>
                                 </a>
                                 <br><time datetime="{{timestamp_machine this.time}}">{{timestamp_human this.time}}</time>
-                            </span>
-                            {{/with}}
+                        </span>
+                        {{/with}}
+                        {{/if}}
                     </dd>
                 </dl>
             </li>

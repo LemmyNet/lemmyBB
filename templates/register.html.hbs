@@ -1,0 +1,100 @@
+{{> header }}
+
+<form id="register" method="post" action="./do_register">
+
+    <div class="panel">
+        <div class="inner">
+
+            <h2>yourdomain.com - Registration</h2>
+
+            <fieldset class="fields2">
+                <dl>
+                    <dt><label for="username">Username:</label><br /><span>Length must be between 3 characters and 20 characters.</span></dt>
+                    <dd><input type="text" tabindex="1" name="username" size="25" value="" class="inputbox autowidth" title="Username" /></dd>
+                </dl>
+                <dl>
+                    <dt><label for="password">Password:</label><br /><span>Must be at least 10 characters long.</span></dt>
+                    <dd><input type="password" tabindex="2" name="password" size="25" value="" class="inputbox autowidth" title="New password" autocomplete="off" /></dd>
+                </dl>
+                <dl>
+                    <dt><label for="password_verify">Confirm password:</label></dt>
+                    <dd><input type="password"  tabindex="3" name="password_verify" size="25" value="" class="inputbox autowidth" title="Confirm password" autocomplete="off" /></dd>
+                </dl>
+                <dl>
+                    <dt>
+                        <label for="email">Email address:</label><br />
+                        {{#if site.site_view.site.require_email_verification}}
+                        <span>Required</span>
+                        {{else}}
+                        <span>Optional</span>
+                        {{/if}}
+                    </dt>
+                    <dd><input type="email" tabindex="4" name="email" size="25" maxlength="100" value="" class="inputbox autowidth" title="Email address" autocomplete="off" /></dd>
+                </dl>
+                <dl>
+                    <dt><label for="email">Show NSFW content:</label></dt>
+                    <dd><input type="checkbox" tabindex="5" name="show_nsfw" size="25" maxlength="100" value="" class="inputbox autowidth" title="Show NSFW content" /></dd>
+                </dl>
+                <dl>
+                    <dd><input type="hidden" tabindex="6" name="honeypot" id="honeypot" size="25" maxlength="100" value="" class="inputbox autowidth" title="Honeypot" autocomplete="off" /></dd>
+                </dl>
+
+                <hr />
+
+            </fieldset>
+        </div>
+    </div>
+    <div class="panel captcha-panel">
+        <div class="inner">
+
+            <h3 class="captcha-title">Confirmation of registration</h3>
+
+            {{#if site.site_view.site.require_application}}
+            <p>{{site.site_view.site.application_question}}</p>
+
+            <fieldset class="fields2">
+                <dl>
+                    <dd>
+                        <dt><label for="application_answer">Application answer:</label></dt>
+                        <textarea name="application_answer" rows="5" cols="50" tabindex="7" class="inputbox"></textarea>
+                    </dd>
+                </dl>
+            </fieldset>
+
+            {{/if}}
+            {{#if site.site_view.site.require_application and captcha.ok}}
+            <hr/>
+            {{/if}}
+            {{#if captcha.ok}}
+            <p>To prevent automated registrations the board requires you to enter a confirmation code. The code is displayed in the image you should see below. If you are visually impaired or cannot otherwise read this code please contact the Board Administrator.</p>
+
+            <fieldset class="fields2">
+
+                <dl>
+                    <dt><label for="confirm_code">Confirmation code:</label></dt>
+                    <dd class="captcha captcha-image"><img src="data:image/png;base64,{{captcha.ok.png}}" alt="Confirmation code" width="360"/></dd>
+                    <dd>
+                        <input type="text" name="captcha_answer" size="8" maxlength="8" tabindex="8" class="inputbox narrow" title="Confirmation code" autocomplete="off" />
+                        <input type="submit" name="refresh_captcha" tabindex="9" class="button2" value="Refresh confirmation code">
+                        <input type="hidden" name="captcha_uuid" value="{{captcha.ok.uuid}}"/>
+                    </dd>
+                    <dd>Enter the code exactly as it appears. All letters are case insensitive.</dd>
+                </dl>
+
+            </fieldset>
+            {{/if}}
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="inner">
+
+            <fieldset class="submit-buttons">
+                <input type="submit" tabindex="10" name="submit" id="submit" value="Submit" class="button1 default-submit-action" />
+            </fieldset>
+
+        </div>
+    </div>
+</form>
+
+{{> footer }}

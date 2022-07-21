@@ -14,10 +14,12 @@ use crate::{
         do_comment,
         do_login,
         do_post,
+        do_register,
         index,
         login_page,
         logout,
         post,
+        register_page,
         view_forum,
         view_topic,
     },
@@ -72,8 +74,18 @@ fn init_rocket() -> Rocket<Build> {
         .mount(
             "/",
             routes![
-                index, view_forum, view_topic, login_page, do_login, post, do_post, comment,
-                do_comment, logout
+                index,
+                view_forum,
+                view_topic,
+                login_page,
+                do_login,
+                post,
+                do_post,
+                comment,
+                do_comment,
+                logout,
+                register_page,
+                do_register
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets")))

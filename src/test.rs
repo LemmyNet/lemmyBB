@@ -43,6 +43,12 @@ fn test_login() {
 
 #[test]
 #[serial]
+fn test_register() {
+    test_with_uri(uri!("/register"))
+}
+
+#[test]
+#[serial]
 fn test_post() {
     test_with_uri(uri!("/post"))
 }

@@ -1,10 +1,18 @@
-use anyhow::Error;
+use crate::routes::RegisterForm;
+use anyhow::{anyhow, Error};
 use chrono::NaiveDateTime;
 use futures::{future::join_all, join};
 use lemmy_api_common::{
     comment::{CommentResponse, CreateComment, GetComments, GetCommentsResponse},
     community::{GetCommunity, GetCommunityResponse, ListCommunities, ListCommunitiesResponse},
-    person::{GetPersonDetails, GetPersonDetailsResponse, Login, LoginResponse},
+    person::{
+        GetCaptchaResponse,
+        GetPersonDetails,
+        GetPersonDetailsResponse,
+        Login,
+        LoginResponse,
+        Register,
+    },
     post::{CreatePost, GetPost, GetPostResponse, GetPosts, GetPostsResponse, PostResponse},
     sensitive::Sensitive,
     site::{GetSite, GetSiteResponse},
@@ -17,8 +25,8 @@ use lemmy_db_schema::{
 };
 use lemmy_db_views::structs::PostView;
 use once_cell::sync::Lazy;
-use reqwest::Client;
-use serde::{de::DeserializeOwned, Serialize};
+use reqwest::{Client, StatusCode};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{env, fmt::Debug, time::Duration};
 
 static LEMMY_API_VERSION: &str = "/api/v3";
@@ -245,6 +253,30 @@ pub async fn login(username_or_email: &str, password: &str) -> Result<LoginRespo
     post("/user/login", &params).await
 }
 
+pub async fn get_captcha() -> Result<GetCaptchaResponse, Error> {
+    get("/user/get_captcha", ()).await
+}
+
+pub async fn register(form: RegisterForm) -> Result<LoginResponse, Error> {
+    let params = Register {
+        username: form.username,
+        password: Sensitive::new(form.password),
+        password_verify: Sensitive::new(form.password_verify),
+        show_nsfw: form.show_nsfw,
+        email: form.email.map(Sensitive::new),
+        captcha_uuid: form.captcha_uuid,
+        captcha_answer: form.captcha_answer,
+        honeypot: form.honeypot,
+        answer: form.application_answer,
+    };
+    post("/user/register", &params).await
+}
+
+#[derive(Deserialize)]
+struct ErrorResponse {
+    error: String,
+}
+
 async fn post<T, Params>(path: &str, params: Params) -> Result<T, Error>
 where
     T: DeserializeOwned,
@@ -255,11 +287,11 @@ where
         .post(&gen_request_url(path))
         .json(&params)
         .send()
-        .await?
-        .text()
         .await?;
-    info!("post {} response: {}", &path, &res);
-    Ok(serde_json::from_str(&res)?)
+    let status = res.status();
+    let text = res.text().await?;
+    info!("post {} status: {}, response: {}", &path, status, &text);
+    handle_response(text, status)
 }
 
 async fn get<T, Params>(path: &str, params: Params) -> Result<T, Error>
@@ -268,6 +300,22 @@ where
     Params: Serialize + Debug,
 {
     info!("get {}, params {:?}", &path, &params);
-    let r = CLIENT.get(&gen_request_url(path)).query(&params);
-    Ok(r.send().await?.json().await?)
+    let res = CLIENT
+        .get(&gen_request_url(path))
+        .query(&params)
+        .send()
+        .await?;
+    let status = res.status();
+    let text = res.text().await?;
+    info!("get {} status: {}", &path, status);
+    handle_response(text, status)
+}
+
+fn handle_response<T: DeserializeOwned>(response: String, status: StatusCode) -> Result<T, Error> {
+    if status.is_success() {
+        Ok(serde_json::from_str(&response)?)
+    } else {
+        let error: ErrorResponse = serde_json::from_str(&response)?;
+        Err(anyhow!(error.error))
+    }
 }
