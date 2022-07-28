@@ -3,16 +3,20 @@
 
 A Lemmy frontend inspired by [phpBB](https://www.phpbb.com/).
 
-## Usage
+## Deployment
 
-You can easily run lemmyBB on your local computer, to browse a remote Lemmy instance. Cargo (Rust compiler) and git need to be installed. Then run the following commands. Replace lemmy.ml with your own instance.
+Follow these steps to install LemmyBB on your server. Resource usage is very low, it should work fine with even the smallest of VPS.
 
 ```
 git clone https://github.com/Nutomic/lemmyBB.git
-LEMMY_INTERNAL_HOST=https://lemmy.ml cargo run
+mkdir -p docker/volumes/pictrs
+chown 991:991 docker/volumes/pictrs
+# copy and adjust lemmy config
+docker-compose up -d
+# copy nginx config
+# request letsencrypt cert
+# (re)start nginx
 ```
-
-You can also run lemmyBB on a server. Please open an issue for more details.
 
 ## Development
 
@@ -20,6 +24,14 @@ Follow the instructions for [Local Lemmy Development](https://join-lemmy.org/doc
 
 Once the development setup is ready, execute `cargo run` in both the lemmy and lemmyBB directories.
 
+## Configuration
+
+LemmyBB is configured via environment variables:
+
+| var                     | default value         | description                                                  |
+|-------------------------|-----------------------|--------------------------------------------------------------|
+| LEMMY_BB_BACKEND        | http://localhost:8536 | Protocol, hostname and port where lemmy backend is available |
+| LEMMY_BB_LISTEN_ADDRESS | 127.0.0.1:1244        | IP and port where LemmyBB listens for requests               |
 ## License
 
 The project is licensed under [AGPLv3](LICENSE). 
