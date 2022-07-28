@@ -58,8 +58,8 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
     });
 
     let listen_address =
-        env::var("LEMMY_BB_LISTEN_ADDRESS").unwrap_or("127.0.0.1:1244".to_string());
-    let (address, port) = listen_address.split_once(":").unwrap();
+        env::var("LEMMY_BB_LISTEN_ADDRESS").unwrap_or_else(|_| "127.0.0.1:1244".to_string());
+    let (address, port) = listen_address.split_once(':').unwrap();
     let config = Config {
         address: address.parse()?,
         port: port.parse()?,

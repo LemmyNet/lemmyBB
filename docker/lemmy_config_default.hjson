@@ -1,7 +1,9 @@
 # See the documentation for available config fields and descriptions:
 # https://join-lemmy.org/docs/en/administration/configuration.html
 {
-  hostname: lemmy-alpha
+  # change to your actual domain
+  hostname: your-domain.xyz
+  pictrs_url: "http://pictrs:8080"
   database: {
     host: postgres
   }

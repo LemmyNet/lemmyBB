@@ -7,10 +7,10 @@ services:
       dockerfile: docker/Dockerfile
     restart: always
     ports:
-      - "127.0.0.1:1244:1244"
+      - "127.0.0.1:8701:8701"
     environment:
       - LEMMY_BB_BACKEND=http://lemmy:8536
-      - LEMMY_BB_LISTEN_ADDRESS=0.0.0.0:1244
+      - LEMMY_BB_LISTEN_ADDRESS=0.0.0.0:8701
     depends_on:
       - lemmy
 
@@ -18,12 +18,11 @@ services:
     image: dessalines/lemmy-ui:0.16.6
     restart: always
     ports:
-      - "127.0.0.1:1234:1234"
+      - "127.0.0.1:8702:8702"
     environment:
       - LEMMY_INTERNAL_HOST=lemmy:8536
-      - LEMMY_EXTERNAL_HOST=localhost:1234
-      - LEMMY_HTTPS=false
-      - LEMMY_UI_DEBUG=true
+      - LEMMY_EXTERNAL_HOST=localhost:8702
+      - LEMMY_HTTPS=true
     depends_on: 
       - lemmy
 
@@ -31,15 +30,14 @@ services:
     image: dessalines/lemmy:0.16.6
     restart: always
     ports:
-      - "127.0.0.1:8536:8536"
+      - "127.0.0.1:8536:8703"
     environment:
       - RUST_LOG=warn
     volumes:
-      - ./lemmy_config.hjson:/config/config.hjson
+      - ./lemmy.hjson:/config/config.hjson
     depends_on:
       - pictrs
       - postgres
-      - otel
 
   postgres:
     image: postgres:12-alpine
