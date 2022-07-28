@@ -21,7 +21,7 @@ services:
       - "127.0.0.1:8702:8702"
     environment:
       - LEMMY_INTERNAL_HOST=lemmy:8536
-      - LEMMY_EXTERNAL_HOST=localhost:8702
+      - LEMMY_EXTERNAL_HOST=example.com/lemmy-ui
       - LEMMY_HTTPS=true
     depends_on: 
       - lemmy
@@ -34,7 +34,7 @@ services:
     environment:
       - RUST_LOG=warn
     volumes:
-      - ./lemmy.hjson:/config/config.hjson
+      - ./lemmy.hjson:/config/config.hjson:ro
     depends_on:
       - pictrs
       - postgres

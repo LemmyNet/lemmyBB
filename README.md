@@ -15,9 +15,11 @@ mkdir -p docker/volumes/pictrs
 chown 991:991 docker/volumes/pictrs
 ```
 
-Then copy and adjust the config, setting your actual hostname. See [this page](https://join-lemmy.org/docs/en/administration/configuration.html) for a full list of configuration options.
+Then copy the config, and set your actual hostname. See [this page](https://join-lemmy.org/docs/en/administration/configuration.html) for a full list of configuration options.
 ```
 cp docker/lemmy_config_default.hjson docker/lemmy.hjson
+sed -i -e 's/example.com/your-domain.xyz/g' docker/lemmy.hjson
+sed -i -e 's/example.com/your-domain.xyz/g' docker/docker-compose.yml
 ```
 
 Next we start LemmyBB and other services it depends on using docker-compose. This takes relatively long for the first time (about 11 minutes on a 1 cpu vps). Subsequent builds will be faster thanks to caching.
@@ -25,17 +27,6 @@ Next we start LemmyBB and other services it depends on using docker-compose. Thi
 ```
 apt install docker-compose
 docker-compose -f docker/docker-compose.yml up -d
-```
-
-The command above builds LemmyBB directly from the local folder, so you can easily make modifications to files, and deploy them. You can also fetch a different git repository to run a customized version.
-
-```
-# update to latest git version
-git pull
-# manually edit a template file
-nano templates/header.html.hbs
-# build and deploy from local files
-docker-compose -f docker/docker-compose.yml up -d --build
 ```
 
 Finally we request a TLS certificate from [Let's Encrypt](https://letsencrypt.org/), and configure nginx as reverse proxy. Of course you can set things up differently, but then you need to figure it out yourself.
@@ -64,10 +55,15 @@ You should also add the following line to your cron (using `crontab -e`), to aut
 
 For more information, you can read the [Lemmy documentation](https://join-lemmy.org/docs/en/index.html), use the [LemmyBB issue tracker](https://github.com/LemmyNet/lemmyBB/issues) or [chat on Matrix](https://matrix.to/#/#lemmy-space:matrix.org).
 
-Be sure to regularly update your site as indicated above, to receive new features and bug fixes:
+
+The instructions above build LemmyBB directly from the local folder. To receive updates with new features and bug fixes, simply pull the git repository and rebuild. You can also easily make modifications to files, or fetch from another git repository with customizations.
 
 ```
+# update to latest git version
 git pull
+# optional: manually edit a template file
+nano templates/header.html.hbs
+# build and deploy from local files
 docker-compose -f docker/docker-compose.yml up -d --build
 ```
 
