@@ -18,7 +18,7 @@ services:
     image: dessalines/lemmy-ui:0.16.6
     restart: always
     ports:
-      - "127.0.0.1:8702:8702"
+      - "127.0.0.1:8702:1234"
     environment:
       - LEMMY_INTERNAL_HOST=lemmy:8536
       - LEMMY_EXTERNAL_HOST=example.com/lemmy-ui
