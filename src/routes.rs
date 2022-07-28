@@ -1,20 +1,6 @@
 use crate::{
-    api::{
-        create_comment,
-        create_post,
-        get_captcha,
-        get_community,
-        get_last_reply_in_community,
-        get_last_reply_in_thread,
-        get_post,
-        get_site,
-        list_communities,
-        list_posts,
-        login,
-        register,
-        PostOrComment,
-        CLIENT,
-    },
+    api,
+    api::{PostOrComment, CLIENT},
     error::ErrorPage,
     Error,
 };
@@ -37,9 +23,14 @@ fn auth(cookies: &CookieJar<'_>) -> Option<Sensitive<String>> {
 }
 
 #[get("/")]
-pub async fn index(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
-    let mut communities = list_communities(auth(cookies)).await?;
+pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>, ErrorPage> {
+    let site = api::get_site(auth(cookies)).await?;
+    if site.site_view.is_none() {
+        // need to setup site
+        return Ok(Either::Left(Redirect::to(uri!(setup))));
+    }
+
+    let mut communities = api::list_communities(auth(cookies)).await?;
     communities
         .communities
         .sort_unstable_by_key(|c| c.community.id.0);
@@ -47,23 +38,68 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
         communities
             .communities
             .iter()
-            .map(|c| get_last_reply_in_community(c.community.id, auth(cookies))),
+            .map(|c| api::get_last_reply_in_community(c.community.id, auth(cookies))),
     )
     .await
     .into_iter()
     .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
     let ctx = context! { site, communities, last_replies };
-    Ok(Template::render("index", ctx))
+    Ok(Either::Right(Template::render("index", ctx)))
+}
+
+#[get("/setup")]
+pub async fn setup(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = api::get_site(auth(cookies)).await?;
+    let ctx = context! { site };
+    Ok(Template::render("setup", ctx))
+}
+
+#[derive(FromForm)]
+pub struct SetupForm {
+    // TODO:
+    // #[serde(flatten)
+    // register_form: RegisterForm,
+    pub username: String,
+    pub password: String,
+    pub password_verify: String,
+    pub show_nsfw: bool,
+    pub email: Option<String>,
+    pub site_name: String,
+    pub site_description: Option<String>,
+}
+
+#[post("/do_setup", data = "<form>")]
+pub async fn do_setup(
+    form: Form<SetupForm>,
+    cookies: &CookieJar<'_>,
+) -> Result<Redirect, ErrorPage> {
+    let register_form = RegisterForm {
+        username: form.username.clone(),
+        password: form.password.clone(),
+        password_verify: form.password_verify.clone(),
+        show_nsfw: form.show_nsfw,
+        ..Default::default()
+    };
+    let jwt = api::register(register_form)
+        .await?
+        .jwt
+        .unwrap()
+        .into_inner();
+    cookies.add(Cookie::new("jwt", jwt.clone()));
+
+    api::create_site(form.site_name.clone(), form.site_description.clone(), jwt).await?;
+
+    return Ok(Redirect::to(uri!(index)));
 }
 
 #[get("/viewforum?<f>")]
 pub async fn view_forum(f: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
-    let posts = list_posts(f, 20, auth(cookies)).await?.posts;
+    let site = api::get_site(auth(cookies)).await?;
+    let posts = api::list_posts(f, 20, auth(cookies)).await?.posts;
     let last_replies = join_all(
         posts
             .iter()
-            .map(|p| get_last_reply_in_thread(p, auth(cookies))),
+            .map(|p| api::get_last_reply_in_thread(p, auth(cookies))),
     )
     .await
     .into_iter()
@@ -74,8 +110,8 @@ pub async fn view_forum(f: i32, cookies: &CookieJar<'_>) -> Result<Template, Err
 
 #[get("/viewtopic?<t>")]
 pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
-    let mut post = get_post(t, auth(cookies)).await?;
+    let site = api::get_site(auth(cookies)).await?;
+    let mut post = api::get_post(t, auth(cookies)).await?;
 
     // simply ignore deleted/removed comments
     post.comments = post
@@ -98,8 +134,8 @@ pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, Err
 }
 
 #[get("/login")]
-pub async fn login_page(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
+pub async fn login(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = api::get_site(auth(cookies)).await?;
     Ok(Template::render("login", context!(site)))
 }
 
@@ -114,7 +150,7 @@ pub async fn do_login(
     form: Form<LoginForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Redirect, ErrorPage> {
-    let jwt = login(&form.username, &form.password)
+    let jwt = api::login(&form.username, &form.password)
         .await?
         .jwt
         .unwrap()
@@ -124,13 +160,13 @@ pub async fn do_login(
 }
 
 #[get("/register")]
-pub async fn register_page() -> Result<Template, ErrorPage> {
-    let site = get_site(None).await?;
-    let captcha = get_captcha().await?;
+pub async fn register() -> Result<Template, ErrorPage> {
+    let site = api::get_site(None).await?;
+    let captcha = api::get_captcha().await?;
     Ok(Template::render("register", context!(site, captcha)))
 }
 
-#[derive(FromForm)]
+#[derive(FromForm, Default)]
 pub struct RegisterForm {
     pub username: String,
     pub password: String,
@@ -151,7 +187,7 @@ pub async fn do_register(
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
     if form.refresh_captcha.is_some() {
         // user requested new captcha, so reload page
-        return Ok(Either::Right(Redirect::to(uri!(register_page))));
+        return Ok(Either::Right(Redirect::to(uri!(register))));
     }
 
     // empty fields gets parsed into Some(""), convert that to None
@@ -160,7 +196,7 @@ pub async fn do_register(
     form.email = form.email.clone().filter(|h| !h.is_empty());
     form.application_answer = form.application_answer.clone().filter(|h| !h.is_empty());
 
-    let res = register(form.into_inner()).await?;
+    let res = api::register(form.into_inner()).await?;
     let message = if let Some(jwt) = res.jwt {
         cookies.add(Cookie::new("jwt", jwt.into_inner()));
         "Registration successful"
@@ -170,14 +206,14 @@ pub async fn do_register(
         "Registration successful, wait for admin approval"
     };
 
-    let site = get_site(None).await?;
+    let site = api::get_site(None).await?;
     let ctx = context!(site, message);
     Ok(Either::Left(Template::render("message", ctx)))
 }
 
 #[get("/post")]
 pub async fn post(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
+    let site = api::get_site(auth(cookies)).await?;
     Ok(Template::render("editor", context!(site)))
 }
 
@@ -190,8 +226,8 @@ pub struct PostForm {
 
 #[post("/do_post", data = "<form>")]
 pub async fn do_post(form: Form<PostForm>, cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
-    let community = get_community(form.community_name.clone(), auth(cookies)).await?;
-    let post = create_post(
+    let community = api::get_community(form.community_name.clone(), auth(cookies)).await?;
+    let post = api::create_post(
         form.subject.clone(),
         form.message.clone(),
         community.community_view.community.id,
@@ -203,8 +239,8 @@ pub async fn do_post(form: Form<PostForm>, cookies: &CookieJar<'_>) -> Result<Re
 
 #[get("/comment?<t>")]
 pub async fn comment(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
-    let post = get_post(t, auth(cookies)).await?;
+    let site = api::get_site(auth(cookies)).await?;
+    let post = api::get_post(t, auth(cookies)).await?;
     Ok(Template::render("editor", context!(site, post)))
 }
 
@@ -219,7 +255,7 @@ pub async fn do_comment(
     form: Form<CommentForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Redirect, ErrorPage> {
-    create_comment(t, form.message.clone(), auth(cookies).unwrap()).await?;
+    api::create_comment(t, form.message.clone(), auth(cookies).unwrap()).await?;
     Ok(Redirect::to(uri!(view_topic(t))))
 }
 

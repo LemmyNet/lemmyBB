@@ -9,20 +9,7 @@ mod template_helpers;
 mod test;
 
 use crate::{
-    routes::{
-        comment,
-        do_comment,
-        do_login,
-        do_post,
-        do_register,
-        index,
-        login_page,
-        logout,
-        post,
-        register_page,
-        view_forum,
-        view_topic,
-    },
+    routes::*,
     template_helpers::{
         comment_index,
         handlebars_helper_vec_length,
@@ -77,15 +64,17 @@ fn init_rocket() -> Rocket<Build> {
                 index,
                 view_forum,
                 view_topic,
-                login_page,
+                login,
                 do_login,
                 post,
                 do_post,
                 comment,
                 do_comment,
                 logout,
-                register_page,
-                do_register
+                register,
+                do_register,
+                setup,
+                do_setup // TODO: add redirects from apub routes like /post/123
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets")))

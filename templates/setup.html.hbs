@@ -1,11 +1,11 @@
 {{> header }}
 
-<form id="register" method="post" action="./do_register">
+<form id="register" method="post" action="./do_setup">
 
     <div class="panel">
         <div class="inner">
 
-            <h2>yourdomain.com - Registration</h2>
+            <h2>Register admin account</h2>
 
             <fieldset class="fields2">
                 <dl>
@@ -23,11 +23,7 @@
                 <dl>
                     <dt>
                         <label for="email">Email address:</label><br />
-                        {{#if site.site_view.site.require_email_verification}}
-                        <span>Required</span>
-                        {{else}}
                         <span>Optional</span>
-                        {{/if}}
                     </dt>
                     <dd><input type="email" tabindex="4" name="email" size="25" maxlength="100" value="" class="inputbox autowidth" title="Email address" autocomplete="off" /></dd>
                 </dl>
@@ -35,54 +31,28 @@
                     <dt><label for="email">Show NSFW content:</label></dt>
                     <dd><input type="checkbox" tabindex="5" name="show_nsfw" size="25" maxlength="100" value="" class="inputbox autowidth" title="Show NSFW content" /></dd>
                 </dl>
-                <dl>
-                    <dd><input type="hidden" name="honeypot" id="honeypot" size="25" maxlength="100" value="" class="inputbox autowidth" title="Honeypot" autocomplete="off" /></dd>
-                </dl>
 
                 <hr />
 
             </fieldset>
         </div>
     </div>
-    <div class="panel captcha-panel">
+    <div class="panel">
         <div class="inner">
 
-            <h3 class="captcha-title">Confirmation of registration</h3>
-
-            {{#if site.site_view.site.require_application}}
-            <p>{{site.site_view.site.application_question}}</p>
+            <h2>Site configuration</h2>
 
             <fieldset class="fields2">
                 <dl>
-                    <dd>
-                        <dt><label for="application_answer">Application answer:</label></dt>
-                        <textarea name="application_answer" rows="5" cols="50" tabindex="6" class="inputbox"></textarea>
-                    </dd>
+                    <dt><label for="site_name">Name:</label></dt>
+                    <dd><input type="text" tabindex="7" name="site_name" size="25" value="" class="inputbox autowidth" title="Name" /></dd>
                 </dl>
-            </fieldset>
-
-            {{/if}}
-            {{#if site.site_view.site.require_application and captcha.ok}}
-            <hr/>
-            {{/if}}
-            {{#if captcha.ok}}
-            <p>To prevent automated registrations the board requires you to enter a confirmation code. The code is displayed in the image you should see below. If you are visually impaired or cannot otherwise read this code please contact the Board Administrator.</p>
-
-            <fieldset class="fields2">
-
                 <dl>
-                    <dt><label for="confirm_code">Confirmation code:</label></dt>
-                    <dd class="captcha captcha-image"><img src="data:image/png;base64,{{captcha.ok.png}}" alt="Confirmation code" width="360"/></dd>
-                    <dd>
-                        <input type="text" name="captcha_answer" size="8" maxlength="8" tabindex="7" class="inputbox narrow" title="Confirmation code" autocomplete="off" />
-                        <input type="submit" name="refresh_captcha" tabindex="9" class="button2" value="Refresh confirmation code">
-                        <input type="hidden" name="captcha_uuid" value="{{captcha.ok.uuid}}"/>
-                    </dd>
-                    <dd>Enter the code exactly as it appears. All letters are case insensitive.</dd>
+                    <dt><label for="site_description">Description:</label><span>Optional</span></dt>
+                    <dd><input type="text" tabindex="8" name="site_description" size="25" value="" class="inputbox autowidth" title="Description" /></dd>
                 </dl>
-
             </fieldset>
-            {{/if}}
+
         </div>
     </div>
 

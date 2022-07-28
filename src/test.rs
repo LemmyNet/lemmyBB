@@ -1,4 +1,4 @@
-use crate::init_rocket;
+use crate::{init_rocket, routes::*};
 use log::LevelFilter;
 use rocket::{http::uri::Origin, local::blocking::Client};
 use serial_test::serial;
@@ -20,7 +20,13 @@ fn test_with_uri(uri: Origin) {
 #[test]
 #[serial]
 fn test_index() {
-    test_with_uri(uri!("/"))
+    test_with_uri(uri!(index))
+}
+
+#[test]
+#[serial]
+fn test_setup() {
+    test_with_uri(uri!(setup))
 }
 
 #[test]
@@ -38,19 +44,19 @@ fn test_viewtopic() {
 #[test]
 #[serial]
 fn test_login() {
-    test_with_uri(uri!("/login"))
+    test_with_uri(uri!(login))
 }
 
 #[test]
 #[serial]
 fn test_register() {
-    test_with_uri(uri!("/register"))
+    test_with_uri(uri!(register))
 }
 
 #[test]
 #[serial]
 fn test_post() {
-    test_with_uri(uri!("/post"))
+    test_with_uri(uri!(post))
 }
 
 #[test]

@@ -15,7 +15,7 @@ use lemmy_api_common::{
     },
     post::{CreatePost, GetPost, GetPostResponse, GetPosts, GetPostsResponse, PostResponse},
     sensitive::Sensitive,
-    site::{GetSite, GetSiteResponse},
+    site::{CreateSite, GetSite, GetSiteResponse, SiteResponse},
 };
 use lemmy_db_schema::{
     newtypes::{CommunityId, PersonId, PostId},
@@ -270,6 +270,20 @@ pub async fn register(form: RegisterForm) -> Result<LoginResponse, Error> {
         answer: form.application_answer,
     };
     post("/user/register", &params).await
+}
+
+pub async fn create_site(
+    name: String,
+    description: Option<String>,
+    auth: String,
+) -> Result<SiteResponse, Error> {
+    let params = CreateSite {
+        name,
+        description,
+        auth: Sensitive::new(auth),
+        ..Default::default()
+    };
+    post("/site", &params).await
 }
 
 #[derive(Deserialize)]

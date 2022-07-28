@@ -4,7 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>{{ site.site_view.site.name }}</title>
+    {{#if site.site_view.site.name}}
+        <title>{{ site.site_view.site.name }}</title>
+    {{/if}}
 
     <!--
         phpBB style name: prosilver
@@ -15,7 +17,9 @@
 
     <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
     <link href="/assets/styles/prosilver/stylesheet.css" rel="stylesheet" />
-    <link id="favicon" rel="icon" rel="shortcut icon" type="image/x-icon" href={{site.site_view.site.icon}} />
+    {{#if site.site_view.site.icon}}
+        <link id="favicon" rel="icon" rel="shortcut icon" type="image/x-icon" href={{site.site_view.site.icon}} />
+    {{/if}}
 </head>
 <body id="phpbb" class="nojs notouch section-viewforum ltr">
 <div id="wrap" class="wrap">
@@ -27,7 +31,9 @@
                     <a id="logo" class="logo" href="./" title="Board index">
                         <span class="site_logo"></span>
                     </a>
-                    <h1>{{ site.site_view.site.name }}</h1>
+                    {{#if site.site_view.site.name }}
+                        <h1>{{ site.site_view.site.name }}</h1>
+                    {{/if}}
                     {{#if site.site_view.site.description }}
                         <p>{{ site.site_view.site.description }}</p>
                     {{/if}}
