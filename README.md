@@ -43,7 +43,7 @@ cp docker/nginx-lemmybb.conf /etc/nginx/sites-enabled/lemmybb.conf
 cp docker/nginx-lemmyui.conf /etc/nginx/sites-enabled/lemmyui.conf
 # rewrite nginx configs with actual domains
 sed -i -e 's/example.com/your-domain.xyz/g' /etc/nginx/sites-enabled/lemmybb.conf
-sed -i -e 's/lemmybb.example.com/lemmyui.your-domain.xyz/g' /etc/nginx/sites-enabled/lemmyui.conf
+sed -i -e 's/lemmyui.example.com/lemmyui.your-domain.xyz/g' /etc/nginx/sites-enabled/lemmyui.conf
 # reload nginx with new config files
 nginx -s reload
 ```

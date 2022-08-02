@@ -30,7 +30,7 @@ services:
     image: dessalines/lemmy:0.16.6
     restart: always
     ports:
-      - "127.0.0.1:8536:8703"
+      - "127.0.0.1:8703:8536"
     environment:
       - RUST_LOG=warn
     volumes:
