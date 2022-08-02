@@ -3,6 +3,16 @@
 
 A Lemmy frontend inspired by [phpBB](https://www.phpbb.com/).
 
+## Instances
+
+Here is a list of known lemmyBB instances:
+
+| Domain                                        | Registration | lemmy-ui domain                               | Notes                   |
+|-----------------------------------------------|--------------|-----------------------------------------------|-------------------------|
+| [lemmybb.lemmy.ml](https://lemmybb.lemmy.ml/) | closed       | [lemmyui.lemmy.ml](https://lemmyui.lemmy.ml/) | developer test instance |
+
+Please open a pull request if you know another instance.
+
 ## Deployment
 
 ### Installation
