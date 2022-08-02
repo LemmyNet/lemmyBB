@@ -2,3 +2,4 @@
 /.idea
 docker/volumes
 docker/lemmy.hjson
+.env
