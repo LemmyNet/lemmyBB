@@ -21,7 +21,7 @@ services:
       - "127.0.0.1:8702:1234"
     environment:
       - LEMMY_INTERNAL_HOST=lemmy:8536
-      - LEMMY_EXTERNAL_HOST=example.com/lemmy-ui
+      - LEMMY_EXTERNAL_HOST=${LEMMY_UI_HOST}
       - LEMMY_HTTPS=true
     depends_on: 
       - lemmy
