@@ -3,6 +3,12 @@
 
 A Lemmy frontend inspired by [phpBB](https://www.phpbb.com/).
 
+## Screenshots
+
+![](./screenshots/lemmybb_1.png)
+![](./screenshots/lemmybb_2.png)
+![](./screenshots/lemmybb_3.png)
+
 ## Instances
 
 Here is a list of known lemmyBB instances:
