@@ -11,7 +11,7 @@ fn init() {
 }
 
 fn test_with_uri(uri: Origin) {
-    let rocket = init_rocket();
+    let rocket = init_rocket().unwrap();
     let client = Client::tracked(rocket).unwrap();
     let res = client.get(uri).dispatch();
     assert_eq!(200, res.status().code);

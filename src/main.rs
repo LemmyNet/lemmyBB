@@ -25,6 +25,7 @@ use log::LevelFilter;
 use rocket::{
     fs::{relative, FileServer},
     Build,
+    Config,
     Rocket,
 };
 use rocket_dyn_templates::Template;
@@ -38,11 +39,11 @@ async fn main() -> Result<(), Error> {
         .filter(Some("rocket"), LevelFilter::Info)
         .filter(Some("handlebars"), LevelFilter::Info)
         .init();
-    let _ = init_rocket().launch().await?;
+    let _ = init_rocket()?.launch().await?;
     Ok(())
 }
 
-fn init_rocket() -> Rocket<Build> {
+fn init_rocket() -> Result<Rocket<Build>, Error> {
     let template_fairing = Template::custom(|engines| {
         let reg = &mut engines.handlebars;
         reg.set_strict_mode(true);
@@ -56,7 +57,16 @@ fn init_rocket() -> Rocket<Build> {
         reg.register_helper("length", Box::new(handlebars_helper_vec_length));
     });
 
-    rocket::build()
+    let listen_address =
+        env::var("LEMMY_BB_LISTEN_ADDRESS").unwrap_or_else(|_| "127.0.0.1:1244".to_string());
+    let (address, port) = listen_address.split_once(':').unwrap();
+    let config = Config {
+        address: address.parse()?,
+        port: port.parse()?,
+        ..Config::default()
+    };
+    Ok(rocket::build()
+        .configure(config)
         .attach(template_fairing)
         .mount(
             "/",
@@ -77,5 +87,5 @@ fn init_rocket() -> Rocket<Build> {
                 do_setup // TODO: add redirects from apub routes like /post/123
             ],
         )
-        .mount("/assets", FileServer::from(relative!("assets")))
+        .mount("/assets", FileServer::from(relative!("assets"))))
 }

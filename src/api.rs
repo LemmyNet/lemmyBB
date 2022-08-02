@@ -40,8 +40,8 @@ pub static CLIENT: Lazy<Client> = Lazy::new(|| {
 });
 
 fn gen_request_url(path: &str) -> String {
-    let lemmy_backend = env::var("LEMMY_INTERNAL_HOST")
-        .unwrap_or_else(|_| panic!("LEMMY_INTERNAL_HOST environment variable is required"));
+    let lemmy_backend =
+        env::var("LEMMY_BB_BACKEND").unwrap_or_else(|_| "http://localhost:8536".to_string());
 
     format!("{}{}{}", lemmy_backend, LEMMY_API_VERSION, path)
 }

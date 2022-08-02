@@ -1,0 +1,9 @@
+# See the documentation for available config fields and descriptions:
+# https://join-lemmy.org/docs/en/administration/configuration.html
+{
+  hostname: example.com
+  pictrs_url: "http://pictrs:8080"
+  database: {
+    host: postgres
+  }
+}
