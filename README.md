@@ -21,6 +21,16 @@ Please open a pull request if you know another instance.
 
 ## Deployment
 
+### Locally
+
+You can run lemmyBB locally in order to use any Lemmy instance. You need to have git and cargo installed, and run the following command, replacing example.com with your instance:
+```
+git clone https://github.com/LemmyNet/lemmyBB.git
+LEMMY_BB_BACKEND=https://example.com cargo run
+```
+
+Then open [127.0.0.1:1244](http://127.0.0.1:1244) in your browser. You can login with your existing account.
+
 ### Installation
 
 Follow these steps to install lemmyBB on your server. Resource usage is very low, so it should work fine with even the smallest of VPS. This guide installs lemmyBB on the main domain (example.com), and lemmy-ui on a subdomain (lemmyui.example.com). Of course you can choose to organize your domains in a different way. You can also choose to install without lemmy-ui, but this is not currently recommended because lemmyBB still lacks many features, particularly for moderation and administration. Where indicated, replace the example domains with your actual domains.
