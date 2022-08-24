@@ -2,6 +2,7 @@
 extern crate rocket;
 
 mod api;
+mod env;
 mod error;
 mod routes;
 mod template_helpers;
@@ -9,6 +10,7 @@ mod template_helpers;
 mod test;
 
 use crate::{
+    env::listen_address,
     routes::*,
     template_helpers::{
         comment_index,
@@ -29,7 +31,6 @@ use rocket::{
     Rocket,
 };
 use rocket_dyn_templates::Template;
-use std::env;
 
 #[main]
 async fn main() -> Result<(), Error> {
@@ -57,8 +58,7 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("length", Box::new(handlebars_helper_vec_length));
     });
 
-    let listen_address =
-        env::var("LEMMY_BB_LISTEN_ADDRESS").unwrap_or_else(|_| "127.0.0.1:1244".to_string());
+    let listen_address = listen_address();
     let (address, port) = listen_address.split_once(':').unwrap();
     let config = Config {
         address: address.parse()?,

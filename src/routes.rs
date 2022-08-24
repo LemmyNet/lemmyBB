@@ -2,6 +2,7 @@ use crate::{
     api,
     api::{PostOrComment, CLIENT},
     error::ErrorPage,
+    template_helpers::replace_smilies,
     Error,
 };
 use futures::future::join_all;
@@ -89,7 +90,7 @@ pub async fn do_setup(
 
     api::create_site(form.site_name.clone(), form.site_description.clone(), jwt).await?;
 
-    return Ok(Redirect::to(uri!(index)));
+    Ok(Redirect::to(uri!(index)))
 }
 
 #[get("/viewforum?<f>")]
@@ -104,7 +105,7 @@ pub async fn view_forum(f: i32, cookies: &CookieJar<'_>) -> Result<Template, Err
     .await
     .into_iter()
     .collect::<Result<Vec<PostOrComment>, Error>>()?;
-    let ctx = context! { site, posts, last_replies };
+    let ctx = context! { site, f, posts, last_replies };
     Ok(Template::render("viewforum", ctx))
 }
 
@@ -211,22 +212,49 @@ pub async fn do_register(
     Ok(Either::Left(Template::render("message", ctx)))
 }
 
-#[get("/post")]
-pub async fn post(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = api::get_site(auth(cookies)).await?;
-    Ok(Template::render("editor", context!(site)))
+#[get("/post?<f>")]
+pub async fn post(f: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    post_with_preview(f, None, cookies).await
+}
+
+pub async fn post_with_preview(
+    community_id: i32,
+    form: Option<PostForm>,
+    cookies: &CookieJar<'_>,
+) -> Result<Template, ErrorPage> {
+    let auth = auth(cookies);
+    let site = api::get_site(auth.clone()).await?;
+    let community = api::get_community(community_id, auth).await?;
+    Ok(if let Some(form) = form {
+        Template::render(
+            "editor",
+            context!(site, community, subject: form.subject, message: form.message),
+        )
+    } else {
+        Template::render("editor", context!(site, community))
+    })
 }
 
 #[derive(FromForm)]
 pub struct PostForm {
     subject: String,
     message: String,
-    community_name: String,
+    preview: Option<String>,
 }
 
-#[post("/do_post", data = "<form>")]
-pub async fn do_post(form: Form<PostForm>, cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
-    let community = api::get_community(form.community_name.clone(), auth(cookies)).await?;
+#[post("/do_post?<f>", data = "<form>")]
+pub async fn do_post(
+    f: i32,
+    mut form: Form<PostForm>,
+    cookies: &CookieJar<'_>,
+) -> Result<Either<Template, Redirect>, ErrorPage> {
+    form.message = replace_smilies(&form.message);
+    if form.preview.is_some() {
+        return Ok(Either::Left(
+            post_with_preview(f, Some(form.into_inner()), cookies).await?,
+        ));
+    }
+    let community = api::get_community(f, auth(cookies)).await?;
     let post = api::create_post(
         form.subject.clone(),
         form.message.clone(),
@@ -234,29 +262,50 @@ pub async fn do_post(form: Form<PostForm>, cookies: &CookieJar<'_>) -> Result<Re
         auth(cookies).unwrap(),
     )
     .await?;
-    Ok(Redirect::to(uri!(view_topic(post.post_view.post.id.0))))
+    Ok(Either::Right(Redirect::to(uri!(view_topic(
+        post.post_view.post.id.0
+    )))))
 }
 
 #[get("/comment?<t>")]
 pub async fn comment(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    comment_with_preview(t, None, cookies).await
+}
+
+async fn comment_with_preview(
+    post_id: i32,
+    form: Option<CommentForm>,
+    cookies: &CookieJar<'_>,
+) -> Result<Template, ErrorPage> {
     let site = api::get_site(auth(cookies)).await?;
-    let post = api::get_post(t, auth(cookies)).await?;
-    Ok(Template::render("editor", context!(site, post)))
+    let post = api::get_post(post_id, auth(cookies)).await?;
+    Ok(if let Some(form) = form {
+        Template::render("editor", context!(site, post, message: form.message))
+    } else {
+        Template::render("editor", context!(site, post))
+    })
 }
 
 #[derive(FromForm)]
 pub struct CommentForm {
     message: String,
+    preview: Option<String>,
 }
 
 #[post("/do_comment?<t>", data = "<form>")]
 pub async fn do_comment(
     t: i32,
-    form: Form<CommentForm>,
+    mut form: Form<CommentForm>,
     cookies: &CookieJar<'_>,
-) -> Result<Redirect, ErrorPage> {
+) -> Result<Either<Template, Redirect>, ErrorPage> {
+    form.message = replace_smilies(&form.message);
+    if form.preview.is_some() {
+        return Ok(Either::Left(
+            comment_with_preview(t, Some(form.into_inner()), cookies).await?,
+        ));
+    }
     api::create_comment(t, form.message.clone(), auth(cookies).unwrap()).await?;
-    Ok(Redirect::to(uri!(view_topic(t))))
+    Ok(Either::Right(Redirect::to(uri!(view_topic(t)))))
 }
 
 #[get("/logout")]

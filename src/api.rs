@@ -1,4 +1,4 @@
-use crate::routes::RegisterForm;
+use crate::{env::lemmy_backend, routes::RegisterForm};
 use anyhow::{anyhow, Error};
 use chrono::NaiveDateTime;
 use futures::{future::join_all, join};
@@ -27,7 +27,7 @@ use lemmy_db_views::structs::PostView;
 use once_cell::sync::Lazy;
 use reqwest::{Client, StatusCode};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
-use std::{env, fmt::Debug, time::Duration};
+use std::{fmt::Debug, time::Duration};
 
 static LEMMY_API_VERSION: &str = "/api/v3";
 
@@ -40,10 +40,7 @@ pub static CLIENT: Lazy<Client> = Lazy::new(|| {
 });
 
 fn gen_request_url(path: &str) -> String {
-    let lemmy_backend =
-        env::var("LEMMY_BB_BACKEND").unwrap_or_else(|_| "http://localhost:8536".to_string());
-
-    format!("{}{}{}", lemmy_backend, LEMMY_API_VERSION, path)
+    format!("{}{}{}", lemmy_backend(), LEMMY_API_VERSION, path)
 }
 
 pub async fn list_posts(
@@ -234,11 +231,11 @@ pub async fn get_person(
 }
 
 pub async fn get_community(
-    name: String,
+    id: i32,
     auth: Option<Sensitive<String>>,
 ) -> Result<GetCommunityResponse, Error> {
     let params = GetCommunity {
-        name: Some(name),
+        id: Some(CommunityId(id)),
         auth,
         ..Default::default()
     };

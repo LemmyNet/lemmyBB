@@ -5,7 +5,7 @@
 </p>
 
 <div class="action-bar bar-top">
-    <a href="./post" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
+    <a href="./post?f={{f}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
     <div class="search-box" role="search">
         <form method="get" id="forum-search" action="./search.php">
@@ -64,7 +64,7 @@
 </div>
 
 <div class="action-bar bar-bottom">
-    <a href="./post" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
+    <a href="./post?f={{f}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
     <form method="post" action="./viewforum.php?f=2">
         <div class="dropdown-container dropdown-container-left dropdown-button-control sort-tools">
@@ -119,7 +119,7 @@
 
 <div class="action-bar actions-jump">
     <p class="jumpbox-return">
-        <a href="./index.php" class="left-box arrow-left" accesskey="r"> <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to Board Index</span> </a>
+        <a href="./" class="left-box arrow-left" accesskey="r"> <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to Board Index</span> </a>
     </p>
 
     <div class="jumpbox dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">

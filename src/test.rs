@@ -56,7 +56,7 @@ fn test_register() {
 #[test]
 #[serial]
 fn test_post() {
-    test_with_uri(uri!(post))
+    test_with_uri(uri!("/post?f=8"))
 }
 
 #[test]
