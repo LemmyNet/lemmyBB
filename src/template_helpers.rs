@@ -3,6 +3,7 @@ use chrono::NaiveDateTime;
 use comrak::ComrakOptions;
 use lemmy_db_schema::newtypes::CommentId;
 use lemmy_db_views::structs::CommentView;
+use once_cell::sync::Lazy;
 use rocket_dyn_templates::handlebars::{
     handlebars_helper,
     Context,
@@ -12,7 +13,6 @@ use rocket_dyn_templates::handlebars::{
     RenderContext,
     RenderError,
 };
-use once_cell::sync::Lazy;
 
 static COMRAK: Lazy<ComrakOptions> = Lazy::new(|| {
     let mut comrak = ComrakOptions::default();

@@ -1,4 +1,7 @@
-use crate::{init_rocket, routes::*};
+use crate::{
+    init_rocket,
+    routes::{site::*, user::*},
+};
 use log::LevelFilter;
 use rocket::{http::uri::Origin, local::blocking::Client};
 use serial_test::serial;

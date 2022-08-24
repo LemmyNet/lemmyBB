@@ -11,7 +11,7 @@ mod test;
 
 use crate::{
     env::listen_address,
-    routes::*,
+    routes::{comment::*, community::*, post::*, site::*, user::*},
     template_helpers::{
         comment_index,
         handlebars_helper_vec_length,
