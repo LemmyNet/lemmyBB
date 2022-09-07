@@ -1,7 +1,7 @@
 use crate::{
     api,
     api::{site::get_site, user::get_captcha},
-    routes::{auth, site::rocket_uri_macro_index, ErrorPage},
+    routes::{site::rocket_uri_macro_index, ErrorPage},
 };
 use rocket::{
     form::Form,
@@ -13,7 +13,7 @@ use rocket_dyn_templates::{context, Template};
 
 #[get("/login")]
 pub async fn login(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
+    let site = get_site(cookies).await?;
     Ok(Template::render("login", context!(site)))
 }
 
@@ -38,8 +38,8 @@ pub async fn do_login(
 }
 
 #[get("/register")]
-pub async fn register() -> Result<Template, ErrorPage> {
-    let site = get_site(None).await?;
+pub async fn register(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = get_site(cookies).await?;
     let captcha = get_captcha().await?;
     Ok(Template::render("register", context!(site, captcha)))
 }
@@ -84,7 +84,7 @@ pub async fn do_register(
         "Registration successful, wait for admin approval"
     };
 
-    let site = get_site(None).await?;
+    let site = get_site(cookies).await?;
     let ctx = context!(site, message);
     Ok(Either::Left(Template::render("message", ctx)))
 }

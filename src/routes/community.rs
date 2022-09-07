@@ -13,7 +13,7 @@ use rocket_dyn_templates::{context, Template};
 
 #[get("/viewforum?<f>")]
 pub async fn view_forum(f: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
+    let site = get_site(cookies).await?;
     let posts = list_posts(f, 20, auth(cookies)).await?.posts;
     let last_replies = join_all(
         posts

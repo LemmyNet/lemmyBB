@@ -15,7 +15,7 @@ use url::Url;
 
 #[get("/viewtopic?<t>")]
 pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
+    let site = get_site(cookies).await?;
     let mut post = get_post(t, auth(cookies)).await?;
 
     // simply ignore deleted/removed comments
@@ -48,9 +48,8 @@ pub async fn post_with_preview(
     form: Option<PostForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Template, ErrorPage> {
-    let auth = auth(cookies);
-    let site = get_site(auth.clone()).await?;
-    let community = get_community(community_id, auth).await?;
+    let site = get_site(cookies).await?;
+    let community = get_community(community_id, auth(cookies)).await?;
     Ok(if let Some(form) = form {
         Template::render(
             "editor",

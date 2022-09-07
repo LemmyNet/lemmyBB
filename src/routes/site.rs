@@ -19,7 +19,7 @@ use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
 pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
+    let site = get_site(cookies).await?;
     if site.site_view.is_none() {
         // need to setup site
         return Ok(Either::Left(Redirect::to(uri!(setup))));
@@ -44,7 +44,7 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>
 
 #[get("/setup")]
 pub async fn setup(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
+    let site = get_site(cookies).await?;
     let ctx = context! { site };
     Ok(Template::render("setup", ctx))
 }

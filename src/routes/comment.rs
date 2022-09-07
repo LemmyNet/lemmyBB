@@ -17,7 +17,7 @@ async fn comment_with_preview(
     form: Option<CommentForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Template, ErrorPage> {
-    let site = get_site(auth(cookies)).await?;
+    let site = get_site(cookies).await?;
     let post = get_post(post_id, auth(cookies)).await?;
     Ok(if let Some(form) = form {
         Template::render("editor", context!(site, post, message: form.message))
