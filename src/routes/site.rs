@@ -80,3 +80,15 @@ pub async fn do_setup(
 
     Ok(Redirect::to(uri!(index)))
 }
+
+#[get("/legal")]
+pub async fn legal(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = get_site(cookies).await?;
+    let message = site
+        .0
+        .site_view
+        .as_ref()
+        .map(|s| s.site.legal_information.clone());
+    let ctx = context! { message, site };
+    Ok(Template::render("message", ctx))
+}

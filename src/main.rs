@@ -85,7 +85,8 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 do_register,
                 setup,
                 do_setup,
-                mark_all_notifications_read
+                mark_all_notifications_read,
+                legal
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))
