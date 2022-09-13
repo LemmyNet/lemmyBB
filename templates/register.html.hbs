@@ -23,7 +23,7 @@
                 <dl>
                     <dt>
                         <label for="email">Email address:</label><br />
-                        {{#if site.site_view.site.require_email_verification}}
+                        {{#if site.0.site_view.site.require_email_verification}}
                         <span>Required</span>
                         {{else}}
                         <span>Optional</span>
@@ -49,8 +49,8 @@
 
             <h3 class="captcha-title">Confirmation of registration</h3>
 
-            {{#if site.site_view.site.require_application}}
-            <p>{{site.site_view.site.application_question}}</p>
+            {{#if site.0.site_view.site.require_application}}
+            <p>{{site.0.site_view.site.application_question}}</p>
 
             <fieldset class="fields2">
                 <dl>
@@ -62,7 +62,7 @@
             </fieldset>
 
             {{/if}}
-            {{#if site.site_view.site.require_application and captcha.ok}}
+            {{#if site.0.site_view.site.require_application and captcha.ok}}
             <hr/>
             {{/if}}
             {{#if captcha.ok}}

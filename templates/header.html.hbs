@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    {{#if site.site_view.site.name}}
-        <title>{{ site.site_view.site.name }}</title>
+    {{#if site.0.site_view.site.name}}
+        <title>{{ site.0.site_view.site.name }}</title>
     {{/if}}
 
     <!--
@@ -17,8 +17,8 @@
 
     <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
     <link href="/assets/styles/prosilver/stylesheet.css" rel="stylesheet" />
-    {{#if site.site_view.site.icon}}
-        <link id="favicon" rel="icon" rel="shortcut icon" type="image/x-icon" href={{site.site_view.site.icon}} />
+    {{#if site.0.site_view.site.icon}}
+        <link id="favicon" rel="icon" rel="shortcut icon" type="image/x-icon" href={{site.0.site_view.site.icon}} />
     {{/if}}
 </head>
 <body id="phpbb" class="nojs notouch section-viewforum ltr">
@@ -31,11 +31,11 @@
                     <a id="logo" class="logo" href="./" title="Board index">
                         <span class="site_logo"></span>
                     </a>
-                    {{#if site.site_view.site.name }}
-                        <h1>{{ site.site_view.site.name }}</h1>
+                    {{#if site.0.site_view.site.name }}
+                        <h1>{{ site.0.site_view.site.name }}</h1>
                     {{/if}}
-                    {{#if site.site_view.site.description }}
-                        <p>{{ site.site_view.site.description }}</p>
+                    {{#if site.0.site_view.site.description }}
+                        <p>{{ site.0.site_view.site.description }}</p>
                     {{/if}}
                 </div>
 
@@ -79,11 +79,11 @@
                         <a href="/33x/app.php/help/faq" rel="help" title="Frequently Asked Questions" role="menuitem"> <i class="icon fa-question-circle fa-fw" aria-hidden="true"></i><span>FAQ</span> </a>
                     </li>
 
-                    {{#if site.my_user}}
+                    {{#if site.0.my_user}}
                             <li id="username_logged_in" class="rightside " data-skip-responsive="true">
                                 <div class="header-profile dropdown-container">
                                     <a href="./ucp.php" class="header-avatar dropdown-trigger dropdown-toggle">
-                                        <span class="username">{{site.my_user.local_user_view.person.name}}</span>
+                                        <span class="username">{{site.0.my_user.local_user_view.person.name}}</span>
                                     </a>
                                     <div class="dropdown">
                                         <div class="pointer"><div class="pointer-inner"></div></div>
@@ -118,26 +118,44 @@
                             </li>
                             <li class="dropdown-container dropdown-right rightside" data-skip-responsive="true">
                                 <a href="./ucp.php?i=ucp_notifications" id="notification_list_button" class="dropdown-trigger dropdown-toggle">
-                                    <i class="icon fa-bell fa-fw" aria-hidden="true"></i><span>Notifications </span><strong class="badge hidden">0</strong>
+                                    <i class="icon fa-bell fa-fw" aria-hidden="true"></i><span>Notifications </span>
+                                    {{#if site.1}}
+                                        <strong class="badge">{{length site.1}}</strong>
+                                    {{else}}
+                                        <strong class="badge hidden">0</strong>
+                                    {{/if}}
                                 </a>
+
                                 <div id="notification_list" class="dropdown dropdown-extended notification_list">
                                     <div class="pointer"><div class="pointer-inner"></div></div>
                                     <div class="dropdown-contents">
-                                        <div class="header">
-                                            Notifications
-                                            <span class="header_settings">
-				<a href="./ucp.php?i=ucp_notifications&amp;mode=notification_options">Settings</a>
-							</span>
-                                        </div>
+                                        <div class="header">Notifications</div>
 
+                                        {{#each site.1}}
+                                        <ul>
+                                            <li class="">
+                                                <a class="notification-block" href="{{this.link}}">
+                                                    <img src="./styles/prosilver/theme/images/no_avatar.gif" alt="">
+                                                    <div class="notification_text">
+                                                        <p class="notification-title"><strong>{{this.title}}</strong> from <span class="username">{{this.from_user.name}}</span>:</p>
+                                                        <p class="notification-reference">{{this.reference}}</p>
+                                                        <p class="notification-time">{{timestamp_human this.time}}</p>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        {{else}}
                                         <ul>
                                             <li class="no_notifications">
                                                 You have no notifications
                                             </li>
                                         </ul>
+                                        {{/each}}
 
                                         <div class="footer">
-                                            <a href="./ucp.php?i=ucp_notifications"><span>See All</span></a>
+                                            <form action="/mark_all_notifications_read" method="POST">
+                                            <a href="#" onclick="this.parentNode.submit()"><span>Mark all as read</span></a>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +164,7 @@
                     <li class="rightside" data-skip-responsive="true">
                         <a href="./login" title="Login" accesskey="x" role="menuitem"> <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>Login</span> </a>
                     </li>
-                        {{#if site.site_view.site.open_registration}}
+                        {{#if site.0.site_view.site.open_registration}}
                         <li class="rightside" data-skip-responsive="true">
                             <a href="./register" role="menuitem"> <i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i><span>Register</span> </a>
                         </li>

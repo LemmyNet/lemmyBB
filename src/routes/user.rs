@@ -1,7 +1,10 @@
 use crate::{
     api,
-    api::{site::get_site, user::get_captcha},
-    routes::{site::rocket_uri_macro_index, ErrorPage},
+    api::{
+        site::get_site,
+        user::{get_captcha, mark_all_as_read},
+    },
+    routes::{auth, site::rocket_uri_macro_index, ErrorPage},
 };
 use rocket::{
     form::Form,
@@ -93,5 +96,11 @@ pub async fn do_register(
 pub async fn logout(cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
     // simply delete the cookie
     cookies.remove(Cookie::named("jwt"));
+    Ok(Redirect::to(uri!(index)))
+}
+
+#[post("/mark_all_notifications_read")]
+pub async fn mark_all_notifications_read(cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
+    mark_all_as_read(auth(cookies).unwrap()).await?;
     Ok(Redirect::to(uri!(index)))
 }

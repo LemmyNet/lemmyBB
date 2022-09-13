@@ -8,8 +8,13 @@ use lemmy_api_common::{
         GetCaptchaResponse,
         GetPersonDetails,
         GetPersonDetailsResponse,
+        GetPersonMentions,
+        GetPersonMentionsResponse,
+        GetReplies,
+        GetRepliesResponse,
         Login,
         LoginResponse,
+        MarkAllAsRead,
         Register,
     },
     sensitive::Sensitive,
@@ -53,4 +58,29 @@ pub async fn register(form: RegisterForm) -> Result<LoginResponse, Error> {
         answer: form.application_answer,
     };
     post("/user/register", &params).await
+}
+
+pub(crate) async fn list_mentions(
+    auth: Sensitive<String>,
+) -> Result<GetPersonMentionsResponse, Error> {
+    let params = GetPersonMentions {
+        auth,
+        unread_only: Some(true),
+        ..Default::default()
+    };
+    get("/user/mention", params).await
+}
+
+pub(crate) async fn list_replies(auth: Sensitive<String>) -> Result<GetRepliesResponse, Error> {
+    let params = GetReplies {
+        auth,
+        unread_only: Some(true),
+        ..Default::default()
+    };
+    get("/user/replies", params).await
+}
+
+pub async fn mark_all_as_read(auth: Sensitive<String>) -> Result<GetRepliesResponse, Error> {
+    let params = MarkAllAsRead { auth };
+    post("/user/mark_all_as_read", params).await
 }

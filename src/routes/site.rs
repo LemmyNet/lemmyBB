@@ -20,7 +20,7 @@ use rocket_dyn_templates::{context, Template};
 #[get("/")]
 pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>, ErrorPage> {
     let site = get_site(cookies).await?;
-    if site.site_view.is_none() {
+    if site.0.site_view.is_none() {
         // need to setup site
         return Ok(Either::Left(Redirect::to(uri!(setup))));
     }
@@ -38,6 +38,7 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>
     .await
     .into_iter()
     .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
+
     let ctx = context! { site, communities, last_replies };
     Ok(Either::Right(Template::render("index", ctx)))
 }

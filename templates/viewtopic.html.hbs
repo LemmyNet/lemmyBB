@@ -153,7 +153,7 @@
                 <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{this.creator.name}}</a></strong> &raquo; </span>
                 <time datetime="{{timestamp_machine this.comment.published}}">{{timestamp_human this.comment.published}}</time>
                 {{#if this.comment.parent_id}}
-                    {{ ../site.site_view.site.name }}
+                    {{ ../site.0.site_view.site.name }}
                     {{#with (comment_index this.comment.id ../post.comments) as | pos |}}
                         <span style="float: right; margin-right: 48px">Responding to <a href="./viewtopic?t={{../this.post.id}}#p{{pos}}">#{{pos}}</a></span>
                     {{/with}}

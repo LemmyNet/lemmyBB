@@ -84,7 +84,8 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 register,
                 do_register,
                 setup,
-                do_setup // TODO: add redirects from apub routes like /post/123
+                do_setup,
+                mark_all_notifications_read
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))

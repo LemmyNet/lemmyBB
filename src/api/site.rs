@@ -1,5 +1,11 @@
 use crate::{
-    api::{gen_request_url, handle_response, post, CLIENT},
+    api::{
+        extra::{get_notifications, Notification},
+        gen_request_url,
+        handle_response,
+        post,
+        CLIENT,
+    },
     routes::auth,
 };
 use anyhow::Error;
@@ -12,7 +18,9 @@ use rocket::http::{Cookie, CookieJar};
 /// Don't use get() function here, so that we can directly inspect api response, and handle error
 /// `not_logged_in`. This commonly happens during development when Lemmy database was wiped, but
 /// cookie is still present in browser. In that case, delete jwt cookie.
-pub async fn get_site(cookies: &CookieJar<'_>) -> Result<GetSiteResponse, Error> {
+pub async fn get_site(
+    cookies: &CookieJar<'_>,
+) -> Result<(GetSiteResponse, Vec<Notification>), Error> {
     let params = GetSite {
         auth: auth(cookies),
     };
@@ -30,7 +38,13 @@ pub async fn get_site(cookies: &CookieJar<'_>) -> Result<GetSiteResponse, Error>
         status = res.status();
         text = res.text().await?;
     }
-    handle_response(text, status)
+    let site = handle_response(text, status)?;
+
+    let notifications = match auth(cookies) {
+        Some(auth) => get_notifications(auth).await?,
+        None => vec![],
+    };
+    Ok((site, notifications))
 }
 
 pub async fn create_site(
