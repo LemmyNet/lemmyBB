@@ -92,3 +92,22 @@ pub async fn legal(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let ctx = context! { message, site };
     Ok(Template::render("message", ctx))
 }
+
+#[get("/search?<keywords>")]
+pub async fn search(
+    keywords: Option<String>,
+    cookies: &CookieJar<'_>,
+) -> Result<Template, ErrorPage> {
+    let site = get_site(cookies).await?;
+    if let Some(keywords) = keywords {
+        let search_results = crate::api::site::search(keywords.clone(), auth(cookies)).await?;
+        let search_results_count = search_results.users.len()
+            + search_results.communities.len()
+            + search_results.posts.len()
+            + search_results.comments.len();
+        let ctx = context! { site, keywords, search_results, search_results_count };
+        Ok(Template::render("search_results", ctx))
+    } else {
+        Ok(Template::render("advanced_search", context!(site)))
+    }
+}

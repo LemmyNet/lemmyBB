@@ -1,0 +1,98 @@
+{{> header }}
+
+        <h2 class="solo">Search (unimplemented)</h2>
+
+        <form method="get" action="./search.php" data-focus="keywords">
+
+            <div class="panel">
+                <div class="inner">
+                    <h3>Search query</h3>
+
+                    <fieldset>
+                        <dl>
+                            <dt><label for="keywords">Search for keywords:</label><br /><span>Place <strong>+</strong> in front of a word which must be found and <strong>-</strong> in front of a word which must not be found. Put a list of words separated by <strong>|</strong> into brackets if only one of the words must be found. Use * as a wildcard for partial matches.</span></dt>
+                            <dd><input type="search" class="inputbox" name="keywords" id="keywords" size="40" title="Search for keywords" /></dd>
+                            <dd><label for="terms1"><input type="radio" name="terms" id="terms1" value="all" checked="checked" /> Search for all terms or use query as entered</label></dd>
+                            <dd><label for="terms2"><input type="radio" name="terms" id="terms2" value="any" /> Search for any terms</label></dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="author">Search for author:</label><br /><span>Use * as a wildcard for partial matches.</span></dt>
+                            <dd><input type="search" class="inputbox" name="author" id="author" size="40" title="Search for author" /></dd>
+                        </dl>
+                    </fieldset>
+
+                </div>
+            </div>
+
+            <div class="panel bg2">
+                <div class="inner">
+
+                    <h3>Search options</h3>
+
+                    <fieldset>
+                        <dl>
+                            <dt><label for="search_forum">Search in forums:</label><br /><span>Select the forum or forums you wish to search in. Subforums are searched automatically if you do not disable “search subforums“ below.</span></dt>
+                            <dd><select name="fid[]" id="search_forum" multiple="multiple" size="8" title="Search in forums"><option value="1">Your first category</option><option value="2">&nbsp; &nbsp;Your first forum</option></select></dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="search_child1">Search subforums:</label></dt>
+                            <dd>
+                                <label for="search_child1"><input type="radio" name="sc" id="search_child1" value="1" checked="checked" /> Yes</label>
+                                <label for="search_child2"><input type="radio" name="sc" id="search_child2" value="0" /> No</label>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="sf1">Search within:</label></dt>
+                            <dd><label for="sf1"><input type="radio" name="sf" id="sf1" value="all" checked="checked" /> Post subjects and message text</label></dd>
+                            <dd><label for="sf2"><input type="radio" name="sf" id="sf2" value="msgonly" /> Message text only</label></dd>
+                            <dd><label for="sf3"><input type="radio" name="sf" id="sf3" value="titleonly" /> Topic titles only</label></dd>
+                            <dd><label for="sf4"><input type="radio" name="sf" id="sf4" value="firstpost" /> First post of topics only</label></dd>
+                        </dl>
+
+                        <hr class="dashed" />
+
+                        <dl>
+                            <dt><label for="show_results1">Display results as:</label></dt>
+                            <dd>
+                                <label for="show_results1"><input type="radio" name="sr" id="show_results1" value="posts" checked="checked" /> Posts</label>
+                                <label for="show_results2"><input type="radio" name="sr" id="show_results2" value="topics" /> Topics</label>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="sd">Sort results by:</label></dt>
+                            <dd><select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="f">Forum</option><option value="i">Topic title</option><option value="s">Post subject</option></select>&nbsp;
+                                <label for="sa"><input type="radio" name="sd" id="sa" value="a" /> Ascending</label>
+                                <label for="sd"><input type="radio" name="sd" id="sd" value="d" checked="checked" /> Descending</label>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label>Limit results to previous:</label></dt>
+                            <dd><select name="st" id="st"><option value="0" selected="selected">All results</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select></dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <label for="ch">Return first:</label>
+                                <br><span>Set to 0 to display the entire post.</span>
+                            </dt>
+                            <dd><input id="ch" name="ch" type="number" value="300" min="0" max="9999" title="Return first"> characters of posts</dd>
+                        </dl>
+                    </fieldset>
+
+                </div>
+            </div>
+
+            <div class="panel bg3">
+                <div class="inner">
+
+                    <fieldset class="submit-buttons">
+                        <input type="hidden" name="t" value="0" />
+
+                        <input type="submit" name="submit" value="Search" class="button1" />
+                    </fieldset>
+
+                </div>
+            </div>
+
+        </form>
+
+{{> footer }}

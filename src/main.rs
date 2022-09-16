@@ -12,15 +12,7 @@ mod test;
 use crate::{
     env::listen_address,
     routes::{comment::*, community::*, post::*, site::*, user::*},
-    template_helpers::{
-        comment_index,
-        handlebars_helper_vec_length,
-        markdown,
-        modulo,
-        sum,
-        timestamp_human,
-        timestamp_machine,
-    },
+    template_helpers::*,
 };
 use anyhow::Error;
 use log::LevelFilter;
@@ -56,6 +48,8 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("mod", Box::new(modulo));
         reg.register_helper("comment_index", Box::new(comment_index));
         reg.register_helper("length", Box::new(handlebars_helper_vec_length));
+        reg.register_helper("community_actor_id", Box::new(community_actor_id));
+        reg.register_helper("user_actor_id", Box::new(user_actor_id));
     });
 
     let listen_address = listen_address();
@@ -86,7 +80,8 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 setup,
                 do_setup,
                 mark_all_notifications_read,
-                legal
+                legal,
+                search
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))

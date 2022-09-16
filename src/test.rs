@@ -1,6 +1,6 @@
 use crate::{
     init_rocket,
-    routes::{site::*, user::*},
+    routes::{comment::*, community::*, post::*, site::*, user::*},
 };
 use log::LevelFilter;
 use rocket::{http::uri::Origin, local::blocking::Client};
@@ -35,13 +35,13 @@ fn test_setup() {
 #[test]
 #[serial]
 fn test_viewforum() {
-    test_with_uri(uri!("/viewforum?f=8"))
+    test_with_uri(uri!(view_forum(f = 8)))
 }
 
 #[test]
 #[serial]
 fn test_viewtopic() {
-    test_with_uri(uri!("/viewtopic?t=360976"))
+    test_with_uri(uri!(view_topic(t = 360976)))
 }
 
 #[test]
@@ -59,11 +59,22 @@ fn test_register() {
 #[test]
 #[serial]
 fn test_post() {
-    test_with_uri(uri!("/post?f=8"))
+    test_with_uri(uri!(post(f = 8)))
 }
 
 #[test]
 #[serial]
 fn test_comment() {
-    test_with_uri(uri!("/comment?t=360976"))
+    test_with_uri(uri!(comment(t = 360976)))
+}
+
+#[test]
+#[serial]
+fn test_search_results() {
+    test_with_uri(uri!(search(keywords = Some("my search"))))
+}
+#[test]
+#[serial]
+fn test_advanced_search() {
+    test_with_uri(uri!("/search"))
 }
