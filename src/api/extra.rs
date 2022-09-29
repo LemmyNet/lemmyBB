@@ -35,6 +35,7 @@ fn generate_comment_title(post_title: &str) -> String {
     format!("Re: {}", post_title)
 }
 
+#[allow(dead_code)]
 pub async fn get_last_reply_in_thread(
     post: &PostView,
     auth: Option<Sensitive<String>>,
@@ -61,6 +62,7 @@ pub async fn get_last_reply_in_thread(
     }
 }
 
+#[allow(dead_code)]
 pub async fn get_last_reply_in_community(
     community_id: CommunityId,
     auth: Option<Sensitive<String>>,

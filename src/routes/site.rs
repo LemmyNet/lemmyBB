@@ -1,14 +1,11 @@
 use crate::{
     api::{
         community::list_communities,
-        extra::{get_last_reply_in_community, PostOrComment},
         site::{create_site, get_site},
         user::register,
     },
     routes::{auth, user::RegisterForm, ErrorPage},
 };
-use anyhow::Error;
-use futures::future::join_all;
 use rocket::{
     form::Form,
     http::{Cookie, CookieJar},
@@ -29,6 +26,7 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>
     communities
         .communities
         .sort_unstable_by_key(|c| c.community.id.0);
+    /*
     let last_replies = join_all(
         communities
             .communities
@@ -38,8 +36,9 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>
     .await
     .into_iter()
     .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
+     */
 
-    let ctx = context! { site, communities, last_replies };
+    let ctx = context! { site, communities };
     Ok(Either::Right(Template::render("index", ctx)))
 }
 
