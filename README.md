@@ -31,7 +31,7 @@ LEMMY_BB_BACKEND=https://example.com cargo run
 
 Then open [127.0.0.1:1244](http://127.0.0.1:1244) in your browser. You can login with your existing account.
 
-### Standalone
+### Installation for existing Lemmy instance
 
 Follow these steps to install only the lemmyBB frontend on your server.
 
@@ -46,7 +46,7 @@ Change to the folder, create lemmybb binary and create a link of it to the root 
 ```
 cd lemmyBB
 cargo build --release
-ls /opt/lemmyBB/target/debug/lemmy_bb /opt/lemmyBB/lemmy_bb
+mv /opt/lemmyBB/target/release/lemmy_bb /opt/lemmyBB/lemmy_bb
 ```
 
 Copy the nginx config into the sites-enabled folder and edit it
@@ -84,7 +84,7 @@ systemctl enable --now lemmy_bb.service
 systemctl status lemmy_bb.service
 ```
 
-### Installation
+### Installation for new Lemmy instance
 
 Follow these steps to install lemmyBB on your server. Resource usage is very low, so it should work fine with even the smallest of VPS. This guide installs lemmyBB on the main domain (example.com), and lemmy-ui on a subdomain (lemmyui.example.com). Of course you can choose to organize your domains in a different way. You can also choose to install without lemmy-ui, but this is not currently recommended because lemmyBB still lacks many features, particularly for moderation and administration. Where indicated, replace the example domains with your actual domains.
 
