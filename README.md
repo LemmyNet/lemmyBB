@@ -50,7 +50,6 @@ Change to the folder, create lemmybb binary and create a link of it to the root 
 ```
 cd lemmyBB
 cargo build --release
-mv /opt/lemmyBB/target/release/lemmy_bb /opt/lemmyBB/lemmy_bb
 ```
 
 Copy the nginx config into the sites-enabled folder and edit it
@@ -78,7 +77,7 @@ WorkingDirectory=/opt/lemmyBB/
 Environment="LEMMY_BB_BACKEND=http://127.0.0.1:8536"
 Environment="LEMMY_BB_LISTEN_ADDRESS=127.0.0.1:8703"
 Environment="LD_PRELOAD=libjemalloc.so"
-ExecStart=/opt/lemmyBB/lemmy_bb
+ExecStart=/opt/lemmyBB/target/release/lemmy_bb
 Restart=always
 
 [Install]
