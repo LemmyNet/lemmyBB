@@ -1,4 +1,5 @@
 # lemmyBB
+
 [![Build Status](https://cloud.drone.io/api/badges/LemmyNet/activitypub-federation-rust/status.svg)](https://cloud.drone.io/Nutomic/lemmyBB)
 
 A Lemmy frontend inspired by [phpBB](https://www.phpbb.com/).
@@ -13,9 +14,10 @@ A Lemmy frontend inspired by [phpBB](https://www.phpbb.com/).
 
 Here is a list of known lemmyBB instances:
 
-| Domain                                        | Registration | lemmy-ui domain                               | Notes                   |
-|-----------------------------------------------|--------------|-----------------------------------------------|-------------------------|
-| [lemmybb.lemmy.ml](https://lemmybb.lemmy.ml/) | open         | [lemmyui.lemmy.ml](https://lemmyui.lemmy.ml/) | developer test instance |
+| Domain                                                             | Registration | lemmy-ui domain                                                | Notes                   |
+| ------------------------------------------------------------------ | ------------ | -------------------------------------------------------------- | ----------------------- |
+| [lemmybb.lemmy.ml](https://lemmybb.lemmy.ml/)                      | open         | [lemmyui.lemmy.ml](https://lemmyui.lemmy.ml/)                  | developer test instance |
+| [lemmybb.rollenspiel.monster](https://lemmybb.rollenspiel.monster) | open         | [lemmy.rollenspiel.monster](https://lemmy.rollenspiel.monster) | topic role play         |
 
 Please open a pull request if you know another instance.
 
@@ -24,6 +26,7 @@ Please open a pull request if you know another instance.
 ### Locally
 
 You can run lemmyBB locally in order to use any Lemmy instance. You need to have git and cargo installed, and run the following command, replacing example.com with your instance:
+
 ```
 git clone https://github.com/LemmyNet/lemmyBB.git
 LEMMY_BB_BACKEND=https://example.com cargo run
@@ -36,6 +39,7 @@ Then open [127.0.0.1:1244](http://127.0.0.1:1244) in your browser. You can login
 Follow these steps to install only the lemmyBB frontend on your server.
 
 First, ssh into your server and prepare by cloning the code repository.
+
 ```
 cd /opt
 git clone https://github.com/LemmyNet/lemmyBB.git
@@ -50,16 +54,19 @@ mv /opt/lemmyBB/target/release/lemmy_bb /opt/lemmyBB/lemmy_bb
 ```
 
 Copy the nginx config into the sites-enabled folder and edit it
+
 ```
 cp docker/nginx-lemmybb.conf /etc/nginx/sites-enabled/lemmybb.conf
 ```
 
 create systemd service file
+
 ```
 nano /etc/systemd/system/lemmy_bb.service
 ```
 
 and insert the following content and adapt 'LEMMY_BB_BACKEND' and 'LEMMY_BB_LISTEN_ADDRESS' to your installation
+
 ```
 [Unit]
 Description=lemmy_bb
@@ -79,8 +86,9 @@ WantedBy=multi-user.target
 ```
 
 then activate and start the service and check the status
+
 ```
-systemctl enable --now lemmy_bb.service 
+systemctl enable --now lemmy_bb.service
 systemctl status lemmy_bb.service
 ```
 
@@ -89,6 +97,7 @@ systemctl status lemmy_bb.service
 Follow these steps to install lemmyBB on your server. Resource usage is very low, so it should work fine with even the smallest of VPS. This guide installs lemmyBB on the main domain (example.com), and lemmy-ui on a subdomain (lemmyui.example.com). Of course you can choose to organize your domains in a different way. You can also choose to install without lemmy-ui, but this is not currently recommended because lemmyBB still lacks many features, particularly for moderation and administration. Where indicated, replace the example domains with your actual domains.
 
 First, ssh into your server and prepare by cloning the code repository and creating pictrs folder.
+
 ```
 git clone https://github.com/LemmyNet/lemmyBB.git
 cd lemmyBB
@@ -97,6 +106,7 @@ chown 991:991 docker/volumes/pictrs
 ```
 
 Then copy the config, and set your actual hostname. See [this page](https://join-lemmy.org/docs/en/administration/configuration.html) for a full list of configuration options. Also specify the hostname for lemmy-ui.
+
 ```
 cp docker/lemmy_config_default.hjson docker/lemmy.hjson
 sed -i -e 's/example.com/your-domain.xyz/g' docker/lemmy.hjson
@@ -162,11 +172,12 @@ Once the development setup is ready, execute `cargo run` in both the lemmy and l
 lemmyBB is configured via environment variables:
 
 | var                     | default value         | description                                                  |
-|-------------------------|-----------------------|--------------------------------------------------------------|
+| ----------------------- | --------------------- | ------------------------------------------------------------ |
 | LEMMY_BB_BACKEND        | http://localhost:8536 | Protocol, hostname and port where lemmy backend is available |
 | LEMMY_BB_LISTEN_ADDRESS | 127.0.0.1:1244        | IP and port where lemmyBB listens for requests               |
+
 ## License
 
-The project is licensed under [AGPLv3](LICENSE). 
+The project is licensed under [AGPLv3](LICENSE).
 
 Theme files from phpBB are licensed under [GPLv2](https://www.phpbb.com/downloads/license).
