@@ -28,23 +28,6 @@
         </div>
     </div>
 
-    <div class="search-box" role="search">
-        <form method="get" id="topic-search" action="./search.php">
-            <fieldset>
-                <input class="inputbox search tiny"  type="search" name="keywords" id="search_keywords" size="20" placeholder="Search this topic…" />
-                <button class="button button-search" type="submit" title="Search">
-                    <i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span>
-                </button>
-                <a href="./search.php" class="button button-search-end" title="Advanced search">
-                    <i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">Advanced search</span>
-                </a>
-                <input type="hidden" name="t" value="1" />
-                <input type="hidden" name="sf" value="msgonly" />
-
-            </fieldset>
-        </form>
-    </div>
-
     <div class="pagination">
         {{length post.comments}} comments
         &bull; Page <strong>1</strong> of <strong>1</strong>

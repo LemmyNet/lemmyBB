@@ -7,17 +7,6 @@
 <div class="action-bar bar-top">
     <a href="./post?f={{f}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
-    <div class="search-box" role="search">
-        <form method="get" id="forum-search" action="./search.php">
-            <fieldset>
-                <input class="inputbox search tiny" type="search" name="keywords" id="search_keywords" size="20" placeholder="Search this forum…" />
-                <button class="button button-search" type="submit" title="Search"><i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span></button>
-                <a href="./search.php?fid%5B%5D=2" class="button button-search-end" title="Advanced search"> <i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">Advanced search</span> </a>
-                <input type="hidden" name="fid[0]" value="2" />
-            </fieldset>
-        </form>
-    </div>
-
     <div class="pagination">{{length posts}} posts &bull; Page <strong>1</strong> of <strong>1</strong></div>
 </div>
 
