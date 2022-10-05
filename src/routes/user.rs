@@ -2,10 +2,11 @@ use crate::{
     api,
     api::{
         site::get_site,
-        user::{get_captcha, mark_all_as_read},
+        user::{get_captcha, get_person, mark_all_as_read},
     },
     routes::{auth, site::rocket_uri_macro_index, ErrorPage},
 };
+use lemmy_db_schema::newtypes::PersonId;
 use rocket::{
     form::Form,
     http::{Cookie, CookieJar},
@@ -103,4 +104,12 @@ pub async fn logout(cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
 pub async fn mark_all_notifications_read(cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
     mark_all_as_read(auth(cookies).unwrap()).await?;
     Ok(Redirect::to(uri!(index)))
+}
+
+#[get("/view_profile?<u>")]
+pub async fn view_profile(u: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site = get_site(cookies).await?;
+    let person = get_person(PersonId(u), auth(cookies)).await?;
+    let ctx = context!(site, person);
+    Ok(Template::render("view_profile", ctx))
 }

@@ -9,8 +9,8 @@ use std::env;
 
 #[ctor::ctor]
 fn init() {
-    env::set_var("LEMMY_INTERNAL_HOST", "https://lemmy.ml");
-    env_logger::builder().filter_level(LevelFilter::Warn).init();
+    env::set_var("LEMMY_BB_BACKEND", "https://lemmy.ml");
+    env_logger::builder().filter_level(LevelFilter::Info).init();
 }
 
 fn test_with_uri(uri: Origin) {
@@ -22,59 +22,66 @@ fn test_with_uri(uri: Origin) {
 
 #[test]
 #[serial]
-fn test_index() {
+fn index() {
     test_with_uri(uri!(index))
 }
 
 #[test]
 #[serial]
-fn test_setup() {
+fn setup() {
     test_with_uri(uri!(setup))
 }
 
 #[test]
 #[serial]
-fn test_viewforum() {
+fn view_forum() {
     test_with_uri(uri!(view_forum(f = 8)))
 }
 
 #[test]
 #[serial]
-fn test_viewtopic() {
+fn view_topic() {
     test_with_uri(uri!(view_topic(t = 360976)))
 }
 
 #[test]
 #[serial]
-fn test_login() {
+fn login() {
     test_with_uri(uri!(login))
 }
 
 #[test]
 #[serial]
-fn test_register() {
+fn register() {
     test_with_uri(uri!(register))
 }
 
 #[test]
 #[serial]
-fn test_post() {
+fn post() {
     test_with_uri(uri!(post(f = 8)))
 }
 
 #[test]
 #[serial]
-fn test_comment() {
+fn comment() {
     test_with_uri(uri!(comment(t = 360976)))
 }
 
 #[test]
 #[serial]
-fn test_search_results() {
+fn search_results() {
     test_with_uri(uri!(search(keywords = Some("my search"))))
 }
+
 #[test]
 #[serial]
-fn test_advanced_search() {
+fn advanced_search() {
     test_with_uri(uri!("/search"))
+}
+
+#[test]
+#[serial]
+fn view_profile() {
+    test_with_uri(uri!(view_profile(u = 8169)))
 }

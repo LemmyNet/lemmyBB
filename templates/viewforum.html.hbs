@@ -41,7 +41,7 @@
                             <a href="./viewtopic?t={{this.post.id}}" class="topictitle">{{this.post.name}}</a> <br />
 
                             <div class="topic-poster left-box">
-                                by <a href="./memberlist.php?mode=viewprofile&amp;u=2">{{this.creator.name}}</a> &raquo;
+                                by <a href="/view_profile?u={{this.creator.id}}">{{this.creator.name}}</a> &raquo;
                                 <time datetime="{{timestamp_machine this.post.published }}">{{timestamp_human this.post.published}}</time>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                         {{!--
                         {{#with (lookup ../last_replies @index)}}
                         <span>
-                            <dfn>Last post </dfn>by <a href="./memberlist.php?mode=viewprofile&amp;u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
+                            <dfn>Last post </dfn>by <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
                             <a href="./viewtopic?t={{../this.post.id}}#p{{this.reply_position}}" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
                             <time datetime="{{timestamp_machine this.time}}">{{timestamp_human this.time}}</time>
                         </span>

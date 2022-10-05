@@ -58,12 +58,12 @@
             <dt class="has-profile-rank">
                 <div class="avatar-container">
                     {{#if this.creator.avatar}}
-                    <a href="./memberlist.php?mode=viewprofile&amp;u=1426841&amp;sid=13119117267087e4eda44ac9e74f5bd2" class="avatar">
+                    <a href="/view_profile?u={{post.post_view.creator.id}}" class="avatar">
                         <img class="avatar" src="{{post.post_view.creator.avatar}}" alt="User avatar" width="60" height="60">
                     </a>
                     {{/if}}
                 </div>
-                <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{post.post_view.creator.name}}</a>							</dt>
+                <a href="/view_profile?u={{post.post_view.creator.id}}" class="username">{{post.post_view.creator.name}}</a>							</dt>
 
             <dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2&amp;sr=posts">?</a></dd>
             <dd class="profile-joined"><strong>Joined:</strong> {{timestamp_human post.post_view.creator.published}}</dd>
@@ -86,7 +86,7 @@
                     <a class="unread" href="./viewtopic?t={{post.post_view.post.id}}#p1" title="Post">
                         <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
                     </a>
-                    <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{post.post_view.creator.name}}</a></strong> &raquo; </span>
+                    <span class="responsive-hide">by <strong><a href="/view_profile?u={{post.post_view.creator.id}}" class="username">{{post.post_view.creator.name}}</a></strong> &raquo; </span>
                     <time datetime="{{timestamp_machine post.post_view.post.published}}">{{timestamp_human post.post_view.post.published}}</time>
                 </p>
                 <div class="content">
@@ -124,12 +124,12 @@
             <dt class="has-profile-rank">
                 <div class="avatar-container">
                     {{#if this.creator.avatar}}
-                    <a href="./memberlist.php?mode=viewprofile&amp;u=1426841&amp;sid=13119117267087e4eda44ac9e74f5bd2" class="avatar">
+                    <a href="/view_profile?u={{this.creator.id}}" class="avatar">
                         <img class="avatar" src="{{this.creator.avatar}}" alt="User avatar" width="60" height="60">
                     </a>
                     {{/if}}
                 </div>
-                <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{this.creator.name}}</a>							</dt>
+                <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a>							</dt>
 
             <dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2&amp;sr=posts">1</a></dd>
             <dd class="profile-joined"><strong>Joined:</strong>{{timestamp_human this.creator.published}}</dd>
@@ -150,7 +150,7 @@
                 <a class="unread" href="./viewtopic?t={{this.post.id}}#p{{sum @index 2}}" title="Post">
                     <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
                 </a>
-                <span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{this.creator.name}}</a></strong> &raquo; </span>
+                <span class="responsive-hide">by <strong><a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a></strong> &raquo; </span>
                 <time datetime="{{timestamp_machine this.comment.published}}">{{timestamp_human this.comment.published}}</time>
                 {{#if this.comment.parent_id}}
                     {{ ../site.0.site_view.site.name }}

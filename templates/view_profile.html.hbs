@@ -1,0 +1,81 @@
+{{> header }}
+
+        <h2 class="memberlist-title">Viewing profile - {{person.person_view.person.name}}</h2>
+
+
+        <form method="post" action="./memberlist.php?mode=group" id="viewprofile">
+            <div class="panel bg1">
+                <div class="inner">
+
+                    {{#if person.person_view.person.avatar}}
+                    <dl class="left-box">
+                        <dt class="profile-avatar"><img src="{{person.person_view.person.avatar}}" width="120" height="120" alt="User avatar" /></dt>
+                    </dl>
+                    {{/if}}
+
+                    <dl class="left-box details profile-details">
+                        <dt>Username:</dt>
+                        <dd>{{person.person_view.person.name}}</dd>
+                        {{#if person.person_view.person.bio}}
+                            <dt>Bio:</dt>
+                            <dd>{{{markdown person.person_view.person.bio}}}<dd>
+                        {{/if}}
+                    </dl>
+
+                </div>
+            </div>
+
+            <div class="panel bg2">
+                <div class="inner">
+
+                    <div class="column1">
+                        <h3>Contact {{person.person_view.person.name}}</h3>
+
+                        <dl class="details">
+                            <dt>PM:</dt>
+                            <dd><a href="./ucp.php?i=pm&amp;mode=compose&amp;u=356301">Send private message</a></dd>
+                        </dl>
+                    </div>
+
+                    <div class="column2">
+                        <h3>User statistics</h3>
+                        <dl class="details">
+                            <dt>Joined:</dt> <dd>{{timestamp_human person.person_view.person.published}}</dd>
+                            <dt>Total posts:</dt>
+                            <dd>{{person.person_view.counts.post_count}}</dd>
+                            <dt>Total comments:</dt>
+                            <dd>{{person.person_view.counts.comment_count}}</dd>
+                        </dl>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </form>
+
+
+
+        <div class="action-bar actions-jump">
+
+            <div class="jumpbox dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">
+			<span title="Jump to" class="button button-secondary dropdown-trigger dropdown-select">
+				<span>Jump to</span>
+				<span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+			</span>
+                <div class="dropdown">
+                    <div class="pointer"><div class="pointer-inner"></div></div>
+                    <ul class="dropdown-contents">
+                        <li>
+                            <a href="./viewforum.php?f=1" class="jumpbox-cat-link"> <span> Your first category</span></a>
+                        </li>
+                        <li>
+                            <a href="./viewforum.php?f=2" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Your first forum</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+{{> footer }}

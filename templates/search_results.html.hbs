@@ -55,7 +55,7 @@
             <div class="inner">
 
                 <dl class="postprofile">
-                    <dt class="author">by <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{this.creator.name}}</a></dt>
+                    <dt class="author">by <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a></dt>
                     <dd class="search-result-date">{{{timestamp_human this.creator.published}}}</dd>
                     <dd>Forum: <a href="viewforum?f={{this.community.id}}">{{this.community.title}}</a></dd>
                     <dd>Topic: <a href="viewtopic?t={{this.post.id}}">{{this.post.name}}</a></dd>
@@ -97,7 +97,7 @@
             <div class="inner">
 
                 <dl class="postprofile">
-                    <dt class="author">by <a href="./memberlist.php?mode=viewprofile&amp;u=2" class="username">{{this.creator.name}}</a></dt>
+                    <dt class="author">by <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a></dt>
                     <dd class="search-result-date">{{{timestamp_human this.creator.published}}}</dd>
                     <dd>Forum: <a href="/viewforum?f={{this.community.id}}">{{this.community.title}}</a></dd>
                     <dd>Topic: <a href="/viewtopic?t={{this.post.id}}">{{this.post.name}}</a></dd>

@@ -1,4 +1,4 @@
-use rocket::{response::Responder, Request};
+use rocket::{http::Status, response::Responder, Request};
 use rocket_dyn_templates::{context, Template};
 
 #[derive(Debug)]
@@ -9,7 +9,9 @@ impl<'r> Responder<'r, 'static> for ErrorPage {
     fn respond_to(self, request: &'r Request<'_>) -> rocket::response::Result<'static> {
         warn!("{}", self.0);
         let ctx = context! { error: self.0.to_string() };
-        Template::render("error", ctx).respond_to(request)
+        let mut res = Template::render("error", ctx).respond_to(request)?;
+        res.set_status(Status::InternalServerError);
+        Err(Status::InternalServerError)
     }
 }
 
