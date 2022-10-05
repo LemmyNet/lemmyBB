@@ -52,30 +52,10 @@
         <div class="navbar" role="navigation">
             <div class="inner">
                 <ul id="nav-main" class="nav-main linklist" role="menubar">
-                    <li id="quick-links" class="quick-links dropdown-container responsive-menu" data-skip-responsive="true">
-                        <a href="#" class="dropdown-trigger"> <i class="icon fa-bars fa-fw" aria-hidden="true"></i><span>Quick links</span> </a>
-                        <div class="dropdown">
-                            <div class="pointer"><div class="pointer-inner"></div></div>
-                            <ul class="dropdown-contents" role="menu">
-                                <li class="separator"></li>
-                                <li>
-                                    <a href="./search.php?search_id=unanswered" role="menuitem"> <i class="icon fa-file-o fa-fw icon-gray" aria-hidden="true"></i><span>Unanswered topics</span> </a>
-                                </li>
-                                <li>
-                                    <a href="./search.php?search_id=active_topics" role="menuitem"> <i class="icon fa-file-o fa-fw icon-blue" aria-hidden="true"></i><span>Active topics</span> </a>
-                                </li>
-                                <li class="separator"></li>
-                                <li>
-                                    <a href="./search.php" role="menuitem"> <i class="icon fa-search fa-fw" aria-hidden="true"></i><span>Search</span> </a>
-                                </li>
-
-                                <li class="separator"></li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li data-skip-responsive="true">
-                        <a href="/33x/app.php/help/faq" rel="help" title="Frequently Asked Questions" role="menuitem"> <i class="icon fa-question-circle fa-fw" aria-hidden="true"></i><span>FAQ</span> </a>
+                    <li class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+                        <span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope>
+                            <a itemprop="item" href="./" accesskey="h" data-navbar-reference="index"><i class="icon fa-home fa-fw"></i><span itemprop="name">Board index</span></a><meta itemprop="position" content="1" />
+                        </span>
                     </li>
 
                     {{#if site.0.my_user}}
@@ -169,18 +149,6 @@
                         </li>
                         {{/if}}
                     {{/if}}
-                </ul>
-
-                <ul id="nav-breadcrumbs" class="nav-breadcrumbs linklist navlinks" role="menubar">
-                    <li class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
-                        <span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope>
-                            <a itemprop="item" href="./" accesskey="h" data-navbar-reference="index"><i class="icon fa-home fa-fw"></i><span itemprop="name">Board index</span></a><meta itemprop="position" content="1" />
-                        </span>
-                    </li>
-
-                    <li class="rightside responsive-search">
-                        <a href="/search" title="View the advanced search options" role="menuitem"> <i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span> </a>
-                    </li>
                 </ul>
             </div>
         </div>
