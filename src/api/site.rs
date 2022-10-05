@@ -57,7 +57,7 @@ pub async fn get_site(
         None => vec![],
     };
 
-    let current_date_time = Local::now().naive_local().format("%c").to_string();
+    let current_date_time = Local::now().naive_local().format("%a %v %R").to_string();
     Ok((site, notifications, current_date_time))
 }
 

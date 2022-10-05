@@ -57,79 +57,7 @@
 <div class="action-bar bar-bottom">
     <a href="./post?f={{f}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
-    <form method="post" action="./viewforum.php?f=2">
-        <div class="dropdown-container dropdown-container-left dropdown-button-control sort-tools">
-            <span title="Display and sorting options" class="button button-secondary dropdown-trigger dropdown-select">
-                <i class="icon fa-sort-amount-asc fa-fw" aria-hidden="true"></i>
-                <span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
-            </span>
-            <div class="dropdown hidden">
-                <div class="pointer"><div class="pointer-inner"></div></div>
-                <div class="dropdown-contents">
-                    <fieldset class="display-options">
-                        <label>
-                            Display:
-                            <select name="st" id="st">
-                                <option value="0" selected="selected">All Topics</option>
-                                <option value="1">1 day</option>
-                                <option value="7">7 days</option>
-                                <option value="14">2 weeks</option>
-                                <option value="30">1 month</option>
-                                <option value="90">3 months</option>
-                                <option value="180">6 months</option>
-                                <option value="365">1 year</option>
-                            </select>
-                        </label>
-                        <label>
-                            Sort by:
-                            <select name="sk" id="sk">
-                                <option value="a">Author</option>
-                                <option value="t" selected="selected">Post time</option>
-                                <option value="r">Replies</option>
-                                <option value="s">Subject</option>
-                                <option value="v">Views</option>
-                            </select>
-                        </label>
-                        <label>
-                            Direction:
-                            <select name="sd" id="sd">
-                                <option value="a">Ascending</option>
-                                <option value="d" selected="selected">Descending</option>
-                            </select>
-                        </label>
-                        <hr class="dashed" />
-                        <input type="submit" class="button2" name="sort" value="Go" />
-                    </fieldset>
-                </div>
-            </div>
-        </div>
-    </form>
-
     <div class="pagination">{{length posts}} posts &bull; Page <strong>1</strong> of <strong>1</strong></div>
-</div>
-
-<div class="action-bar actions-jump">
-    <p class="jumpbox-return">
-        <a href="./" class="left-box arrow-left" accesskey="r"> <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to Board Index</span> </a>
-    </p>
-
-    <div class="jumpbox dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">
-        <span title="Jump to" class="button button-secondary dropdown-trigger dropdown-select">
-            <span>Jump to</span>
-            <span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
-        </span>
-        <div class="dropdown">
-            <div class="pointer"><div class="pointer-inner"></div></div>
-            <ul class="dropdown-contents">
-                <li>
-                    <a href="./viewforum.php?f=1" class="jumpbox-cat-link"> <span> Your first category</span></a>
-                </li>
-                <li>
-                    <a href="./viewforum.php?f=2" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Your first forum</span></a>
-                </li>
-            </ul>
-        </div>
-    </div>
 </div>
 
 {{> footer }}

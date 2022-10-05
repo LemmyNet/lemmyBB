@@ -71,13 +71,7 @@ fn comment() {
 #[test]
 #[serial]
 fn search_results() {
-    test_with_uri(uri!(search(keywords = Some("my search"))))
-}
-
-#[test]
-#[serial]
-fn advanced_search() {
-    test_with_uri(uri!("/search"))
+    test_with_uri(uri!(search(keywords = "my search")))
 }
 
 #[test]

@@ -56,7 +56,8 @@ handlebars_helper!(timestamp_machine: |ts: NaiveDateTime| {
 });
 
 handlebars_helper!(timestamp_human: |ts: NaiveDateTime| {
-    ts.format("%c").to_string()
+    // Wed Oct 05, 2022 9:17 pm
+    ts.format("%a %v %R").to_string()
 });
 
 handlebars_helper!(sum: |a: i32, b: i32| {
