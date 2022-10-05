@@ -10,6 +10,7 @@ use crate::{
     routes::auth,
 };
 use anyhow::Error;
+use chrono::Local;
 use futures::future::join;
 use lemmy_api_common::{
     sensitive::Sensitive,
@@ -31,7 +32,7 @@ use rocket::http::{Cookie, CookieJar};
 /// cookie is still present in browser. In that case, delete jwt cookie.
 pub async fn get_site(
     cookies: &CookieJar<'_>,
-) -> Result<(GetSiteResponse, Vec<Notification>), Error> {
+) -> Result<(GetSiteResponse, Vec<Notification>, String), Error> {
     let params = GetSite {
         auth: auth(cookies),
     };
@@ -55,7 +56,9 @@ pub async fn get_site(
         Some(auth) => get_notifications(auth).await?,
         None => vec![],
     };
-    Ok((site, notifications))
+
+    let current_date_time = Local::now().naive_local().format("%c").to_string();
+    Ok((site, notifications, current_date_time))
 }
 
 pub async fn create_site(
