@@ -1,7 +1,7 @@
 {{> header }}
 
 <p>
-    {{{markdown site.0.site_view.site.sidebar}}}
+    {{{markdown site_data.site.site_view.site.sidebar}}}
 </p>
 
 <div class="action-bar bar-top">
@@ -30,7 +30,7 @@
                             <a href="./viewtopic?t={{this.post.id}}" class="topictitle">{{this.post.name}}</a> <br />
 
                             <div class="topic-poster left-box">
-                                by <a href="/view_profile?u={{this.creator.id}}">{{this.creator.name}}</a> &raquo;
+                                by <a href="/view_profile?u={{this.creator.id}}">{{{user_actor_id this.creator}}}</a> &raquo;
                                 <time datetime="{{timestamp_machine this.post.published }}">{{timestamp_human this.post.published}}</time>
                             </div>
                         </div>

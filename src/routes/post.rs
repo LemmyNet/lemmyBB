@@ -2,7 +2,7 @@ use crate::{
     api::{
         community::get_community,
         post::{create_post, get_post},
-        site::get_site,
+        site::get_site_data,
     },
     error::ErrorPage,
     routes::{auth, CLIENT},
@@ -15,7 +15,7 @@ use url::Url;
 
 #[get("/viewtopic?<t>")]
 pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(cookies).await?;
+    let site_data = get_site_data(cookies).await?;
     let mut post = get_post(t, auth(cookies)).await?;
 
     // simply ignore deleted/removed comments
@@ -34,7 +34,7 @@ pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, Err
         is_image_url = content_type.to_str()?.starts_with("image/");
     }
 
-    let ctx = context! { site, post, is_image_url };
+    let ctx = context! { site_data, post, is_image_url };
     Ok(Template::render("viewtopic", ctx))
 }
 
@@ -48,15 +48,15 @@ pub async fn post_with_preview(
     form: Option<PostForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Template, ErrorPage> {
-    let site = get_site(cookies).await?;
+    let site_data = get_site_data(cookies).await?;
     let community = get_community(community_id, auth(cookies)).await?;
     Ok(if let Some(form) = form {
         Template::render(
             "editor",
-            context!(site, community, subject: form.subject, message: form.message),
+            context!(site_data, community, subject: form.subject, message: form.message),
         )
     } else {
-        Template::render("editor", context!(site, community))
+        Template::render("editor", context!(site_data, community))
     })
 }
 

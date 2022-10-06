@@ -19,7 +19,7 @@
                 <dl class="row-item forum_read">
                     <dt title="No unread posts">
                         <div class="list-inner">
-                            <a href="./viewforum?f={{this.community.id}}" class="forumtitle">{{this.community.title}}</a>
+                            <a href="./viewforum?f={{this.community.id}}" class="forumtitle">{{{community_actor_id this.community}}}</a>
                             <br>{{this.community.description}}
                             <div class="responsive-show" style="display: none;">
                                 Topics: <strong>?</strong>
@@ -34,7 +34,7 @@
                             <span>
                             <dfn>Last comment</dfn>
                             <a href="./viewtopic?t={{this.post_id}}#p{{this.reply_position}}" title="{{this.title}}" class="lastsubject">{{this.title}}</a> <br>
-                            by <a href="/viewprofile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
+                            by <a href="/viewprofile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator.name}}}</a>
                                 <a href="/viewtopic?t={{this.post_id}}#p{{this.reply_position}}" title="View the latest comment">
                             <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">View the latest comment</span>
                                 </a>

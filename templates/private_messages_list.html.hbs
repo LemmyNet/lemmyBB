@@ -1,0 +1,75 @@
+{{> header }}
+
+        <h2 class="ucp-title">User Control Panel</h2>
+
+        <div id="tabs" class="tabs">
+            <ul>
+                <li class="tab"><a href="./ucp.php?i=177">Overview</a></li>
+                <li class="tab activetab"><a href="/private_messages">Private messages</a></li>
+            </ul>
+        </div>
+
+
+        <div class="panel bg3">
+            <div class="inner">
+
+                    <div id="cp-main" class="cp-main ucp-main panel-container" style="width: 100%;">
+
+                        <div class="panel">
+                            <div class="inner">
+                                <div class="action-bar bar-top">
+                                    <a href="./ucp.php?i=pm&amp;mode=compose" accesskey="n" title="Compose message" class="button">
+                                        <span>New PM</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i>
+                                    </a>
+
+
+                                    <div class="pagination">
+                                        <form action="/mark_all_notifications_read" method="POST">
+                                            <a href="#" onclick="this.parentNode.submit()"><span>Mark all as read</span></a>
+                                            &bull; {{{length private_message_threads}}} threads
+                                            &bull; Page <strong>1</strong> of <strong>1</strong>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <ul class="topiclist two-columns">
+                                    <li class="header">
+                                        <dl>
+                                            <dt><div class="list-inner">Message</div></dt>
+                                        </dl>
+                                    </li>
+                                </ul>
+                                <ul class="topiclist cplist pmlist responsive-show-all missing-column">
+
+                                    {{#each private_message_threads}}
+                                    <li class="row bg2">
+                                        <dl class="row-item {{#if this.read}}pm_read{{else}}pm_unread{{/if}}">
+                                            <dt>
+                                                <div class="list-inner">
+
+                                                    <a href="/private_messages_thread?u={{this.other_participant.id}}" class="topictitle">{{{user_actor_id this.other_participant}}}</a>
+                                                </div>
+                                            </dt>
+                                            <dd class="info"><span>Last message: {{{timestamp_human this.last_message}}}</span></dd>
+                                        </dl>
+                                    </li>
+                                    {{/each}}
+
+                                </ul>
+
+                                <div class="action-bar bottom">
+
+                                    <div class="pagination">
+                                        {{{length private_message_threads}}} threads
+                                        &bull; Page <strong>1</strong> of <strong>1</strong>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+            </div>
+        </div>
+
+{{> footer }}

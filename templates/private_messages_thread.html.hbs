@@ -1,0 +1,104 @@
+{{> header }}
+
+<h2 class="ucp-title">User Control Panel</h2>
+
+        <div id="tabs" class="tabs">
+            <ul>
+                <li class="tab"><a href="./ucp.php?i=177">Overview</a></li>
+                <li class="tab activetab"><a href="/private_messages_list">Private messages</a></li>
+            </ul>
+        </div>
+
+
+        <div class="panel bg3">
+            <div class="inner">
+
+                    <div id="cp-main" class="cp-main ucp-main panel-container" style="width: 100%;">
+
+                        <div class="panel">
+                            <div class="inner">
+                                <div class="action-bar bar-top">
+                                    <a title="Reply to message" href="./ucp.php?i=pm&amp;mode=compose&amp;action=reply&amp;f=-1&amp;p=1" class="button">
+                                        <span>Send Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
+                                    </a>
+
+                                    <div class="pagination">
+                                        <a class="arrow-left" href="/private_messages_list">
+                                            <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to Private messages overview</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {{#each private_messages}}
+                        <div id="post-1" class="post pm has-profile">
+                            <div class="inner">
+
+                                <dl class="postprofile" id="profile1">
+                                    <dt class="has-profile-rank">
+                                        <div class="avatar-container">
+                                            {{#if this.creator.avatar}}
+                                                <a href="/view_profile?u={{post.post_view.creator.id}}" class="avatar">
+                                                <img class="avatar" src="{{post.post_view.creator.avatar}}" alt="User avatar" width="60" height="60">
+                                                </a>
+                                            {{/if}}
+                                        </div>
+                                        <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a>
+                                    </dt>
+
+                                    <dd class="profile-joined"><strong>Joined:</strong>{{{timestamp_human this.creator.published}}}</dd>
+                                </dl>
+
+                                <div class="postbody">
+                                    <ul class="post-buttons">
+                                        <li>
+                                            <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=-1&amp;p=1" title="Delete message" class="button button-icon-only">
+                                                <i class="icon fa-times fa-fw" aria-hidden="true"></i><span class="sr-only">Delete</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/33x/app.php/pm/1/report" title="Report private message" class="button button-icon-only">
+                                                <i class="icon fa-exclamation fa-fw" aria-hidden="true"></i><span class="sr-only">Report</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quote&amp;f=-1&amp;p=1" title="Quote message" class="button button-icon-only">
+                                                <i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                    <p class="author">
+                                        <strong>Sent:</strong>{{{timestamp_human this.private_message.published}}}
+                                        <br /><strong>From:</strong> <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a>
+                                        <br /><strong>Recipient:</strong> <a href="/view_profile?u={{this.recipient.id}}" class="username">{{{user_actor_id this.recipient}}}</a>&nbsp;					</p>
+
+
+                                    <div class="content">{{{markdown this.private_message.content}}}</div>
+
+
+
+
+                                </div>
+
+                                <div class="back2top">
+                                    <a href="#top" class="top" title="Top">
+                                        <i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+                                        <span class="sr-only">Top</span>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                        {{/each}}
+
+                    </div>
+
+            </div>
+        </div>
+
+    </div>
+
+{{> footer }}

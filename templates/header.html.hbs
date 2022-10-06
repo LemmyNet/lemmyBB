@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    {{#if site.0.site_view.site.name}}
-        <title>{{ site.0.site_view.site.name }}</title>
+    {{#if site_data.site.site_view.site.name}}
+        <title>{{ site_data.site.site_view.site.name }}</title>
     {{/if}}
 
     <!--
@@ -17,8 +17,8 @@
 
     <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
     <link href="/assets/styles/prosilver/stylesheet.css" rel="stylesheet" />
-    {{#if site.0.site_view.site.icon}}
-        <link id="favicon" rel="icon" rel="shortcut icon" type="image/x-icon" href={{site.0.site_view.site.icon}} />
+    {{#if site_data.site.site_view.site.icon}}
+        <link id="favicon" rel="icon" rel="shortcut icon" type="image/x-icon" href={{site_data.site.site_view.site.icon}} />
     {{/if}}
 </head>
 <body id="phpbb" class="nojs notouch section-viewforum ltr">
@@ -31,11 +31,11 @@
                     <a id="logo" class="logo" href="./" title="Board index">
                         <span class="site_logo"></span>
                     </a>
-                    {{#if site.0.site_view.site.name }}
-                        <h1>{{ site.0.site_view.site.name }}</h1>
+                    {{#if site_data.site.site_view.site.name }}
+                        <h1>{{ site_data.site.site_view.site.name }}</h1>
                     {{/if}}
-                    {{#if site.0.site_view.site.description }}
-                        <p>{{ site.0.site_view.site.description }}</p>
+                    {{#if site_data.site.site_view.site.description }}
+                        <p>{{ site_data.site.site_view.site.description }}</p>
                     {{/if}}
                 </div>
 
@@ -58,11 +58,11 @@
                         </span>
                     </li>
 
-                    {{#if site.0.my_user}}
+                    {{#if site_data.site.my_user}}
                             <li id="username_logged_in" class="rightside " data-skip-responsive="true">
                                 <div class="header-profile dropdown-container">
                                     <a href="./ucp.php" class="header-avatar dropdown-trigger dropdown-toggle">
-                                        <span class="username">{{site.0.my_user.local_user_view.person.name}}</span>
+                                        <span class="username">{{{user_actor_id site_data.site.my_user.local_user_view.person}}}</span>
                                     </a>
                                     <div class="dropdown">
                                         <div class="pointer"><div class="pointer-inner"></div></div>
@@ -74,7 +74,7 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="/view_profile?u={{site.0.my_user.local_user_view.person.id}}" title="Profile" role="menuitem">
+                                                <a href="/view_profile?u={{site_data.site.my_user.local_user_view.person.id}}" title="Profile" role="menuitem">
                                                     <i class="icon fa-user fa-fw" aria-hidden="true"></i><span>Profile</span>
                                                 </a>
                                             </li>
@@ -91,15 +91,20 @@
                                 </div>
                             </li>
                             <li class="rightside" data-skip-responsive="true">
-                                <a href="./ucp.php?i=pm&amp;folder=inbox" role="menuitem">
-                                    <i class="icon fa-inbox fa-fw" aria-hidden="true"></i><span>Private messages </span><strong class="badge hidden">0</strong>
+                                <a href="/private_messages_list" role="menuitem">
+                                    <i class="icon fa-inbox fa-fw" aria-hidden="true"></i><span>Private messages </span>
+                                    {{#if site_data.unread_pm_count}}
+                                        <strong class="badge">{{site_data.unread_pm_count}}</strong>
+                                    {{else}}
+                                        <strong class="badge hidden">0</strong>
+                                    {{/if}}
                                 </a>
                             </li>
                             <li class="dropdown-container dropdown-right rightside" data-skip-responsive="true">
                                 <a href="./ucp.php?i=ucp_notifications" id="notification_list_button" class="dropdown-trigger dropdown-toggle">
                                     <i class="icon fa-bell fa-fw" aria-hidden="true"></i><span>Notifications </span>
-                                    {{#if site.1}}
-                                        <strong class="badge">{{length site.1}}</strong>
+                                    {{#if site.notifications}}
+                                        <strong class="badge">{{length site.notifications}}</strong>
                                     {{else}}
                                         <strong class="badge hidden">0</strong>
                                     {{/if}}
@@ -143,7 +148,7 @@
                     <li class="rightside" data-skip-responsive="true">
                         <a href="./login" title="Login" accesskey="x" role="menuitem"> <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>Login</span> </a>
                     </li>
-                        {{#if site.0.site_view.site.open_registration}}
+                        {{#if site_data.site.site_view.site.open_registration}}
                         <li class="rightside" data-skip-responsive="true">
                             <a href="./register" role="menuitem"> <i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i><span>Register</span> </a>
                         </li>
@@ -156,4 +161,4 @@
 
     <a id="start_here" class="anchor"></a>
     <div id="page-body" class="page-body" role="main">
-        <p class="right responsive-center time">It is currently {{site.2}}</p>
+        <p class="right responsive-center time">It is currently {{site_data.current_date_time}}</p>

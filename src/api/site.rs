@@ -5,6 +5,7 @@ use crate::{
         get,
         handle_response,
         post,
+        private_message::list_private_messages,
         CLIENT,
     },
     routes::auth,
@@ -26,16 +27,22 @@ use lemmy_api_common::{
     },
 };
 use rocket::http::{Cookie, CookieJar};
+use serde::Serialize;
+
+#[derive(Serialize)]
+pub struct SiteData {
+    pub site: GetSiteResponse,
+    pub notifications: Vec<Notification>,
+    pub unread_pm_count: usize,
+    pub current_date_time: String,
+}
 
 /// Don't use get() function here, so that we can directly inspect api response, and handle error
 /// `not_logged_in`. This commonly happens during development when Lemmy database was wiped, but
 /// cookie is still present in browser. In that case, delete jwt cookie.
-pub async fn get_site(
-    cookies: &CookieJar<'_>,
-) -> Result<(GetSiteResponse, Vec<Notification>, String), Error> {
-    let params = GetSite {
-        auth: auth(cookies),
-    };
+pub async fn get_site_data(cookies: &CookieJar<'_>) -> Result<SiteData, Error> {
+    let auth = auth(cookies);
+    let params = GetSite { auth: auth.clone() };
     let mut res = CLIENT
         .get(&gen_request_url("/site"))
         .query(&params)
@@ -52,13 +59,27 @@ pub async fn get_site(
     }
     let site = handle_response(text, status)?;
 
-    let notifications = match auth(cookies) {
-        Some(auth) => get_notifications(auth).await?,
-        None => vec![],
-    };
-
     let current_date_time = Local::now().naive_local().format("%a %v %R").to_string();
-    Ok((site, notifications, current_date_time))
+    Ok(if let Some(auth) = auth {
+        let (notifications, private_messages) = join(
+            get_notifications(auth.clone()),
+            list_private_messages(true, auth),
+        )
+        .await;
+        SiteData {
+            site,
+            notifications: notifications?,
+            unread_pm_count: private_messages?.private_messages.len(),
+            current_date_time,
+        }
+    } else {
+        SiteData {
+            site,
+            notifications: vec![],
+            unread_pm_count: 0,
+            current_date_time,
+        }
+    })
 }
 
 pub async fn create_site(

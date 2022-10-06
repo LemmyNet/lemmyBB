@@ -1,6 +1,12 @@
 {{> header }}
 
-        <h2 class="memberlist-title">Viewing profile - {{person.person_view.person.name}}</h2>
+        <h2 class="memberlist-title">Viewing profile -
+        {{#if person.person_view.person.display_name}}
+            {{person.person_view.person.display_name}}
+        {{else}}
+            {{person.person_view.person.name}}
+        {{/if}}
+        </h2>
 
 
         <form method="post" action="./memberlist.php?mode=group" id="viewprofile">
@@ -15,7 +21,7 @@
 
                     <dl class="left-box details profile-details">
                         <dt>Username:</dt>
-                        <dd>{{person.person_view.person.name}}</dd>
+                        <dd>{{{user_actor_id person.person_view.person}}}</dd>
                         {{#if person.person_view.person.bio}}
                             <dt>Bio:</dt>
                             <dd>{{{markdown person.person_view.person.bio}}}<dd>

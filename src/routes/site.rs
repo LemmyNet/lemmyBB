@@ -1,7 +1,7 @@
 use crate::{
     api::{
         community::list_communities,
-        site::{create_site, get_site},
+        site::{create_site, get_site_data},
         user::register,
     },
     routes::{auth, user::RegisterForm, ErrorPage},
@@ -16,8 +16,8 @@ use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
 pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>, ErrorPage> {
-    let site = get_site(cookies).await?;
-    if site.0.site_view.is_none() {
+    let site_data = get_site_data(cookies).await?;
+    if site_data.site.site_view.is_none() {
         // need to setup site
         return Ok(Either::Left(Redirect::to(uri!(setup))));
     }
@@ -38,14 +38,14 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>
     .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
      */
 
-    let ctx = context! { site, communities };
+    let ctx = context! { site_data, communities };
     Ok(Either::Right(Template::render("index", ctx)))
 }
 
 #[get("/setup")]
 pub async fn setup(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(cookies).await?;
-    let ctx = context! { site };
+    let site_data = get_site_data(cookies).await?;
+    let ctx = context! { site_data };
     Ok(Template::render("setup", ctx))
 }
 
@@ -82,24 +82,24 @@ pub async fn do_setup(
 
 #[get("/legal")]
 pub async fn legal(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(cookies).await?;
-    let message = site
-        .0
+    let site_data = get_site_data(cookies).await?;
+    let message = site_data
+        .site
         .site_view
         .as_ref()
         .map(|s| s.site.legal_information.clone());
-    let ctx = context! { message, site };
+    let ctx = context! { message, site_data };
     Ok(Template::render("message", ctx))
 }
 
 #[get("/search?<keywords>")]
 pub async fn search(keywords: String, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site = get_site(cookies).await?;
+    let site_data = get_site_data(cookies).await?;
     let search_results = crate::api::site::search(keywords.clone(), auth(cookies)).await?;
     let search_results_count = search_results.users.len()
         + search_results.communities.len()
         + search_results.posts.len()
         + search_results.comments.len();
-    let ctx = context! { site, keywords, search_results, search_results_count };
+    let ctx = context! { site_data, keywords, search_results, search_results_count };
     Ok(Template::render("search", ctx))
 }

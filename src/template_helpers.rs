@@ -1,9 +1,11 @@
 use crate::env::external_domain;
 use chrono::NaiveDateTime;
 use comrak::ComrakOptions;
-use lemmy_db_schema::newtypes::CommentId;
+use lemmy_db_schema::{
+    newtypes::CommentId,
+    source::{community::CommunitySafe, person::PersonSafe},
+};
 use lemmy_db_views::structs::CommentView;
-use lemmy_db_views_actor::structs::{CommunityView, PersonViewSafe};
 use once_cell::sync::Lazy;
 use rocket_dyn_templates::handlebars::{
     handlebars_helper,
@@ -87,12 +89,20 @@ handlebars_helper!(comment_index: |comment_id: CommentId, comments: Vec<CommentV
     comments.iter().position(|c| c.comment.id == comment_id).unwrap()
 });
 
-handlebars_helper!(community_actor_id: |c: CommunityView| {
-    format!("!{}@{}", c.community.name, c.community.actor_id.domain().unwrap())
+handlebars_helper!(community_actor_id: |c: CommunitySafe| {
+    if c.local {
+        format!("!{}", c.name)
+    } else {
+        format!("!{}@{}", c.name, c.actor_id.domain().unwrap())
+    }
 });
 
-handlebars_helper!(user_actor_id: |p: PersonViewSafe| {
-    format!("@{}@{}", p.person.name, p.person.actor_id.domain().unwrap())
+handlebars_helper!(user_actor_id: |p: PersonSafe| {
+    if p.local {
+        format!("@{}", p.name)
+    } else {
+        format!("@{}@{}", p.name, p.actor_id.domain().unwrap())
+    }
 });
 
 // https://github.com/sunng87/handlebars-rust/issues/43?ysclid=l5jxaw92um440916198#issuecomment-427482841

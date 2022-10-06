@@ -1,15 +1,11 @@
 use crate::api::{
     comment::list_comments,
     post::{get_post, list_posts},
-    private_message::list_private_messages,
     user::{get_person, list_mentions, list_replies},
 };
 use anyhow::Error;
 use chrono::NaiveDateTime;
-use futures::{
-    future::{join3, join_all},
-    join,
-};
+use futures::future::{join, join_all};
 use lemmy_api_common::{
     comment::GetCommentsResponse,
     post::GetPostsResponse,
@@ -67,10 +63,11 @@ pub async fn get_last_reply_in_community(
     community_id: CommunityId,
     auth: Option<Sensitive<String>>,
 ) -> Result<Option<PostOrComment>, Error> {
-    let (comment, post) = join!(
+    let (comment, post) = join(
         list_comments(community_id, auth.clone()),
-        list_posts(community_id.0, 1, auth.clone())
-    );
+        list_posts(community_id.0, 1, auth.clone()),
+    )
+    .await;
     let (comment, post): (GetCommentsResponse, GetPostsResponse) = (comment?, post?);
     let comment = join_all(comment.comments.first().map(|c| async {
         let p = get_post(c.post.id.0, auth).await;
@@ -118,12 +115,7 @@ pub struct Notification {
 
 /// combine all types of notifications in a single "api call"
 pub async fn get_notifications(auth: Sensitive<String>) -> Result<Vec<Notification>, Error> {
-    let (m, r, p) = join3(
-        list_mentions(auth.clone()),
-        list_replies(auth.clone()),
-        list_private_messages(auth),
-    )
-    .await;
+    let (m, r) = join(list_mentions(auth.clone()), list_replies(auth.clone())).await;
     // TODO: would be good if we can find out the comment's position in the topic, and link like
     //       viewtopic?t=1#p2
     let mentions: Vec<Notification> = m?
@@ -148,21 +140,8 @@ pub async fn get_notifications(auth: Sensitive<String>) -> Result<Vec<Notificati
             link: format!("/viewtopic?t={}", r.post.id),
         })
         .collect();
-    let mut private_messages = p?
-        .private_messages
-        .into_iter()
-        .map(|p| Notification {
-            title: "Reply".to_string(),
-            from_user: p.creator,
-            reference: p.private_message.content,
-            time: p.private_message.published,
-            // TODO: add pm page
-            link: "".to_string(),
-        })
-        .collect();
     let mut notifications = mentions;
     notifications.append(&mut replies);
-    notifications.append(&mut private_messages);
     notifications.sort_by_key(|n| n.time);
     Ok(notifications)
 }

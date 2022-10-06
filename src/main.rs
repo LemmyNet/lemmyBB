@@ -82,7 +82,9 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 mark_all_notifications_read,
                 legal,
                 search,
-                view_profile
+                view_profile,
+                private_messages_list,
+                private_messages_thread
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))

@@ -16,12 +16,12 @@
                 <ul>
                 {{#each search_results.communities}}
                     <li>
-                        <a href="/viewforum?f={{this.community.id}}">{{community_actor_id this}}</a>
+                        <a href="/viewforum?f={{this.community.id}}">{{community_actor_id this.community}}</a>
                     </li>
                 {{/each}}
                 {{#each search_results.users}}
                     <li>
-                        <a href="/viewforum?f={{this.person.id}}">{{user_actor_id this}}</a>
+                        <a href="/viewforum?f={{this.person.id}}">{{user_actor_id this.person}}</a>
                     </li>
                 {{/each}}
                 </ul>
@@ -33,9 +33,9 @@
             <div class="inner">
 
                 <dl class="postprofile">
-                    <dt class="author">by <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a></dt>
+                    <dt class="author">by <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a></dt>
                     <dd class="search-result-date">{{{timestamp_human this.creator.published}}}</dd>
-                    <dd>Forum: <a href="viewforum?f={{this.community.id}}">{{this.community.title}}</a></dd>
+                    <dd>Forum: <a href="viewforum?f={{this.community.id}}">{{{community_actor_id this.community}}}</a></dd>
                     <dd>Topic: <a href="viewtopic?t={{this.post.id}}">{{this.post.name}}</a></dd>
                     <dd>Replies: <strong>{{this.counts.comments}}</strong></dd>
                 </dl>
@@ -75,9 +75,9 @@
             <div class="inner">
 
                 <dl class="postprofile">
-                    <dt class="author">by <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a></dt>
+                    <dt class="author">by <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a></dt>
                     <dd class="search-result-date">{{{timestamp_human this.creator.published}}}</dd>
-                    <dd>Forum: <a href="/viewforum?f={{this.community.id}}">{{this.community.title}}</a></dd>
+                    <dd>Forum: <a href="/viewforum?f={{this.community.id}}">{{{community_actor_id this.community}}}</a></dd>
                     <dd>Topic: <a href="/viewtopic?t={{this.post.id}}">{{this.post.name}}</a></dd>
                     <dd>Replies: <strong>?</strong></dd>
                 </dl>
