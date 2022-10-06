@@ -1,8 +1,8 @@
 # lemmyBB
 
-[![Build Status](https://cloud.drone.io/api/badges/LemmyNet/activitypub-federation-rust/status.svg)](https://cloud.drone.io/Nutomic/lemmyBB)
+[![Build Status](https://cloud.drone.io/api/badges/LemmyNet/lemmyBB/status.svg)](https://cloud.drone.io/LemmyNet/lemmyBB)
 
-A Lemmy frontend inspired by [phpBB](https://www.phpbb.com/).
+A Lemmy frontend based on [phpBB 3.3](https://www.phpbb.com/).
 
 ## Screenshots
 
@@ -21,31 +21,18 @@ Here is a list of known lemmyBB instances:
 
 Please open a pull request if you know another instance.
 
-## Deployment
+## Installation
 
-### Locally
+Follow the [Lemmy installation instructions](https://join-lemmy.org/docs/en/administration/administration.html) to install Lemmy backend and lemmy-ui first. You will need one (sub)domain for LemmyBB, and another for lemmy-ui.
 
-You can run lemmyBB locally in order to use any Lemmy instance. You need to have git and cargo installed, and run the following command, replacing example.com with your instance:
-
-```
-git clone https://github.com/LemmyNet/lemmyBB.git
-LEMMY_BB_BACKEND=https://example.com cargo run
-```
-
-Then open [127.0.0.1:1244](http://127.0.0.1:1244) in your browser. You can login with your existing account.
-
-### Installation for existing Lemmy instance
-
-Follow these steps to install only the lemmyBB frontend on your server.
-
-First, ssh into your server and prepare by cloning the code repository.
+Then install lemmyBB itself. First, ssh into your server and prepare by cloning the code repository.
 
 ```
 cd /opt
 git clone https://github.com/LemmyNet/lemmyBB.git
 ```
 
-Change to the folder, create lemmybb binary and create a link of it to the root folder
+Change to the folder and compile Lemmy.
 
 ```
 cd lemmyBB
@@ -91,80 +78,29 @@ systemctl enable --now lemmy_bb.service
 systemctl status lemmy_bb.service
 ```
 
-### Installation for new Lemmy instance
-
-Follow these steps to install lemmyBB on your server. Resource usage is very low, so it should work fine with even the smallest of VPS. This guide installs lemmyBB on the main domain (example.com), and lemmy-ui on a subdomain (lemmyui.example.com). Of course you can choose to organize your domains in a different way. You can also choose to install without lemmy-ui, but this is not currently recommended because lemmyBB still lacks many features, particularly for moderation and administration. Where indicated, replace the example domains with your actual domains.
-
-First, ssh into your server and prepare by cloning the code repository and creating pictrs folder.
-
-```
-git clone https://github.com/LemmyNet/lemmyBB.git
-cd lemmyBB
-mkdir -p docker/volumes/pictrs
-chown 991:991 docker/volumes/pictrs
-```
-
-Then copy the config, and set your actual hostname. See [this page](https://join-lemmy.org/docs/en/administration/configuration.html) for a full list of configuration options. Also specify the hostname for lemmy-ui.
-
-```
-cp docker/lemmy_config_default.hjson docker/lemmy.hjson
-sed -i -e 's/example.com/your-domain.xyz/g' docker/lemmy.hjson
-echo "LEMMY_UI_HOST=lemmyui.your-domain.xyz" > .env
-```
-
-Next we compile lemmyBB using docker-compose, and start it along with dependencies. This takes relatively long for the first time (about 11 minutes on a 1 cpu vps). Subsequent builds will be faster thanks to caching.
-
-```
-apt install docker-compose
-docker-compose -f docker/docker-compose.yml up -d
-```
-
-Finally we request a TLS certificate from [Let's Encrypt](https://letsencrypt.org/), and configure nginx as reverse proxy. If you dont want to use lemmy-ui, you can skip the relevant steps. Alternatively you could setup lemmy-ui with [HTTP Auth](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/), so that only admins can access it.
-
-```
-apt install certbot nginx
-# replace with your actual domain and contact email
-certbot certonly --nginx --agree-tos -d 'your-domain.xyz' -m 'your-email@abc.com'
-certbot certonly --nginx --agree-tos -d 'lemmyui.your-domain.xyz' -m 'your-email@abc.com'
-# copy nginx config
-cp docker/nginx-lemmybb.conf /etc/nginx/sites-enabled/lemmybb.conf
-cp docker/nginx-lemmyui.conf /etc/nginx/sites-enabled/lemmyui.conf
-# rewrite nginx configs with actual domains
-sed -i -e 's/example.com/your-domain.xyz/g' /etc/nginx/sites-enabled/lemmybb.conf
-sed -i -e 's/lemmyui.example.com/lemmyui.your-domain.xyz/g' /etc/nginx/sites-enabled/lemmyui.conf
-# reload nginx with new config files
-nginx -s reload
-```
-
-Now visit your domain in a browser. If everything went well, you will see a form for creating the initial admin account, and setting the site name. With this setup, both lemmyBB and lemmy-ui use the same backend, and display the same information (in a different format). Accounts created via lemmyBB will work via lemmy-ui and vice versa.
-
-You should also add the following lines to your cron (using `crontab -e`), to automatically refresh the TLS certificates before they expire.
-
-```
-@daily certbot certonly --nginx -d 'your-domain.xyz' --deploy-hook 'nginx -s reload'
-@daily certbot certonly --nginx -d 'lemmyui.your-domain.xyz' --deploy-hook 'nginx -s reload'
-```
-
-For more information, you can read the [Lemmy documentation](https://join-lemmy.org/docs/en/index.html), use the [lemmyBB issue tracker](https://github.com/LemmyNet/lemmyBB/issues) or [chat on Matrix](https://matrix.to/#/#lemmy-space:matrix.org).
-
 ### Updating
 
-The instructions above build lemmyBB directly from the local folder. To receive updates with new features and bug fixes, simply pull the git repository and rebuild. You can also easily make modifications to files, or fetch from another git repository with customizations.
+Run the following commands to update lemmyBB to the latest development version.
 
 ```
-# update to latest git version
+cd /opt/lemmyBB
 git pull
-# optional: manually edit a template file
-nano templates/header.html.hbs
-# build and deploy from local files
-docker-compose -f docker/docker-compose.yml up -d --build
+cargo build --release
+systemctl restart lemmy_bb.service
 ```
 
 ## Development
 
-Follow the instructions for [Local Lemmy Development](https://join-lemmy.org/docs/en/contributing/local_development.html). You need the Lemmy backend source code and a cargo installation, along with PostgreSQL. Lemmy-ui is not necessary, but can be useful for testing.
+Execute the following command, with a Lemmy instance of your choice:
+```
+LEMMY_BB_BACKEND=https://lemmy.ml cargo run
+```
 
-Once the development setup is ready, execute `cargo run` in both the lemmy and lemmyBB directories.
+You can also run a local development instance of Lemmy, either [native](https://join-lemmy.org/docs/en/contributing/local_development.html) or in [Docker](https://join-lemmy.org/docs/en/contributing/docker_development.html), and connect to it with:
+
+```
+LEMMY_BB_BACKEND=http://localhost:8536 cargo run
+```
 
 ## Configuration
 
