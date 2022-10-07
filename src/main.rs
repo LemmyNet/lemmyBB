@@ -11,7 +11,7 @@ mod test;
 
 use crate::{
     env::listen_address,
-    routes::{comment::*, community::*, post::*, site::*, user::*},
+    routes::{comment::*, community::*, post::*, private_message::*, site::*, user::*},
     template_helpers::*,
 };
 use anyhow::Error;

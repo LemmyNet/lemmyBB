@@ -39,14 +39,14 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>
      */
 
     let ctx = context! { site_data, communities };
-    Ok(Either::Right(Template::render("index", ctx)))
+    Ok(Either::Right(Template::render("site/index", ctx)))
 }
 
 #[get("/setup")]
 pub async fn setup(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
     let ctx = context! { site_data };
-    Ok(Template::render("setup", ctx))
+    Ok(Template::render("site/setup", ctx))
 }
 
 #[derive(FromForm)]
@@ -101,5 +101,5 @@ pub async fn search(keywords: String, cookies: &CookieJar<'_>) -> Result<Templat
         + search_results.posts.len()
         + search_results.comments.len();
     let ctx = context! { site_data, keywords, search_results, search_results_count };
-    Ok(Template::render("search", ctx))
+    Ok(Template::render("site/search", ctx))
 }
