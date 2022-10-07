@@ -1,0 +1,7 @@
+{{> components/header }}
+
+<h2 class="posting-title"><a href="./viewtopic?t={{post.post_view.post.id}}">{{post.post_view.post.name}}</a></h2>
+
+{{> components/editor editor_action=(concat "./do_comment?t=" post.post_view.post.id) editor_title="Post a reply"}}
+
+{{> components/footer }}

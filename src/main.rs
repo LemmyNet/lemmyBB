@@ -47,9 +47,10 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("sum", Box::new(sum));
         reg.register_helper("mod", Box::new(modulo));
         reg.register_helper("comment_index", Box::new(comment_index));
-        reg.register_helper("length", Box::new(handlebars_helper_vec_length));
+        reg.register_helper("length", Box::new(length));
         reg.register_helper("community_actor_id", Box::new(community_actor_id));
         reg.register_helper("user_actor_id", Box::new(user_actor_id));
+        reg.register_helper("concat", Box::new(concat));
     });
 
     let listen_address = listen_address();
@@ -84,7 +85,9 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 search,
                 view_profile,
                 private_messages_list,
-                private_messages_thread
+                private_messages_thread,
+                private_message_editor,
+                do_send_private_message
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))

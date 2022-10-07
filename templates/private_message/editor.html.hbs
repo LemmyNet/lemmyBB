@@ -1,0 +1,30 @@
+{{> components/header }}
+
+<h2 class="ucp-title">User Control Panel</h2>
+
+<div id="tabs" class="tabs">
+    <ul>
+        <li class="tab"><a href="./ucp.php?i=177">Overview</a></li>
+        <li class="tab activetab"><a href="/private_messages">Private messages</a></li>
+    </ul>
+</div>
+
+<div class="panel bg3">
+    <div class="inner">
+
+        <div id="cp-main" class="cp-main ucp-main panel-container" style="width: 100%;">
+
+            <div class="panel" id="pmheader-postingbox">
+                <div class="inner">
+                    <label><strong>Recipient:</strong></label></dt>
+                    <a href="/view_profile?u={{recipient.id}}" class="username">{{{user_actor_id recipient}}}</a>
+                </div>
+            </div>
+
+            {{> components/editor editor_action=(concat "/do_send_private_message?u=" recipient.id) editor_title="Compose message"}}
+
+        </div>
+    </div>
+</div>
+
+{{> components/footer }}

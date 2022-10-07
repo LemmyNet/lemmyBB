@@ -105,8 +105,23 @@ handlebars_helper!(user_actor_id: |p: PersonSafe| {
     }
 });
 
+pub fn concat(
+    h: &Helper,
+    _: &Handlebars,
+    _: &Context,
+    _: &mut RenderContext,
+    out: &mut dyn Output,
+) -> Result<(), RenderError> {
+    let a = h.param(0).map(|v| v.render()).unwrap();
+    let b = h.param(1).map(|v| v.value().to_string()).unwrap();
+
+    out.write(&format!("{}{}", a, b))?;
+
+    Ok(())
+}
+
 // https://github.com/sunng87/handlebars-rust/issues/43?ysclid=l5jxaw92um440916198#issuecomment-427482841
-pub fn handlebars_helper_vec_length(
+pub fn length(
     h: &Helper,
     _: &Handlebars,
     _: &Context,

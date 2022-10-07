@@ -1,9 +1,15 @@
 use crate::{
     api::{
-        private_message::{list_private_messages, mark_private_message_read},
+        private_message::{
+            create_private_message,
+            list_private_messages,
+            mark_private_message_read,
+        },
         site::get_site_data,
+        user::get_person,
     },
     error::ErrorPage,
+    replace_smilies,
     routes::auth,
 };
 use chrono::NaiveDateTime;
@@ -12,7 +18,7 @@ use itertools::Itertools;
 use lemmy_api_common::person::PrivateMessageResponse;
 use lemmy_db_schema::{newtypes::PersonId, source::person::PersonSafe};
 use lemmy_db_views::structs::PrivateMessageView;
-use rocket::http::CookieJar;
+use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 use serde::Serialize;
 use std::hash::{Hash, Hasher};
@@ -93,7 +99,7 @@ pub async fn private_messages_thread(
     u: i32,
     cookies: &CookieJar<'_>,
 ) -> Result<Template, ErrorPage> {
-    let u = PersonId(u);
+    let other_user_id = PersonId(u);
     let site_data = get_site_data(cookies).await?;
     let auth = auth(cookies).unwrap();
     // TODO: would be nice if lemmy api could query PMs involving given user
@@ -101,7 +107,8 @@ pub async fn private_messages_thread(
         .await?
         .private_messages
         .into_iter()
-        .filter(|pm| pm.creator.id == u || pm.recipient.id == u)
+        .filter(|pm| pm.creator.id == other_user_id || pm.recipient.id == other_user_id)
+        .sorted_by_key(|pm| pm.private_message.published)
         .collect();
 
     // mark as read
@@ -126,6 +133,54 @@ pub async fn private_messages_thread(
     .into_iter()
     .collect::<Result<Vec<PrivateMessageResponse>, anyhow::Error>>()?;
 
-    let ctx = context!(site_data, private_messages);
+    let ctx = context!(site_data, private_messages, other_user_id);
     Ok(Template::render("private_message/thread", ctx))
+}
+
+// TODO: need to be able to select recipient
+#[get("/private_messages_editor?<u>")]
+pub async fn private_message_editor(
+    cookies: &CookieJar<'_>,
+    u: i32,
+) -> Result<Template, ErrorPage> {
+    let site_data = get_site_data(cookies).await?;
+    let recipient = get_person(PersonId(u), auth(cookies))
+        .await?
+        .person_view
+        .person;
+    let ctx = context!(site_data, recipient);
+    Ok(Template::render("private_message/editor", ctx))
+}
+
+#[derive(FromForm)]
+pub struct PrivateMessageForm {
+    message: String,
+    preview: Option<String>,
+}
+
+#[post("/do_send_private_message?<u>", data = "<form>")]
+pub async fn do_send_private_message(
+    cookies: &CookieJar<'_>,
+    u: i32,
+    mut form: Form<PrivateMessageForm>,
+) -> Result<Either<Template, Redirect>, ErrorPage> {
+    form.message = replace_smilies(&form.message);
+
+    if form.preview.is_some() {
+        let site_data = get_site_data(cookies).await?;
+        let recipient = get_person(PersonId(u), auth(cookies))
+            .await?
+            .person_view
+            .person;
+        let ctx = context!(site_data, message: &form.message, recipient);
+        return Ok(Either::Left(Template::render(
+            "private_message/editor",
+            ctx,
+        )));
+    }
+
+    create_private_message(form.message.clone(), PersonId(u), auth(cookies).unwrap()).await?;
+    Ok(Either::Right(Redirect::to(uri!(private_messages_thread(
+        u
+    )))))
 }

@@ -40,24 +40,10 @@ pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, Err
 
 #[get("/post?<f>")]
 pub async fn post(f: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    post_with_preview(f, None, cookies).await
-}
-
-pub async fn post_with_preview(
-    community_id: i32,
-    form: Option<PostForm>,
-    cookies: &CookieJar<'_>,
-) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
-    let community = get_community(community_id, auth(cookies)).await?;
-    Ok(if let Some(form) = form {
-        Template::render(
-            "editor",
-            context!(site_data, community, subject: form.subject, message: form.message),
-        )
-    } else {
-        Template::render("editor", context!(site_data, community))
-    })
+    let community = get_community(f, auth(cookies)).await?;
+    let ctx = context!(site_data, community);
+    Ok(Template::render("thread_editor", ctx))
 }
 
 #[derive(FromForm)]
@@ -74,12 +60,14 @@ pub async fn do_post(
     cookies: &CookieJar<'_>,
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
     form.message = replace_smilies(&form.message);
-    if form.preview.is_some() {
-        return Ok(Either::Left(
-            post_with_preview(f, Some(form.into_inner()), cookies).await?,
-        ));
-    }
+
     let community = get_community(f, auth(cookies)).await?;
+    if form.preview.is_some() {
+        let site_data = get_site_data(cookies).await?;
+        let ctx = context!(site_data, community, subject: &form.subject, message: &form.message);
+        return Ok(Either::Left(Template::render("thread_editor", ctx)));
+    }
+
     let post = create_post(
         form.subject.clone(),
         form.message.clone(),

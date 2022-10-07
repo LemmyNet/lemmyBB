@@ -1,4 +1,4 @@
-{{> header }}
+{{> components/header }}
 
         <h2 class="ucp-title">User Control Panel</h2>
 
@@ -18,10 +18,6 @@
                         <div class="panel">
                             <div class="inner">
                                 <div class="action-bar bar-top">
-                                    <a href="./ucp.php?i=pm&amp;mode=compose" accesskey="n" title="Compose message" class="button">
-                                        <span>New PM</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i>
-                                    </a>
-
 
                                     <div class="pagination">
                                         <form action="/mark_all_notifications_read" method="POST">
@@ -72,4 +68,4 @@
             </div>
         </div>
 
-{{> footer }}
+{{> components/footer }}

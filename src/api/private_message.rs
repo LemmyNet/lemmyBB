@@ -2,6 +2,7 @@ use crate::api::{get, post};
 use anyhow::Error;
 use lemmy_api_common::{
     person::{
+        CreatePrivateMessage,
         GetPrivateMessages,
         MarkPrivateMessageAsRead,
         PrivateMessageResponse,
@@ -9,7 +10,7 @@ use lemmy_api_common::{
     },
     sensitive::Sensitive,
 };
-use lemmy_db_schema::newtypes::PrivateMessageId;
+use lemmy_db_schema::newtypes::{PersonId, PrivateMessageId};
 
 pub(crate) async fn list_private_messages(
     unread_only: bool,
@@ -33,4 +34,17 @@ pub(crate) async fn mark_private_message_read(
         auth,
     };
     post("/private_message/mark_as_read", params).await
+}
+
+pub(crate) async fn create_private_message(
+    content: String,
+    recipient_id: PersonId,
+    auth: Sensitive<String>,
+) -> Result<PrivateMessageResponse, Error> {
+    let params = CreatePrivateMessage {
+        content,
+        recipient_id,
+        auth,
+    };
+    post("/private_message", params).await
 }

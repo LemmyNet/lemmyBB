@@ -1,0 +1,7 @@
+{{> components/header }}
+
+<h2 class="posting-title"><a href="./viewforum?f={{community.community_view.community.id}}">{{community.community_view.community.title}}</a></h2>
+
+{{> components/editor editor_action=(concat "/do_post?f=" community.community_view.community.id) editor_title="Post a new topic" subject_field=true}}
+
+{{> components/footer }}

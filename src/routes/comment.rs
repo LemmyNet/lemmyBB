@@ -9,21 +9,10 @@ use rocket_dyn_templates::{context, Template};
 
 #[get("/comment?<t>")]
 pub async fn comment(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    comment_with_preview(t, None, cookies).await
-}
-
-async fn comment_with_preview(
-    post_id: i32,
-    form: Option<CommentForm>,
-    cookies: &CookieJar<'_>,
-) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
-    let post = get_post(post_id, auth(cookies)).await?;
-    Ok(if let Some(form) = form {
-        Template::render("editor", context!(site_data, post, message: form.message))
-    } else {
-        Template::render("editor", context!(site_data, post))
-    })
+    let post = get_post(t, auth(cookies)).await?;
+    let ctx = context!(site_data, post);
+    Ok(Template::render("comment_editor", ctx))
 }
 
 #[derive(FromForm)]
@@ -40,10 +29,12 @@ pub async fn do_comment(
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
     form.message = replace_smilies(&form.message);
     if form.preview.is_some() {
-        return Ok(Either::Left(
-            comment_with_preview(t, Some(form.into_inner()), cookies).await?,
-        ));
+        let site_data = get_site_data(cookies).await?;
+        let post = get_post(t, auth(cookies)).await?;
+        let ctx = context!(site_data, post, message: &form.message);
+        return Ok(Either::Left(Template::render("comment_editor", ctx)));
     }
+
     create_comment(t, form.message.clone(), auth(cookies).unwrap()).await?;
     Ok(Either::Right(Redirect::to(uri!(view_topic(t)))))
 }

@@ -1,16 +1,4 @@
-{{> components/header }}
-
-{{#if community}}
-{{! creating a new thread }}
-<h2 class="posting-title"><a href="./viewforum?f={{community.community_view.community.id}}">{{community.community_view.community.title}}</a></h2>
-
-<form id="postform" method="post" action="./do_post?f={{community.community_view.community.id}}">
-{{else}}
-{{! commenting in an existing thread }}
-<h2 class="posting-title"><a href="./viewtopic?t={{post.post_view.post.id}}">{{post.post_view.post.name}}</a></h2>
-
-<form id="postform" method="post" action="./do_comment?t={{post.post_view.post.id}}">
-{{/if}}
+<form id="postform" method="post" action="{{editor_action}}">
 
     {{#if message}}
             <div class="post bg2" id="preview">
@@ -29,22 +17,18 @@
     <div class="panel" id="postingbox">
         <div class="inner">
 
-            {{#unless post}}
-            <h3>Post a new topic</h3>
-            {{else}}
-            <h3>Post a reply</h3>
-            {{/unless}}
+            <h3>{{editor_title}}</h3>
 
             <fieldset class="fields1">
 
-                {{#unless post}}
+                {{#if subject_field}}
                 <dl style="clear: left;">
                     <dt><label for="subject">Subject:</label></dt>
                     <dd>
                         <input type="text" name="subject" id="subject" {{#if subject}} value="{{subject}}" {{/if}} size="45" maxlength="124" tabindex="2" class="inputbox autowidth" />
                     </dd>
                 </dl>
-                {{/unless}}
+                {{/if}}
 
                 <script>
 var form_name = 'postform';
@@ -172,5 +156,3 @@ function change_palette()
     </p>
 
 </form>
-
-{{> components/footer }}

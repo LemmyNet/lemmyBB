@@ -1,4 +1,4 @@
-{{> header }}
+{{> components/header }}
 
 <h2 class="ucp-title">User Control Panel</h2>
 
@@ -18,7 +18,7 @@
                         <div class="panel">
                             <div class="inner">
                                 <div class="action-bar bar-top">
-                                    <a title="Reply to message" href="./ucp.php?i=pm&amp;mode=compose&amp;action=reply&amp;f=-1&amp;p=1" class="button">
+                                    <a title="Reply to message" href="/private_messages_editor?u={{other_user_id}}" class="button">
                                         <span>Send Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
                                     </a>
 
@@ -52,6 +52,7 @@
                                 </dl>
 
                                 <div class="postbody">
+                                    <!--
                                     <ul class="post-buttons">
                                         <li>
                                             <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=-1&amp;p=1" title="Delete message" class="button button-icon-only">
@@ -63,12 +64,8 @@
                                                 <i class="icon fa-exclamation fa-fw" aria-hidden="true"></i><span class="sr-only">Report</span>
                                             </a>
                                         </li>
-                                        <li>
-                                            <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=quote&amp;f=-1&amp;p=1" title="Quote message" class="button button-icon-only">
-                                                <i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
-                                            </a>
-                                        </li>
                                     </ul>
+                                    -->
 
                                     <p class="author">
                                         <strong>Sent:</strong>{{{timestamp_human this.private_message.published}}}
@@ -101,4 +98,4 @@
 
     </div>
 
-{{> footer }}
+{{> components/footer }}
