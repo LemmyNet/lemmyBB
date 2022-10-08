@@ -10,6 +10,7 @@ mod template_helpers;
 mod test;
 
 use crate::{
+    api::site::favicon,
     env::listen_address,
     routes::{comment::*, community::*, post::*, private_message::*, site::*, user::*},
     template_helpers::*,
@@ -87,7 +88,8 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 private_messages_list,
                 private_messages_thread,
                 private_message_editor,
-                do_send_private_message
+                do_send_private_message,
+                favicon
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))

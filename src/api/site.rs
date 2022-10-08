@@ -8,11 +8,16 @@ use crate::{
         private_message::list_private_messages,
         CLIENT,
     },
+    error::ErrorPage,
     routes::auth,
 };
-use anyhow::Error;
+use anyhow::{anyhow, Error};
 use chrono::Local;
 use futures::future::join;
+use image::{
+    imageops::{resize, FilterType},
+    io::Reader,
+};
 use lemmy_api_common::{
     sensitive::Sensitive,
     site::{
@@ -26,8 +31,17 @@ use lemmy_api_common::{
         SiteResponse,
     },
 };
-use rocket::http::{Cookie, CookieJar};
+use lemmy_db_schema::newtypes::DbUrl;
+use once_cell::sync::OnceCell;
+use rocket::{
+    http::{Cookie, CookieJar},
+    response::Responder,
+    Request,
+    Response,
+};
 use serde::Serialize;
+use std::io::Cursor;
+use url::Url;
 
 #[derive(Serialize)]
 pub struct SiteData {
@@ -57,7 +71,16 @@ pub async fn get_site_data(cookies: &CookieJar<'_>) -> Result<SiteData, Error> {
         status = res.status();
         text = res.text().await?;
     }
-    let site = handle_response(text, status)?;
+    let site: GetSiteResponse = handle_response(text, status)?;
+
+    // update favicon if url changed
+    if let Some(site_view) = &site.site_view {
+        if let Some(favicon) = FAVICON.get() {
+            if site_view.site.icon.as_ref() != favicon.as_ref().map(|f| f.url.clone()).as_ref() {
+                FAVICON.set(generate_favicon().await?).unwrap();
+            }
+        }
+    }
 
     let current_date_time = Local::now().naive_local().format("%a %v %R").to_string();
     Ok(if let Some(auth) = auth {
@@ -129,4 +152,59 @@ pub async fn search(
         search.users.push(p)
     };
     Ok(search)
+}
+
+static FAVICON: OnceCell<Option<Favicon>> = OnceCell::new();
+
+#[derive(Debug)]
+pub struct Favicon {
+    bytes: Vec<u8>,
+    url: DbUrl,
+}
+
+impl<'r> Responder<'r, 'static> for &Favicon {
+    fn respond_to(self, _: &'r Request<'_>) -> rocket::response::Result<'static> {
+        let mut res = Response::build();
+        if let Some(f) = FAVICON.get().unwrap() {
+            res.sized_body(None, Cursor::new(&f.bytes));
+        }
+        Ok(res.finalize())
+    }
+}
+
+#[get("/favicon.png")]
+pub async fn favicon() -> Result<&'static Favicon, ErrorPage> {
+    if FAVICON.get().is_none() {
+        FAVICON.set(generate_favicon().await?).unwrap();
+    }
+    match FAVICON.get().unwrap() {
+        Some(f) => Ok(f),
+        None => Err(anyhow!("no favicon set").into()),
+    }
+}
+
+async fn generate_favicon() -> Result<Option<Favicon>, Error> {
+    let site: GetSiteResponse = get(
+        "/site",
+        GetSite {
+            ..Default::default()
+        },
+    )
+    .await?;
+
+    if let Some(url) = site.site_view.unwrap().site.icon {
+        let url2: Url = url.clone().into();
+        let icon_bytes = CLIENT.get(url2).send().await?.bytes().await?;
+        let image = Reader::new(Cursor::new(icon_bytes))
+            .with_guessed_format()?
+            .decode()?;
+        let resized = resize(&image, 64, 64, FilterType::Gaussian);
+
+        let mut bytes: Vec<u8> = Vec::new();
+        let mut cursor = Cursor::new(&mut bytes);
+        resized.write_to(&mut cursor, image::ImageOutputFormat::Png)?;
+        Ok(Some(Favicon { bytes, url }))
+    } else {
+        Ok(None)
+    }
 }

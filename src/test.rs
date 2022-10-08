@@ -1,4 +1,5 @@
 use crate::{
+    api::site::rocket_uri_macro_favicon,
     init_rocket,
     routes::{comment::*, community::*, post::*, site::*, user::*},
 };
@@ -78,4 +79,10 @@ fn search_results() {
 #[serial]
 fn view_profile() {
     test_with_uri(uri!(view_profile(u = 8169)))
+}
+
+#[test]
+#[serial]
+fn favicon() {
+    test_with_uri(uri!(favicon))
 }

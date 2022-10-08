@@ -22,6 +22,7 @@ chrono = "0.4.19"
 url = "2.2.2"
 futures = "0.3"
 itertools = "0.10.5"
+image = { version = "0.24.4", features = ["png"], default-features = false }
 
 [dev-dependencies]
 serial_test = "0.6.0"
