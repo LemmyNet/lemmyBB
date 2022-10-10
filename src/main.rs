@@ -4,11 +4,11 @@ extern crate rocket;
 mod api;
 mod env;
 mod error;
+mod pagination;
 mod routes;
 mod template_helpers;
 #[cfg(test)]
 mod test;
-mod pagination;
 
 use crate::{
     api::site::favicon,

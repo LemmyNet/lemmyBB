@@ -26,13 +26,16 @@
         </ul>
         <ul class="topiclist forums">
 
-        {{#each communities.communities}}
+        {{#each communities}}
             <li class="row">
                 <dl class="row-item forum_read">
                     <dt title="No unread posts">
                         <div class="list-inner">
                             <a href="./viewforum?f={{this.community.id}}" class="forumtitle">{{{community_actor_id this.community}}}</a>
-                            <br>{{this.community.description}}
+                            <br>
+                            <p style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}">
+                                {{this.community.description}}
+                            </p>
                             <div class="responsive-show" style="display: none;">
                                 Topics: <strong>?</strong>
                             </div>

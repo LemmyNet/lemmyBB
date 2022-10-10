@@ -4,8 +4,10 @@ use crate::{
         site::{create_site, get_site_data},
         user::register,
     },
+    pagination::Pagination,
     routes::{auth, user::RegisterForm, ErrorPage},
 };
+use lemmy_db_views_actor::structs::CommunityView;
 use rocket::{
     form::Form,
     http::{Cookie, CookieJar},
@@ -13,20 +15,21 @@ use rocket::{
     Either,
 };
 use rocket_dyn_templates::{context, Template};
-use crate::pagination::Pagination;
 
 #[get("/?<page>")]
-pub async fn index(page: Option<i64>, cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>, ErrorPage> {
+pub async fn index(
+    page: Option<i64>,
+    cookies: &CookieJar<'_>,
+) -> Result<Either<Redirect, Template>, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
     if site_data.site.site_view.is_none() {
         // need to setup site
         return Ok(Either::Left(Redirect::to(uri!(setup))));
     }
 
-    let mut communities = list_communities(page, auth(cookies)).await?;
-    communities
-        .communities
-        .sort_unstable_by_key(|c| c.community.id.0);
+    let mut communities: Vec<CommunityView> =
+        list_communities(page, auth(cookies)).await?.communities;
+    communities.sort_unstable_by_key(|c| c.community.id.0);
     /*
     let last_replies = join_all(
         communities
@@ -39,11 +42,7 @@ pub async fn index(page: Option<i64>, cookies: &CookieJar<'_>) -> Result<Either<
     .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
      */
 
-    let pagination = Pagination::new(
-        page.unwrap_or(1),
-        communities.communities.is_empty(),
-        "/?"
-    );
+    let pagination = Pagination::new(page.unwrap_or(1), communities.is_empty(), "/?");
     let ctx = context! { site_data, communities, pagination };
     Ok(Either::Right(Template::render("site/index", ctx)))
 }

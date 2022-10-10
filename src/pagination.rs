@@ -11,12 +11,16 @@ pub struct Pagination {
 }
 
 impl Pagination {
-    pub fn new(
-        current_page: i64,
-        is_last_page: bool,
-        base_link: &'static str) -> Pagination {
-        let before_pages: Vec<i64> = vec![current_page -2, current_page - 1].into_iter().filter(|p| p > &1).collect();
-        let mut after_pages= if !is_last_page {vec![current_page + 1, current_page + 2] } else { vec![]};
+    pub fn new(current_page: i64, is_last_page: bool, base_link: &'static str) -> Pagination {
+        let before_pages: Vec<i64> = vec![current_page - 2, current_page - 1]
+            .into_iter()
+            .filter(|p| p > &1)
+            .collect();
+        let mut after_pages = if !is_last_page {
+            vec![current_page + 1, current_page + 2]
+        } else {
+            vec![]
+        };
         if before_pages.len() <= 1 {
             after_pages.push(current_page + 3);
         }
