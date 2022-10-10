@@ -13,16 +13,17 @@ use rocket::{
     Either,
 };
 use rocket_dyn_templates::{context, Template};
+use crate::pagination::Pagination;
 
-#[get("/")]
-pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>, ErrorPage> {
+#[get("/?<page>")]
+pub async fn index(page: Option<i64>, cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
     if site_data.site.site_view.is_none() {
         // need to setup site
         return Ok(Either::Left(Redirect::to(uri!(setup))));
     }
 
-    let mut communities = list_communities(auth(cookies)).await?;
+    let mut communities = list_communities(page, auth(cookies)).await?;
     communities
         .communities
         .sort_unstable_by_key(|c| c.community.id.0);
@@ -38,7 +39,12 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>
     .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
      */
 
-    let ctx = context! { site_data, communities };
+    let pagination = Pagination::new(
+        page.unwrap_or(1),
+        communities.communities.is_empty(),
+        "/?"
+    );
+    let ctx = context! { site_data, communities, pagination };
     Ok(Either::Right(Template::render("site/index", ctx)))
 }
 
@@ -77,7 +83,7 @@ pub async fn do_setup(
 
     create_site(form.site_name.clone(), form.site_description.clone(), jwt).await?;
 
-    Ok(Redirect::to(uri!(index)))
+    Ok(Redirect::to(uri!("/")))
 }
 
 #[get("/legal")]

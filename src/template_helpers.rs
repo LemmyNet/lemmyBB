@@ -62,8 +62,12 @@ handlebars_helper!(timestamp_human: |ts: NaiveDateTime| {
     ts.format("%a %v %R").to_string()
 });
 
-handlebars_helper!(sum: |a: i32, b: i32| {
+handlebars_helper!(add: |a: i32, b: i32| {
     a + b
+});
+
+handlebars_helper!(sub: |a: i32, b: i32| {
+    a - b
 });
 
 handlebars_helper!(modulo: |a: i32, b: i32| {

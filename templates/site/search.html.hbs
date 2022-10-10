@@ -29,7 +29,7 @@
         {{/if}}
 
         {{#each search_results.posts}}
-        <div class="search post bg{{sum (mod @index 2) 1}}">
+        <div class="search post bg{{add (mod @index 2) 1}}">
             <div class="inner">
 
                 <dl class="postprofile">
@@ -71,7 +71,7 @@
         {{/each}}
 
         {{#each search_results.comments}}
-        <div class="search post bg{{sum (mod @index 2) 1}}">
+        <div class="search post bg{{add (mod @index 2) 1}}">
             <div class="inner">
 
                 <dl class="postprofile">

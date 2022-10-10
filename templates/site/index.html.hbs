@@ -1,9 +1,15 @@
 {{> components/header }}
 
+{{#if site_data.site.site_view.site.sidebar}}
 <div class="navbar" style="margin-bottom: 10px">
     <div class="inner" style="margin: 10px">
         {{{markdown site_data.site.site_view.site.sidebar}}}
     </div>
+</div>
+{{/if}}
+
+<div class="action-bar bar-top">
+    {{> components/pagination }}
 </div>
 
 <div class="forabg">
@@ -56,6 +62,10 @@
         </ul>
 
     </div>
+</div>
+
+<div class="action-bar bar-bottom">
+    {{> components/pagination }}
 </div>
 
 {{> components/footer }}

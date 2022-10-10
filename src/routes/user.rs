@@ -4,7 +4,7 @@ use crate::{
         site::get_site_data,
         user::{get_captcha, get_person, mark_all_as_read},
     },
-    routes::{auth, site::rocket_uri_macro_index, ErrorPage},
+    routes::{auth, ErrorPage},
 };
 use lemmy_db_schema::newtypes::PersonId;
 use rocket::{
@@ -38,7 +38,7 @@ pub async fn do_login(
         .unwrap()
         .into_inner();
     cookies.add(Cookie::new("jwt", jwt));
-    Ok(Redirect::to(uri!(index)))
+    Ok(Redirect::to(uri!("/")))
 }
 
 #[get("/register")]
@@ -100,13 +100,13 @@ pub async fn do_register(
 pub async fn logout(cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
     // simply delete the cookie
     cookies.remove(Cookie::named("jwt"));
-    Ok(Redirect::to(uri!(index)))
+    Ok(Redirect::to(uri!("/")))
 }
 
 #[post("/mark_all_notifications_read")]
 pub async fn mark_all_notifications_read(cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
     mark_all_as_read(auth(cookies).unwrap()).await?;
-    Ok(Redirect::to(uri!(index)))
+    Ok(Redirect::to(uri!("/")))
 }
 
 #[get("/view_profile?<u>")]

@@ -17,8 +17,8 @@ static LEMMY_API_VERSION: &str = "/api/v3";
 
 pub static CLIENT: Lazy<Client> = Lazy::new(|| {
     Client::builder()
-        .timeout(Duration::from_secs(5))
-        .connect_timeout(Duration::from_secs(5))
+        .timeout(Duration::from_secs(30))
+        .connect_timeout(Duration::from_secs(30))
         .build()
         .expect("build client")
 });

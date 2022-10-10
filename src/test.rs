@@ -24,7 +24,7 @@ fn test_with_uri(uri: Origin) {
 #[test]
 #[serial]
 fn index() {
-    test_with_uri(uri!(index))
+    test_with_uri(uri!("/"))
 }
 
 #[test]

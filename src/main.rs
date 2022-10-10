@@ -8,6 +8,7 @@ mod routes;
 mod template_helpers;
 #[cfg(test)]
 mod test;
+mod pagination;
 
 use crate::{
     api::site::favicon,
@@ -45,7 +46,8 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("markdown", Box::new(markdown));
         reg.register_helper("timestamp_human", Box::new(timestamp_human));
         reg.register_helper("timestamp_machine", Box::new(timestamp_machine));
-        reg.register_helper("sum", Box::new(sum));
+        reg.register_helper("add", Box::new(add));
+        reg.register_helper("sub", Box::new(sub));
         reg.register_helper("mod", Box::new(modulo));
         reg.register_helper("comment_index", Box::new(comment_index));
         reg.register_helper("length", Box::new(length));

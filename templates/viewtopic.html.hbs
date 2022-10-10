@@ -83,7 +83,7 @@
 </div>
 
 {{#each post.comments}}
-<div id="p{{sum @index 2}}" class="post has-profile bg{{sum (mod @index 2) 1}}">
+<div id="p{{add @index 2}}" class="post has-profile bg{{add (mod @index 2) 1}}">
     <div class="inner">
 
         <dl class="postprofile">
@@ -113,7 +113,7 @@
                 </li>
             </ul>
             <p class="author">
-                <a class="unread" href="./viewtopic?t={{this.post.id}}#p{{sum @index 2}}" title="Post">
+                <a class="unread" href="./viewtopic?t={{this.post.id}}#p{{add @index 2}}" title="Post">
                     <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
                 </a>
                 <span class="responsive-hide">by <strong><a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a></strong> &raquo; </span>
