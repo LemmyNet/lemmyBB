@@ -1,11 +1,13 @@
 {{> components/header }}
 
-<p>
-    {{{markdown site_data.site.site_view.site.sidebar}}}
-</p>
+<div class="navbar" style="margin-bottom: 10px">
+    <div class="inner" style="margin: 10px">
+        {{{markdown community.community_view.community.description}}}
+    </div>
+</div>
 
 <div class="action-bar bar-top">
-    <a href="./post?f={{f}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
+    <a href="./post?f={{community.community_view.community.id}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
     <div class="pagination">{{length posts}} posts &bull; Page <strong>1</strong> of <strong>1</strong></div>
 </div>
@@ -55,7 +57,7 @@
 </div>
 
 <div class="action-bar bar-bottom">
-    <a href="./post?f={{f}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
+    <a href="./post?f={{community.community_view.community.id}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
     <div class="pagination">{{length posts}} posts &bull; Page <strong>1</strong> of <strong>1</strong></div>
 </div>
