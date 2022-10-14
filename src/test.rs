@@ -42,7 +42,7 @@ fn view_forum() {
 #[test]
 #[serial]
 fn view_topic() {
-    test_with_uri(uri!(view_topic(t = 360976)))
+    test_with_uri(uri!(view_topic(t = 360976, page = Some(1))))
 }
 
 #[test]

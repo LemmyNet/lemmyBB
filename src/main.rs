@@ -46,10 +46,11 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("markdown", Box::new(markdown));
         reg.register_helper("timestamp_human", Box::new(timestamp_human));
         reg.register_helper("timestamp_machine", Box::new(timestamp_machine));
+        reg.register_helper("eq", Box::new(eq));
         reg.register_helper("add", Box::new(add));
         reg.register_helper("sub", Box::new(sub));
         reg.register_helper("mod", Box::new(modulo));
-        reg.register_helper("comment_index", Box::new(comment_index));
+        reg.register_helper("comment_page", Box::new(comment_page));
         reg.register_helper("length", Box::new(length));
         reg.register_helper("community_actor_id", Box::new(community_actor_id));
         reg.register_helper("user_actor_id", Box::new(user_actor_id));

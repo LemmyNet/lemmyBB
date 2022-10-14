@@ -1,39 +1,73 @@
 use serde::Serialize;
 
-#[derive(Serialize)]
+pub static PAGE_ITEMS: i32 = 20;
+
+/// need to represent things in a more complicated way, becayse handlebars doesnt support enums
+#[derive(Serialize, Debug, Default)]
 pub struct Pagination {
-    pub current_page: i64,
-    pub is_last_page: bool,
-    pub base_link: &'static str,
-    before_pages: Vec<i64>,
-    after_pages: Vec<i64>,
-    previous_separator: bool,
+    pub current_page: i32,
+    pub base_link: String,
+    has_known_limit: bool,
+    is_last_page: bool,
+    last_page: i32,
+    before_pages: Vec<i32>,
+    after_pages: Vec<i32>,
+    before_separator: bool,
+    after_separator: bool,
+}
+
+#[derive(Serialize, Debug)]
+pub enum PageLimit {
+    // param is index of last page
+    Known(i32),
+    // param is true if we are currently on last page
+    Unknown(bool),
 }
 
 impl Pagination {
-    pub fn new(current_page: i64, is_last_page: bool, base_link: &'static str) -> Pagination {
-        let before_pages: Vec<i64> = vec![current_page - 2, current_page - 1]
+    pub fn new<S: Into<String>>(
+        current_page: i32,
+        total_pages: PageLimit,
+        base_link: S,
+    ) -> Pagination {
+        let mut p = Pagination {
+            current_page,
+            base_link: base_link.into(),
+            has_known_limit: matches!(total_pages, PageLimit::Known(_)),
+            before_separator: current_page >= 5,
+            ..Default::default()
+        };
+        p.before_pages = vec![current_page - 2, current_page - 1]
             .into_iter()
             .filter(|p| p > &1)
             .collect();
-        let mut after_pages = if !is_last_page {
-            vec![current_page + 1, current_page + 2]
-        } else {
-            vec![]
+
+        match total_pages {
+            PageLimit::Known(last_page) => {
+                p.after_pages = vec![current_page + 1, current_page + 2]
+                    .into_iter()
+                    .filter(|p| p < &last_page)
+                    .collect();
+                p.is_last_page = current_page == last_page;
+                p.after_separator = (last_page - current_page) > 3;
+                p.last_page = last_page;
+            }
+            PageLimit::Unknown(is_last_page) => {
+                if !is_last_page {
+                    p.after_pages.push(current_page + 1);
+                    p.after_pages.push(current_page + 2);
+                    if p.before_pages.len() <= 1 {
+                        p.after_pages.push(current_page + 3);
+                    }
+                    if p.before_pages.is_empty() {
+                        p.after_pages.push(current_page + 4);
+                    }
+                };
+                p.is_last_page = is_last_page;
+                p.after_separator = !is_last_page;
+                p.last_page = -1;
+            }
         };
-        if before_pages.len() <= 1 {
-            after_pages.push(current_page + 3);
-        }
-        if before_pages.is_empty() {
-            after_pages.push(current_page + 4);
-        }
-        Pagination {
-            current_page,
-            is_last_page,
-            base_link,
-            before_pages,
-            after_pages,
-            previous_separator: current_page >= 5,
-        }
+        p
     }
 }

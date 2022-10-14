@@ -5,6 +5,7 @@ use crate::{
         site::get_site_data,
     },
     error::ErrorPage,
+    pagination::{PageLimit, Pagination, PAGE_ITEMS},
     routes::{auth, CLIENT},
     template_helpers::replace_smilies,
 };
@@ -13,16 +14,25 @@ use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 use url::Url;
 
-#[get("/viewtopic?<t>")]
-pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+#[get("/viewtopic?<t>&<page>")]
+pub async fn view_topic(
+    t: i32,
+    page: Option<i32>,
+    cookies: &CookieJar<'_>,
+) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
     let mut post = get_post(t, auth(cookies)).await?;
 
-    // simply ignore deleted/removed comments
+    post.comments.sort_by_key(|c| c.comment.published);
+    let all_comments = post.comments.clone();
     post.comments = post
         .comments
         .into_iter()
+        // simply ignore deleted/removed comments
         .filter(|c| !c.comment.deleted && !c.comment.removed)
+        // select items for current page
+        .skip(((page.unwrap_or(1) - 1) * PAGE_ITEMS) as usize)
+        .take(PAGE_ITEMS as usize)
         .collect();
 
     // determine if post.url should be rendered as <img> or <a href>
@@ -33,8 +43,10 @@ pub async fn view_topic(t: i32, cookies: &CookieJar<'_>) -> Result<Template, Err
         let content_type = &image.headers()[HeaderName::from_static("content-type")];
         is_image_url = content_type.to_str()?.starts_with("image/");
     }
+    let limit = PageLimit::Known((all_comments.len() as f32 / PAGE_ITEMS as f32).floor() as i32);
+    let pagination = Pagination::new(page.unwrap_or(1), limit, &format!("/viewtopic?t={}&", t));
 
-    let ctx = context! { site_data, post, is_image_url };
+    let ctx = context! { site_data, post, is_image_url, all_comments, pagination };
     Ok(Template::render("viewtopic", ctx))
 }
 
@@ -76,6 +88,7 @@ pub async fn do_post(
     )
     .await?;
     Ok(Either::Right(Redirect::to(uri!(view_topic(
-        post.post_view.post.id.0
+        post.post_view.post.id.0,
+        Some(1)
     )))))
 }

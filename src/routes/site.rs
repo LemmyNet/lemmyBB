@@ -4,7 +4,7 @@ use crate::{
         site::{create_site, get_site_data},
         user::register,
     },
-    pagination::Pagination,
+    pagination::{PageLimit, Pagination},
     routes::{auth, user::RegisterForm, ErrorPage},
 };
 use lemmy_db_views_actor::structs::CommunityView;
@@ -18,7 +18,7 @@ use rocket_dyn_templates::{context, Template};
 
 #[get("/?<page>")]
 pub async fn index(
-    page: Option<i64>,
+    page: Option<i32>,
     cookies: &CookieJar<'_>,
 ) -> Result<Either<Redirect, Template>, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
@@ -42,7 +42,11 @@ pub async fn index(
     .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
      */
 
-    let pagination = Pagination::new(page.unwrap_or(1), communities.is_empty(), "/?");
+    let pagination = Pagination::new(
+        page.unwrap_or(1),
+        PageLimit::Unknown(communities.is_empty()),
+        "/?",
+    );
     let ctx = context! { site_data, communities, pagination };
     Ok(Either::Right(Template::render("site/index", ctx)))
 }

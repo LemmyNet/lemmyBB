@@ -36,5 +36,5 @@ pub async fn do_comment(
     }
 
     create_comment(t, form.message.clone(), auth(cookies).unwrap()).await?;
-    Ok(Either::Right(Redirect::to(uri!(view_topic(t)))))
+    Ok(Either::Right(Redirect::to(uri!(view_topic(t, Some(1))))))
 }

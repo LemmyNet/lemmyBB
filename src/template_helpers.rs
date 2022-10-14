@@ -1,4 +1,4 @@
-use crate::env::external_domain;
+use crate::{env::external_domain, pagination::PAGE_ITEMS};
 use chrono::NaiveDateTime;
 use comrak::ComrakOptions;
 use lemmy_db_schema::{
@@ -62,6 +62,10 @@ handlebars_helper!(timestamp_human: |ts: NaiveDateTime| {
     ts.format("%a %v %R").to_string()
 });
 
+handlebars_helper!(eq: |a: i32, b: i32| {
+    a == b
+});
+
 handlebars_helper!(add: |a: i32, b: i32| {
     a + b
 });
@@ -72,6 +76,12 @@ handlebars_helper!(sub: |a: i32, b: i32| {
 
 handlebars_helper!(modulo: |a: i32, b: i32| {
     a % b
+});
+
+// Returns position of comment in thread. vec is assumed to be sorted
+handlebars_helper!(comment_page: |comment_id: CommentId, comments: Vec<CommentView>| {
+    let index = comments.iter().position(|c| c.comment.id == comment_id).unwrap();
+    (index as f32 / PAGE_ITEMS as f32).floor()
 });
 
 // Converts markdown to html. Replace generated <p></p> with <br /><br /> for newlines, because
@@ -86,11 +96,6 @@ handlebars_helper!(markdown: |md: Option<String>| {
     }
     None => "".to_string()
     }
-});
-
-// Returns position of comment in thread. vec is assumed to be sorted
-handlebars_helper!(comment_index: |comment_id: CommentId, comments: Vec<CommentView>| {
-    comments.iter().position(|c| c.comment.id == comment_id).unwrap()
 });
 
 handlebars_helper!(community_actor_id: |c: CommunitySafe| {
