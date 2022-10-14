@@ -9,7 +9,7 @@
 <div class="action-bar bar-top">
     <a href="./post?f={{community.community_view.community.id}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
-    <div class="pagination">{{length posts}} posts &bull; Page <strong>1</strong> of <strong>1</strong></div>
+    {{> components/pagination }}
 </div>
 
 <div class="forumbg">
@@ -59,7 +59,7 @@
 <div class="action-bar bar-bottom">
     <a href="./post?f={{community.community_view.community.id}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
-    <div class="pagination">{{length posts}} posts &bull; Page <strong>1</strong> of <strong>1</strong></div>
+    {{> components/pagination }}
 </div>
 
 {{> components/footer }}

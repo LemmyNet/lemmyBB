@@ -12,14 +12,16 @@ use lemmy_db_schema::{
 
 pub async fn list_posts(
     community_id: i32,
-    limit: i64,
+    limit: i32,
+    page: i32,
     auth: Option<Sensitive<String>>,
 ) -> Result<GetPostsResponse, Error> {
     let params = GetPosts {
         community_id: Some(CommunityId(community_id)),
         type_: Some(ListingType::Community),
         sort: Some(SortType::NewComments),
-        limit: Some(limit),
+        limit: Some(limit.into()),
+        page: Some(page.into()),
         auth,
         ..Default::default()
     };

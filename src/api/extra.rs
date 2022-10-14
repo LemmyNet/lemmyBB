@@ -65,7 +65,7 @@ pub async fn get_last_reply_in_community(
 ) -> Result<Option<PostOrComment>, Error> {
     let (comment, post) = join(
         list_comments(community_id, auth.clone()),
-        list_posts(community_id.0, 1, auth.clone()),
+        list_posts(community_id.0, 1, 1, auth.clone()),
     )
     .await;
     let (comment, post): (GetCommentsResponse, GetPostsResponse) = (comment?, post?);

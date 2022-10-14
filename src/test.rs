@@ -36,7 +36,7 @@ fn setup() {
 #[test]
 #[serial]
 fn view_forum() {
-    test_with_uri(uri!(view_forum(f = 8)))
+    test_with_uri(uri!(view_forum(f = 8, page = Some(1))))
 }
 
 #[test]

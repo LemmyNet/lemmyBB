@@ -42,11 +42,8 @@ pub async fn index(
     .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
      */
 
-    let pagination = Pagination::new(
-        page.unwrap_or(1),
-        PageLimit::Unknown(communities.is_empty()),
-        "/?",
-    );
+    let limit = PageLimit::Unknown(communities.len());
+    let pagination = Pagination::new(page.unwrap_or(1), limit, "/?");
     let ctx = context! { site_data, communities, pagination };
     Ok(Either::Right(Template::render("site/index", ctx)))
 }

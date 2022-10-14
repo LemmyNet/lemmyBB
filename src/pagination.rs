@@ -20,8 +20,8 @@ pub struct Pagination {
 pub enum PageLimit {
     // param is index of last page
     Known(i32),
-    // param is true if we are currently on last page
-    Unknown(bool),
+    // param is the number of items on current page
+    Unknown(usize),
 }
 
 impl Pagination {
@@ -52,8 +52,9 @@ impl Pagination {
                 p.after_separator = (last_page - current_page) > 3;
                 p.last_page = last_page;
             }
-            PageLimit::Unknown(is_last_page) => {
-                if !is_last_page {
+            PageLimit::Unknown(current_page_items) => {
+                p.is_last_page = (current_page_items as i32) < PAGE_ITEMS;
+                if !p.is_last_page {
                     p.after_pages.push(current_page + 1);
                     p.after_pages.push(current_page + 2);
                     if p.before_pages.len() <= 1 {
@@ -63,8 +64,7 @@ impl Pagination {
                         p.after_pages.push(current_page + 4);
                     }
                 };
-                p.is_last_page = is_last_page;
-                p.after_separator = !is_last_page;
+                p.after_separator = !p.is_last_page;
                 p.last_page = -1;
             }
         };
