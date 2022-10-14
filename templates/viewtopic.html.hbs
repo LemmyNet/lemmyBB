@@ -68,6 +68,11 @@
                     {{/if}}
                     {{{markdown post.post_view.post.body}}}
                 </div>
+                {{#if post.post_view.creator.bio}}
+                    <div class="signature">
+                        {{{markdown post.post_view.creator.bio}}}
+                    </div>
+                {{/if}}
             </div>
         </div>
 
@@ -126,6 +131,11 @@
             </p>
             <div class="content">{{{markdown this.comment.content}}}</div>
         </div>
+        {{#if this.creator.bio}}
+            <div class="signature">
+                {{{markdown this.creator.bio}}}
+            </div>
+        {{/if}}
 
         <div class="back2top">
             <a href="#top" class="top" title="Top">
