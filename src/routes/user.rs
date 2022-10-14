@@ -3,10 +3,10 @@ use crate::{
     api::{
         site::get_site_data,
         user::{get_captcha, get_person, mark_all_as_read},
+        NameOrId,
     },
     routes::{auth, ErrorPage},
 };
-use lemmy_db_schema::newtypes::PersonId;
 use rocket::{
     form::Form,
     http::{Cookie, CookieJar},
@@ -112,7 +112,7 @@ pub async fn mark_all_notifications_read(cookies: &CookieJar<'_>) -> Result<Redi
 #[get("/view_profile?<u>")]
 pub async fn view_profile(u: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
-    let person = get_person(PersonId(u), auth(cookies)).await?;
+    let person = get_person(NameOrId::Id(u), auth(cookies)).await?;
     let ctx = context!(site_data, person);
     Ok(Template::render("user/view_profile", ctx))
 }

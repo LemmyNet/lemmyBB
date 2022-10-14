@@ -3,6 +3,7 @@ use crate::{
         community::get_community,
         post::{create_post, get_post},
         site::get_site_data,
+        NameOrId,
     },
     error::ErrorPage,
     pagination::{PageLimit, Pagination, PAGE_ITEMS},
@@ -53,7 +54,7 @@ pub async fn view_topic(
 #[get("/post?<f>")]
 pub async fn post(f: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
-    let community = get_community(f, auth(cookies)).await?;
+    let community = get_community(NameOrId::Id(f), auth(cookies)).await?;
     let ctx = context!(site_data, community);
     Ok(Template::render("thread_editor", ctx))
 }
@@ -73,7 +74,7 @@ pub async fn do_post(
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
     form.message = replace_smilies(&form.message);
 
-    let community = get_community(f, auth(cookies)).await?;
+    let community = get_community(NameOrId::Id(f), auth(cookies)).await?;
     if form.preview.is_some() {
         let site_data = get_site_data(cookies).await?;
         let ctx = context!(site_data, community, subject: &form.subject, message: &form.message);

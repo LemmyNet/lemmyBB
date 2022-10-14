@@ -7,6 +7,7 @@ use crate::{
         },
         site::get_site_data,
         user::get_person,
+        NameOrId,
     },
     error::ErrorPage,
     replace_smilies,
@@ -144,7 +145,7 @@ pub async fn private_message_editor(
     u: i32,
 ) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
-    let recipient = get_person(PersonId(u), auth(cookies))
+    let recipient = get_person(NameOrId::Id(u), auth(cookies))
         .await?
         .person_view
         .person;
@@ -168,7 +169,7 @@ pub async fn do_send_private_message(
 
     if form.preview.is_some() {
         let site_data = get_site_data(cookies).await?;
-        let recipient = get_person(PersonId(u), auth(cookies))
+        let recipient = get_person(NameOrId::Id(u), auth(cookies))
             .await?
             .person_view
             .person;

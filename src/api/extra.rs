@@ -2,6 +2,7 @@ use crate::api::{
     comment::list_comments,
     post::{get_post, list_posts},
     user::{get_person, list_mentions, list_replies},
+    NameOrId,
 };
 use anyhow::Error;
 use chrono::NaiveDateTime;
@@ -47,7 +48,7 @@ pub async fn get_last_reply_in_thread(
     } else {
         let post = get_post(post.post.id.0, auth.clone()).await?;
         let creator_id = post.comments.last().unwrap().comment.creator_id;
-        let creator = get_person(creator_id, auth).await?;
+        let creator = get_person(NameOrId::Id(creator_id.0), auth).await?;
         Ok(PostOrComment {
             title: generate_comment_title(&post.post_view.post.name),
             creator: creator.person_view.person,

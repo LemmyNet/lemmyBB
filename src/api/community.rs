@@ -1,4 +1,7 @@
-use crate::{api::get, pagination::PAGE_ITEMS};
+use crate::{
+    api::{get, NameOrId},
+    pagination::PAGE_ITEMS,
+};
 use anyhow::Error;
 use lemmy_api_common::{
     community::{GetCommunity, GetCommunityResponse, ListCommunities, ListCommunitiesResponse},
@@ -21,13 +24,16 @@ pub async fn list_communities(
 }
 
 pub async fn get_community(
-    id: i32,
+    name_or_id: NameOrId,
     auth: Option<Sensitive<String>>,
 ) -> Result<GetCommunityResponse, Error> {
-    let params = GetCommunity {
-        id: Some(CommunityId(id)),
+    let mut params = GetCommunity {
         auth,
         ..Default::default()
     };
+    match name_or_id {
+        NameOrId::Name(n) => params.name = Some(n),
+        NameOrId::Id(c) => params.id = Some(CommunityId(c)),
+    }
     get("/community", params).await
 }

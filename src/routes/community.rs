@@ -1,5 +1,5 @@
 use crate::{
-    api::{community::get_community, post::list_posts, site::get_site_data},
+    api::{community::get_community, post::list_posts, site::get_site_data, NameOrId},
     pagination::{PageLimit, Pagination, PAGE_ITEMS},
     routes::{auth, ErrorPage},
 };
@@ -16,7 +16,7 @@ pub async fn view_forum(
     let site_data = get_site_data(cookies).await?;
     let auth = auth(cookies);
     let posts = list_posts(f, PAGE_ITEMS, page, auth.clone()).await?.posts;
-    let community = get_community(f, auth).await?;
+    let community = get_community(NameOrId::Id(f), auth).await?;
     /*
     let last_replies = join_all(
         posts

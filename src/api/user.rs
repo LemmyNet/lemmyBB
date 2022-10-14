@@ -1,5 +1,5 @@
 use crate::{
-    api::{get, post},
+    api::{get, post, NameOrId},
     routes::user::RegisterForm,
 };
 use anyhow::Error;
@@ -22,14 +22,17 @@ use lemmy_api_common::{
 use lemmy_db_schema::newtypes::PersonId;
 
 pub async fn get_person(
-    person_id: PersonId,
+    name_or_id: NameOrId,
     auth: Option<Sensitive<String>>,
 ) -> Result<GetPersonDetailsResponse, Error> {
-    let params = GetPersonDetails {
-        person_id: Some(person_id),
+    let mut params = GetPersonDetails {
         auth,
         ..Default::default()
     };
+    match name_or_id {
+        NameOrId::Name(n) => params.username = Some(n),
+        NameOrId::Id(c) => params.person_id = Some(PersonId(c)),
+    }
     get("/user", params).await
 }
 

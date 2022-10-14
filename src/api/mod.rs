@@ -32,6 +32,11 @@ struct ErrorResponse {
     error: String,
 }
 
+pub enum NameOrId {
+    Name(String),
+    Id(i32),
+}
+
 async fn post<T, Params>(path: &str, params: Params) -> Result<T, Error>
 where
     T: DeserializeOwned,
