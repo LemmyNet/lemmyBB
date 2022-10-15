@@ -24,13 +24,17 @@ pub async fn view_topic(
     let site_data = get_site_data(cookies).await?;
     let mut post = get_post(t, auth(cookies)).await?;
 
+    // simply ignore deleted/removed comments
+    post.comments = post
+        .comments
+        .into_iter()
+        .filter(|c| !c.comment.deleted && !c.comment.removed)
+        .collect();
     post.comments.sort_by_key(|c| c.comment.published);
     let all_comments = post.comments.clone();
     post.comments = post
         .comments
         .into_iter()
-        // simply ignore deleted/removed comments
-        .filter(|c| !c.comment.deleted && !c.comment.removed)
         // select items for current page
         .skip(((page.unwrap_or(1) - 1) * PAGE_ITEMS) as usize)
         .take(PAGE_ITEMS as usize)
@@ -44,7 +48,7 @@ pub async fn view_topic(
         let content_type = &image.headers()[HeaderName::from_static("content-type")];
         is_image_url = content_type.to_str()?.starts_with("image/");
     }
-    let limit = PageLimit::Known((all_comments.len() as f32 / PAGE_ITEMS as f32).floor() as i32);
+    let limit = PageLimit::Known((all_comments.len() as f32 / PAGE_ITEMS as f32).ceil() as i32);
     let pagination = Pagination::new(page.unwrap_or(1), limit, &format!("/viewtopic?t={}&", t));
 
     let ctx = context! { site_data, post, is_image_url, all_comments, pagination };

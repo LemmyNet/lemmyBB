@@ -80,8 +80,13 @@ handlebars_helper!(modulo: |a: i32, b: i32| {
 
 // Returns position of comment in thread. vec is assumed to be sorted
 handlebars_helper!(comment_page: |comment_id: CommentId, comments: Vec<CommentView>| {
-    let index = comments.iter().position(|c| c.comment.id == comment_id).unwrap();
-    (index as f32 / PAGE_ITEMS as f32).floor()
+    let index = comments.iter().position(|c| c.comment.id == comment_id);
+    if let Some(i) = index {
+    (i as f32 / PAGE_ITEMS as f32).ceil() as i32
+        } else {
+        // TODO: properly handle case of deleted parent
+        -1
+    }
 });
 
 // Converts markdown to html. Replace generated <p></p> with <br /><br /> for newlines, because
