@@ -19,20 +19,7 @@
 <div id="p1" class="post has-profile bg2">
     <div class="inner">
 
-        <dl class="postprofile" id="profile1">
-            <dt class="has-profile-rank">
-                <div class="avatar-container">
-                    {{#if this.creator.avatar}}
-                    <a href="/view_profile?u={{post.post_view.creator.id}}" class="avatar">
-                        <img class="avatar" src="{{post.post_view.creator.avatar}}" alt="User avatar" width="60" height="60">
-                    </a>
-                    {{/if}}
-                </div>
-                <a href="/view_profile?u={{post.post_view.creator.id}}" class="username">{{{user_actor_id post.post_view.creator}}}</a>							</dt>
-
-            <dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2&amp;sr=posts">?</a></dd>
-            <dd class="profile-joined"><strong>Joined:</strong> {{timestamp_human post.post_view.creator.published}}</dd>
-        </dl>
+        {{> components/post_profile user=post.post_view.creator }}
 
         <div class="postbody">
             <div id="post_content1">
@@ -100,20 +87,7 @@
 <div id="p{{this.comment.id}}" class="post has-profile bg{{add (mod @index 2) 1}}">
     <div class="inner">
 
-        <dl class="postprofile">
-            <dt class="has-profile-rank">
-                <div class="avatar-container">
-                    {{#if this.creator.avatar}}
-                    <a href="/view_profile?u={{this.creator.id}}" class="avatar">
-                        <img class="avatar" src="{{this.creator.avatar}}" alt="User avatar" width="60" height="60">
-                    </a>
-                    {{/if}}
-                </div>
-                <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a>							</dt>
-
-            <dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2&amp;sr=posts">1</a></dd>
-            <dd class="profile-joined"><strong>Joined:</strong>{{timestamp_human this.creator.published}}</dd>
-        </dl>
+        {{> components/post_profile user=this.creator }}
 
         <div class="postbody">
             <h3>

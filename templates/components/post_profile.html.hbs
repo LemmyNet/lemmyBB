@@ -1,0 +1,13 @@
+<dl class="postprofile" id="profile1">
+    <dt class="has-profile-rank">
+        <div class="avatar-container">
+            {{#if user.avatar}}
+                <a href="/view_profile?u={{user.id}}" class="avatar">
+                <img class="avatar" src="{{user.avatar}}" alt="User avatar" width="60" height="60">
+                </a>
+            {{/if}}
+        </div>
+        <a href="/view_profile?u={{user.id}}" class="username">{{{user_actor_id user}}}</a>							</dt>
+
+    <dd class="profile-joined"><strong>Joined:</strong>{{timestamp_human user.published}}</dd>
+</dl>
