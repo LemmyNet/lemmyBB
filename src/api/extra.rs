@@ -24,7 +24,7 @@ pub struct PostOrComment {
     title: String,
     creator: PersonSafe,
     post_id: PostId,
-    reply_position: i32,
+    reply_id: i32,
     time: NaiveDateTime,
 }
 
@@ -32,7 +32,6 @@ fn generate_comment_title(post_title: &str) -> String {
     format!("Re: {}", post_title)
 }
 
-#[allow(dead_code)]
 pub async fn get_last_reply_in_thread(
     post: &PostView,
     auth: Option<Sensitive<String>>,
@@ -42,24 +41,24 @@ pub async fn get_last_reply_in_thread(
             title: post.post.name.clone(),
             creator: post.creator.clone(),
             post_id: post.post.id,
-            reply_position: 1,
+            reply_id: post.post.id.0,
             time: post.post.published,
         })
     } else {
         let post = get_post(post.post.id.0, auth.clone()).await?;
         let creator_id = post.comments.last().unwrap().comment.creator_id;
         let creator = get_person(NameOrId::Id(creator_id.0), auth).await?;
+        let last_comment = &post.comments.last().unwrap().comment;
         Ok(PostOrComment {
             title: generate_comment_title(&post.post_view.post.name),
             creator: creator.person_view.person,
             post_id: post.post_view.post.id,
-            reply_position: (post.comments.len() + 1) as i32,
-            time: post.comments.last().unwrap().comment.published,
+            reply_id: last_comment.id.0,
+            time: last_comment.published,
         })
     }
 }
 
-#[allow(dead_code)]
 pub async fn get_last_reply_in_community(
     community_id: CommunityId,
     auth: Option<Sensitive<String>>,
@@ -71,12 +70,11 @@ pub async fn get_last_reply_in_community(
     .await;
     let (comment, post): (GetCommentsResponse, GetPostsResponse) = (comment?, post?);
     let comment = join_all(comment.comments.first().map(|c| async {
-        let p = get_post(c.post.id.0, auth).await;
         PostOrComment {
             title: generate_comment_title(&c.post.name),
             creator: c.creator.clone(),
             post_id: c.post.id,
-            reply_position: (p.unwrap().post_view.counts.comments + 1) as i32,
+            reply_id: c.comment.id.0,
             time: c.comment.published,
         }
     }))
@@ -86,7 +84,7 @@ pub async fn get_last_reply_in_community(
         title: p.post.name.clone(),
         creator: p.creator.clone(),
         post_id: p.post.id,
-        reply_position: 1,
+        reply_id: p.post.id.0,
         time: p.post.published,
     });
     // return data for post or comment, depending which is newer

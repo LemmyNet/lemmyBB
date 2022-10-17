@@ -39,15 +39,15 @@
                     </dt>
                     <dd class="posts">{{this.counts.comments}}<dfn>Replies</dfn></dd>
                     <dd class="lastpost">
-                        {{!--
+                        {{#if (len ../last_replies)}}
                         {{#with (lookup ../last_replies @index)}}
                         <span>
                             <dfn>Last post </dfn>by <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
-                            <a href="./viewtopic?t={{../this.post.id}}#p{{this.reply_position}}" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
+                            <a href="./viewtopic?t={{../this.post.id}}#p{{this.reply_id}}" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
                             <time datetime="{{timestamp_machine this.time}}">{{timestamp_human this.time}}</time>
                         </span>
                         {{/with}}
-                        --}}
+                        {{/if}}
                     </dd>
                 </dl>
             </li>

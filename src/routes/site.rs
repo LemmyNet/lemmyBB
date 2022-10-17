@@ -1,12 +1,16 @@
 use crate::{
     api::{
         community::list_communities,
+        extra::{get_last_reply_in_community, PostOrComment},
         site::{create_site, get_site_data},
         user::register,
     },
+    env::increased_rate_limit,
     pagination::{PageLimit, Pagination},
     routes::{auth, user::RegisterForm, ErrorPage},
 };
+use anyhow::Error;
+use futures::future::join_all;
 use lemmy_db_views_actor::structs::CommunityView;
 use rocket::{
     form::Form,
@@ -30,21 +34,22 @@ pub async fn index(
     let mut communities: Vec<CommunityView> =
         list_communities(page, auth(cookies)).await?.communities;
     communities.sort_unstable_by_key(|c| c.community.id.0);
-    /*
-    let last_replies = join_all(
-        communities
-            .communities
-            .iter()
-            .map(|c| get_last_reply_in_community(c.community.id, auth(cookies))),
-    )
-    .await
-    .into_iter()
-    .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
-     */
+    let last_replies = if increased_rate_limit() {
+        join_all(
+            communities
+                .iter()
+                .map(|c| get_last_reply_in_community(c.community.id, auth(cookies))),
+        )
+        .await
+        .into_iter()
+        .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?
+    } else {
+        vec![]
+    };
 
     let limit = PageLimit::Unknown(communities.len());
     let pagination = Pagination::new(page.unwrap_or(1), limit, "/?");
-    let ctx = context! { site_data, communities, pagination };
+    let ctx = context! { site_data, communities, last_replies, pagination };
     Ok(Either::Right(Template::render("site/index", ctx)))
 }
 

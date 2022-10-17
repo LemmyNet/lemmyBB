@@ -6,4 +6,9 @@
   database: {
     host: postgres
   }
+  # increase read rate limit to handle extra requests necessary to render replies
+  rate_limit: {
+    message: 180
+    message_per_second: 1
+  }
 }
