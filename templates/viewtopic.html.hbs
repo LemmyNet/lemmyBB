@@ -40,8 +40,8 @@
                 <h3 class="first">
                     <a href="./viewtopic?p={{post.post_view.post.id}}#p1">{{post.post_view.post.name}}</a>
                 </h3>
+                {{#if site_data.site.my_user.local_user_view.person.id}}
                 <ul class="post-buttons">
-                    {{#if site_data.site.my_user.local_user_view.person.id}}
                     {{#if (eq post.post_view.creator.id site_data.site.my_user.local_user_view.person.id)}}
                     <li>
                         <a href="/post_editor?f={{post.post_view.community.id}}&edit={{post.post_view.post.id}}" title="Edit post" class="button button-icon-only">
@@ -49,8 +49,13 @@
                         </a>
                     </li>
                     {{/if}}
-                    {{/if}}
+                    <li>
+                        <a href="/report?thread={{post.post_view.post.id}}" title="Report this post" class="button button-icon-only">
+                        <i class="icon fa-exclamation fa-fw" aria-hidden="true"></i><span class="sr-only">Report</span>
+                        </a>
+                    </li>
                 </ul>
+                {{/if}}
                 <p class="author">
                     <a class="unread" href="./viewtopic?t={{post.post_view.post.id}}#p1" title="Post">
                         <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
@@ -114,8 +119,8 @@
             <h3>
                 <a href="./viewtopic?p={{this.post.id}}#p1">{{this.post.name}}</a>
             </h3>
+            {{#if ../site_data.site.my_user.local_user_view.person.id}}
             <ul class="post-buttons">
-                {{#if ../site_data.site.my_user.local_user_view.person.id}}
                 {{#if (eq this.creator.id ../site_data.site.my_user.local_user_view.person.id)}}
                     <li>
                         <a href="/comment_editor?t={{this.post.id}}&edit={{this.comment.id}}" title="Edit post" class="button button-icon-only">
@@ -123,8 +128,13 @@
                         </a>
                     </li>
                 {{/if}}
-                {{/if}}
+                <li>
+                    <a href="/report?reply={{this.comment.id}}" title="Report this post" class="button button-icon-only">
+                        <i class="icon fa-exclamation fa-fw" aria-hidden="true"></i><span class="sr-only">Report</span>
+                    </a>
+                </li>
             </ul>
+            {{/if}}
             <p class="author">
                 <a class="unread" href="./viewtopic?t={{this.post.id}}&page={{../pagination.current_page}}#p{{this.comment.id}}" title="Post">
                     <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>

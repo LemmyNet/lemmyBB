@@ -67,7 +67,7 @@ where
         .await?;
     let status = res.status();
     let text = res.text().await?;
-    info!("post {} status: {}, response: {}", &path, status, &text);
+    info!("put {} status: {}, response: {}", &path, status, &text);
     handle_response(text, status)
 }
 

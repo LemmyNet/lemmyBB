@@ -104,7 +104,9 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 redirect_apub_community,
                 redirect_apub_user,
                 redirect_apub_post,
-                redirect_apub_comment
+                redirect_apub_comment,
+                report,
+                do_report
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))

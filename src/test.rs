@@ -86,3 +86,9 @@ fn view_profile() {
 fn favicon() {
     test_with_uri(uri!(favicon))
 }
+
+#[test]
+#[serial]
+fn report() {
+    test_with_uri(uri!("/report?thread=2"))
+}

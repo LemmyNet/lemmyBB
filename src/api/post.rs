@@ -3,11 +3,13 @@ use anyhow::Error;
 use lemmy_api_common::{
     post::{
         CreatePost,
+        CreatePostReport,
         EditPost,
         GetPost,
         GetPostResponse,
         GetPosts,
         GetPostsResponse,
+        PostReportResponse,
         PostResponse,
     },
     sensitive::Sensitive,
@@ -79,4 +81,17 @@ pub async fn edit_post(
         ..Default::default()
     };
     put("/post", params).await
+}
+
+pub async fn report_post(
+    post_id: i32,
+    reason: String,
+    auth: Sensitive<String>,
+) -> Result<PostReportResponse, Error> {
+    let params = CreatePostReport {
+        post_id: PostId(post_id),
+        reason,
+        auth,
+    };
+    post("/post/report", params).await
 }

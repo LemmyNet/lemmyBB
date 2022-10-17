@@ -1,0 +1,38 @@
+{{> components/header }}
+
+    <h2 class="titlespace">Report this post</h2>
+
+    <form method="post" action="{{action}}" id="report">
+        <div class="panel">
+            <div class="inner">
+
+                <div class="content">
+                    <p>Use this form to report the selected post to the forum moderators and board administrators. Reporting should generally be used only if the post breaks forum rules.</p>
+
+                    <fieldset>
+                        <dl class="fields2">
+                            <dt><label for="report_text">Reason:</label></dt>
+                            <dd><textarea name="report_text" id="report_text" rows="10" cols="76" class="inputbox"></textarea></dd>
+                        </dl>
+                    </fieldset>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="inner">
+
+                <div class="content">
+                    <fieldset class="submit-buttons">
+                        <input type="submit" name="submit" class="button1" value="Submit">&nbsp;
+                        <input type="submit" name="cancel" class="button2" value="Cancel">
+
+                    </fieldset>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+{{> components/footer }}

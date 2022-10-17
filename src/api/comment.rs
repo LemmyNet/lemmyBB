@@ -2,8 +2,10 @@ use crate::api::{get, post, put};
 use anyhow::Error;
 use lemmy_api_common::{
     comment::{
+        CommentReportResponse,
         CommentResponse,
         CreateComment,
+        CreateCommentReport,
         EditComment,
         GetComment,
         GetComments,
@@ -69,4 +71,17 @@ pub async fn get_comment(
         auth,
     };
     get("/comment", params).await
+}
+
+pub async fn report_comment(
+    comment_id: i32,
+    reason: String,
+    auth: Sensitive<String>,
+) -> Result<CommentReportResponse, Error> {
+    let params = CreateCommentReport {
+        comment_id: CommentId(comment_id),
+        reason,
+        auth,
+    };
+    post("/comment/report", params).await
 }
