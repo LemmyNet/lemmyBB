@@ -23,3 +23,32 @@ steps:
     image: rust:1.62-buster
     commands:
       - cargo test --workspace --no-fail-fast
+
+  - name: nightly build
+    image: plugins/docker
+    settings:
+      dockerfile: docker/Dockerfile
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: lemmynet/lemmybb
+      tags:
+        - dev
+    when:
+      event:
+        - cron
+
+  - name: publish release docker image
+    image: plugins/docker
+    settings:
+      dockerfile: docker/Dockerfile
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: lemmynet/lemmybb
+      auto_tag: true
+    when:
+      ref:
+        - refs/tags/*
