@@ -1,7 +1,14 @@
-use crate::api::{get, post};
+use crate::api::{get, post, put};
 use anyhow::Error;
 use lemmy_api_common::{
-    comment::{CommentResponse, CreateComment, GetComment, GetComments, GetCommentsResponse},
+    comment::{
+        CommentResponse,
+        CreateComment,
+        EditComment,
+        GetComment,
+        GetComments,
+        GetCommentsResponse,
+    },
     sensitive::Sensitive,
 };
 use lemmy_db_schema::{
@@ -37,6 +44,20 @@ pub async fn create_comment(
         ..Default::default()
     };
     post("/comment", params).await
+}
+
+pub async fn edit_comment(
+    comment_id: i32,
+    content: String,
+    auth: Sensitive<String>,
+) -> Result<CommentResponse, Error> {
+    let params = EditComment {
+        comment_id: CommentId(comment_id),
+        content,
+        auth,
+        ..Default::default()
+    };
+    put("/comment", params).await
 }
 
 pub async fn get_comment(

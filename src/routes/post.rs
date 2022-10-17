@@ -1,7 +1,7 @@
 use crate::{
     api::{
         community::get_community,
-        post::{create_post, get_post},
+        post::{create_post, edit_post, get_post},
         site::get_site_data,
         NameOrId,
     },
@@ -55,12 +55,43 @@ pub async fn view_topic(
     Ok(Template::render("viewtopic", ctx))
 }
 
-#[get("/post?<f>")]
-pub async fn post(f: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+#[get("/post_editor?<f>&<edit>")]
+pub async fn post_editor(
+    f: i32,
+    edit: Option<i32>,
+    cookies: &CookieJar<'_>,
+) -> Result<Template, ErrorPage> {
+    match edit {
+        Some(e) => {
+            let p = get_post(e, auth(cookies)).await?.post_view.post;
+            render_editor(f, Some((p.name, p.body.unwrap_or_default())), edit, cookies).await
+        }
+        None => render_editor(f, None, None, cookies).await,
+    }
+}
+
+async fn render_editor(
+    community_id: i32,
+    subject_and_message: Option<(String, String)>,
+    post_id: Option<i32>,
+    cookies: &CookieJar<'_>,
+) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
-    let community = get_community(NameOrId::Id(f), auth(cookies)).await?;
-    let ctx = context!(site_data, community);
-    Ok(Template::render("thread_editor", ctx))
+    let community = get_community(NameOrId::Id(community_id), auth(cookies)).await?;
+    let editor_action = format!("/do_post?f={}", community.community_view.community.id.0);
+    Ok(match subject_and_message {
+        Some(s) => {
+            let editor_action = format!("{}&edit={}", editor_action, post_id.unwrap());
+            Template::render(
+                "thread_editor",
+                context!(site_data, community, editor_action, subject: s.0, message: s.1),
+            )
+        }
+        None => Template::render(
+            "thread_editor",
+            context!(site_data, community, editor_action),
+        ),
+    })
 }
 
 #[derive(FromForm)]
@@ -70,28 +101,27 @@ pub struct PostForm {
     preview: Option<String>,
 }
 
-#[post("/do_post?<f>", data = "<form>")]
+#[post("/do_post?<f>&<edit>", data = "<form>")]
 pub async fn do_post(
     f: i32,
-    mut form: Form<PostForm>,
+    edit: Option<i32>,
+    form: Form<PostForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
-    form.message = replace_smilies(&form.message);
+    let subject = form.subject.clone();
+    let message = replace_smilies(&form.message);
 
-    let community = get_community(NameOrId::Id(f), auth(cookies)).await?;
     if form.preview.is_some() {
-        let site_data = get_site_data(cookies).await?;
-        let ctx = context!(site_data, community, subject: &form.subject, message: &form.message);
-        return Ok(Either::Left(Template::render("thread_editor", ctx)));
+        return Ok(Either::Left(
+            render_editor(f, Some((subject, message)), edit, cookies).await?,
+        ));
     }
 
-    let post = create_post(
-        form.subject.clone(),
-        form.message.clone(),
-        community.community_view.community.id,
-        auth(cookies).unwrap(),
-    )
-    .await?;
+    let auth = auth(cookies).unwrap();
+    let post = match edit {
+        None => create_post(subject, message, f, auth).await?,
+        Some(e) => edit_post(subject, message, e, auth).await?,
+    };
     Ok(Either::Right(Redirect::to(uri!(view_topic(
         post.post_view.post.id.0,
         Some(1)

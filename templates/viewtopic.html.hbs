@@ -7,7 +7,7 @@
 
 <div class="action-bar bar-top">
 
-    <a href="./comment?t={{ post.post_view.post.id }}" class="button" title="Post a reply">
+    <a href="./comment_editor?t={{ post.post_view.post.id }}" class="button" title="Post a reply">
         <span>Post Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
     </a>
 
@@ -41,11 +41,15 @@
                     <a href="./viewtopic?p={{post.post_view.post.id}}#p1">{{post.post_view.post.name}}</a>
                 </h3>
                 <ul class="post-buttons">
+                    {{#if site_data.site.my_user.local_user_view.person.id}}
+                    {{#if (eq post.post_view.creator.id site_data.site.my_user.local_user_view.person.id)}}
                     <li>
-                        <a href="./posting.php?mode=quote&amp;p=1" title="Reply with quote" class="button button-icon-only">
-                            <i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+                        <a href="/post_editor?f={{post.post_view.community.id}}&edit={{post.post_view.post.id}}" title="Edit post" class="button button-icon-only">
+                            <i class="icon fa-pencil fa-fw" aria-hidden="true"></i><span class="sr-only">Edit</span>
                         </a>
                     </li>
+                    {{/if}}
+                    {{/if}}
                 </ul>
                 <p class="author">
                     <a class="unread" href="./viewtopic?t={{post.post_view.post.id}}#p1" title="Post">
@@ -111,11 +115,15 @@
                 <a href="./viewtopic?p={{this.post.id}}#p1">{{this.post.name}}</a>
             </h3>
             <ul class="post-buttons">
-                <li>
-                    <a href="./posting.php?mode=quote&amp;p=1" title="Reply with quote" class="button button-icon-only">
-                        <i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
-                    </a>
-                </li>
+                {{#if ../site_data.site.my_user.local_user_view.person.id}}
+                {{#if (eq this.creator.id ../site_data.site.my_user.local_user_view.person.id)}}
+                    <li>
+                        <a href="/comment_editor?t={{this.post.id}}&edit={{this.comment.id}}" title="Edit post" class="button button-icon-only">
+                        <i class="icon fa-pencil fa-fw" aria-hidden="true"></i><span class="sr-only">Edit</span>
+                        </a>
+                    </li>
+                {{/if}}
+                {{/if}}
             </ul>
             <p class="author">
                 <a class="unread" href="./viewtopic?t={{this.post.id}}&page={{../pagination.current_page}}#p{{this.comment.id}}" title="Post">
@@ -150,7 +158,7 @@
 
 <div class="action-bar bar-bottom">
 
-    <a href="./comment?t={{post.post_view.post.id}}" class="button" title="Post a reply">
+    <a href="./comment_editor?t={{post.post_view.post.id}}" class="button" title="Post a reply">
         <span>Post Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
     </a>
 

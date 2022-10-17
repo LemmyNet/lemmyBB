@@ -1,5 +1,9 @@
 use crate::{
-    api::{comment::create_comment, post::get_post, site::get_site_data},
+    api::{
+        comment::{create_comment, edit_comment, get_comment},
+        post::get_post,
+        site::get_site_data,
+    },
     error::ErrorPage,
     routes::{auth, post::rocket_uri_macro_view_topic},
     template_helpers::replace_smilies,
@@ -7,12 +11,40 @@ use crate::{
 use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 
-#[get("/comment?<t>")]
-pub async fn comment(t: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+#[get("/comment_editor?<t>&<edit>")]
+pub async fn comment_editor(
+    t: i32,
+    edit: Option<i32>,
+    cookies: &CookieJar<'_>,
+) -> Result<Template, ErrorPage> {
+    match edit {
+        Some(e) => {
+            let c = get_comment(e, auth(cookies)).await?;
+            render_editor(t, Some(c.comment_view.comment.content), edit, cookies).await
+        }
+        None => render_editor(t, None, None, cookies).await,
+    }
+}
+
+async fn render_editor(
+    post_id: i32,
+    message: Option<String>,
+    comment_id: Option<i32>,
+    cookies: &CookieJar<'_>,
+) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
-    let post = get_post(t, auth(cookies)).await?;
-    let ctx = context!(site_data, post);
-    Ok(Template::render("comment_editor", ctx))
+    let post = get_post(post_id, auth(cookies)).await?;
+    let editor_action = format!("/do_comment?t={}", post.post_view.post.id.0);
+    Ok(match message {
+        Some(m) => {
+            let editor_action = format!("{}&edit={}", editor_action, comment_id.unwrap());
+            Template::render(
+                "comment_editor",
+                context!(site_data, post, message: m, editor_action),
+            )
+        }
+        None => Template::render("comment_editor", context!(site_data, post, editor_action)),
+    })
 }
 
 #[derive(FromForm)]
@@ -21,20 +53,24 @@ pub struct CommentForm {
     preview: Option<String>,
 }
 
-#[post("/do_comment?<t>", data = "<form>")]
+#[post("/do_comment?<t>&<edit>", data = "<form>")]
 pub async fn do_comment(
     t: i32,
-    mut form: Form<CommentForm>,
+    edit: Option<i32>,
+    form: Form<CommentForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
-    form.message = replace_smilies(&form.message);
+    let message = replace_smilies(&form.message);
     if form.preview.is_some() {
-        let site_data = get_site_data(cookies).await?;
-        let post = get_post(t, auth(cookies)).await?;
-        let ctx = context!(site_data, post, message: &form.message);
-        return Ok(Either::Left(Template::render("comment_editor", ctx)));
+        return Ok(Either::Left(
+            render_editor(t, Some(message), edit, cookies).await?,
+        ));
     }
 
-    create_comment(t, form.message.clone(), auth(cookies).unwrap()).await?;
+    let auth = auth(cookies).unwrap();
+    match edit {
+        Some(e) => edit_comment(e, message, auth).await?,
+        None => create_comment(t, message, auth).await?,
+    };
     Ok(Either::Right(Redirect::to(uri!(view_topic(t, Some(1))))))
 }

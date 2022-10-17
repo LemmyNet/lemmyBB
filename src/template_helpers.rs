@@ -62,7 +62,7 @@ handlebars_helper!(timestamp_human: |ts: NaiveDateTime| {
     ts.format("%a %v %R").to_string()
 });
 
-handlebars_helper!(eq: |a: i32, b: i32| {
+handlebars_helper!(eq: |a: Option<i32>, b: Option<i32>| {
     a == b
 });
 

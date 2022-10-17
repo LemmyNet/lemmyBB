@@ -1,7 +1,7 @@
 use crate::{
     api::site::rocket_uri_macro_favicon,
     init_rocket,
-    routes::{comment::*, community::*, post::*, site::*, user::*},
+    routes::{community::*, post::*, site::*, user::*},
 };
 use log::LevelFilter;
 use rocket::{http::uri::Origin, local::blocking::Client};
@@ -59,14 +59,14 @@ fn register() {
 
 #[test]
 #[serial]
-fn post() {
-    test_with_uri(uri!(post(f = 8)))
+fn post_editor() {
+    test_with_uri(uri!("/post_editor?f=8"))
 }
 
 #[test]
 #[serial]
-fn comment() {
-    test_with_uri(uri!(comment(t = 360976)))
+fn comment_editor() {
+    test_with_uri(uri!("/comment_editor?t=360976"))
 }
 
 #[test]

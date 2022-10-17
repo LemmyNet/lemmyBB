@@ -54,6 +54,23 @@ where
     handle_response(text, status)
 }
 
+async fn put<T, Params>(path: &str, params: Params) -> Result<T, Error>
+where
+    T: DeserializeOwned,
+    Params: Serialize + Debug,
+{
+    info!("put {}, params {:?}", &path, &params);
+    let res = CLIENT
+        .put(&gen_request_url(path))
+        .json(&params)
+        .send()
+        .await?;
+    let status = res.status();
+    let text = res.text().await?;
+    info!("post {} status: {}, response: {}", &path, status, &text);
+    handle_response(text, status)
+}
+
 async fn get<T, Params>(path: &str, params: Params) -> Result<T, Error>
 where
     T: DeserializeOwned,
