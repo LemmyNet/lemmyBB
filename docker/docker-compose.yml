@@ -15,7 +15,7 @@ services:
       - lemmy
 
   lemmy-ui:
-    image: dessalines/lemmy-ui:0.16.6
+    image: dessalines/lemmy-ui:0.16.7
     restart: always
     ports:
       - "127.0.0.1:8702:1234"
@@ -27,7 +27,7 @@ services:
       - lemmy
 
   lemmy:
-    image: dessalines/lemmy:0.16.6
+    image: dessalines/lemmy:0.16.7
     restart: always
     ports:
       - "127.0.0.1:8703:8536"
