@@ -73,25 +73,27 @@ pub async fn post_editor(
 async fn render_editor(
     community_id: i32,
     subject_and_message: Option<(String, String)>,
-    post_id: Option<i32>,
+    edit_post_id: Option<i32>,
     cookies: &CookieJar<'_>,
 ) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
     let community = get_community(NameOrId::Id(community_id), auth(cookies)).await?;
-    let editor_action = format!("/do_post?f={}", community.community_view.community.id.0);
-    Ok(match subject_and_message {
-        Some(s) => {
-            let editor_action = format!("{}&edit={}", editor_action, post_id.unwrap());
-            Template::render(
-                "thread_editor",
-                context!(site_data, community, editor_action, subject: s.0, message: s.1),
-            )
-        }
-        None => Template::render(
-            "thread_editor",
-            context!(site_data, community, editor_action),
-        ),
-    })
+    let mut editor_action = format!("/do_post?f={}", community.community_view.community.id.0);
+    if let Some(edit_post_id) = edit_post_id {
+        editor_action = format!("{}&edit={}", editor_action, edit_post_id);
+    }
+    let subject = subject_and_message
+        .as_ref()
+        .map(|s| s.0.clone())
+        .unwrap_or_default();
+    let message = subject_and_message
+        .as_ref()
+        .map(|s| s.0.clone())
+        .unwrap_or_default();
+    Ok(Template::render(
+        "thread_editor",
+        context!(site_data, community, editor_action, subject, message),
+    ))
 }
 
 #[derive(FromForm)]
@@ -108,8 +110,9 @@ pub async fn do_post(
     form: Form<PostForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
+    let site_data = get_site_data(cookies).await?;
     let subject = form.subject.clone();
-    let message = replace_smilies(&form.message);
+    let message = replace_smilies(&form.message, &site_data);
 
     if form.preview.is_some() {
         return Ok(Either::Left(

@@ -1,4 +1,4 @@
-use crate::{env::external_domain, pagination::PAGE_ITEMS};
+use crate::{api::site::SiteData, pagination::PAGE_ITEMS};
 use chrono::NaiveDateTime;
 use comrak::ComrakOptions;
 use lemmy_db_schema::{
@@ -24,7 +24,9 @@ static COMRAK: Lazy<ComrakOptions> = Lazy::new(|| {
 });
 
 #[rustfmt::skip]
-pub fn replace_smilies(text: &str) -> String {
+pub fn replace_smilies(text: &str, site_data: &SiteData) -> String {
+    let external_domain =
+        site_data.site.site_view.as_ref().unwrap().site.actor_id.domain().unwrap();
     text
         .replace(":D", "![]($DOMAIN/assets/images/smilies/icon_e_biggrin.gif)")
         .replace(":)", "![]($DOMAIN/assets/images/smilies/icon_e_smile.gif)")
@@ -50,7 +52,7 @@ pub fn replace_smilies(text: &str) -> String {
         .replace(":mrgreen:", "![]($DOMAIN/assets/images/smilies/icon_mrgreen.gif)")
         .replace(":geek:", "![]($DOMAIN/assets/images/smilies/icon_e_geek.gif)")
         .replace(":ugeek:", "![]($DOMAIN/assets/images/smilies/icon_e_ugeek.gif)")
-        .replace("$DOMAIN", &external_domain())
+        .replace("$DOMAIN", external_domain)
 }
 
 handlebars_helper!(timestamp_machine: |ts: NaiveDateTime| {

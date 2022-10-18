@@ -8,11 +8,6 @@ pub fn lemmy_backend() -> String {
     std::env::var("LEMMY_BB_BACKEND").unwrap_or_else(|_| "http://localhost:8536".to_string())
 }
 
-/// The domain under which lemmyBB is running.
-pub fn external_domain() -> String {
-    std::env::var("LEMMY_BB_DOMAIN").unwrap_or_else(|_| "http://127.0.0.1:1244/".to_string())
-}
-
 /// Set true if Lemmy backend runs with increased message rate limit. This is necessary to show
 /// last replies for threads and forums.
 pub fn increased_rate_limit() -> bool {

@@ -29,22 +29,20 @@ pub async fn comment_editor(
 async fn render_editor(
     post_id: i32,
     message: Option<String>,
-    comment_id: Option<i32>,
+    edit_comment_id: Option<i32>,
     cookies: &CookieJar<'_>,
 ) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
     let post = get_post(post_id, auth(cookies)).await?;
-    let editor_action = format!("/do_comment?t={}", post.post_view.post.id.0);
-    Ok(match message {
-        Some(m) => {
-            let editor_action = format!("{}&edit={}", editor_action, comment_id.unwrap());
-            Template::render(
-                "comment_editor",
-                context!(site_data, post, message: m, editor_action),
-            )
-        }
-        None => Template::render("comment_editor", context!(site_data, post, editor_action)),
-    })
+    let mut editor_action = format!("/do_comment?t={}", post.post_view.post.id.0);
+    if let Some(edit_comment_id) = edit_comment_id {
+        editor_action = format!("{}&edit={}", editor_action, edit_comment_id);
+    }
+    let message = message.unwrap_or_default();
+    Ok(Template::render(
+        "comment_editor",
+        context!(site_data, post, message, editor_action),
+    ))
 }
 
 #[derive(FromForm)]
@@ -60,7 +58,8 @@ pub async fn do_comment(
     form: Form<CommentForm>,
     cookies: &CookieJar<'_>,
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
-    let message = replace_smilies(&form.message);
+    let site_data = get_site_data(cookies).await?;
+    let message = replace_smilies(&form.message, &site_data);
     if form.preview.is_some() {
         return Ok(Either::Left(
             render_editor(t, Some(message), edit, cookies).await?,

@@ -163,17 +163,17 @@ pub struct PrivateMessageForm {
 pub async fn do_send_private_message(
     cookies: &CookieJar<'_>,
     u: i32,
-    mut form: Form<PrivateMessageForm>,
+    form: Form<PrivateMessageForm>,
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
-    form.message = replace_smilies(&form.message);
+    let site_data = get_site_data(cookies).await?;
+    let message = replace_smilies(&form.message, &site_data);
 
     if form.preview.is_some() {
-        let site_data = get_site_data(cookies).await?;
         let recipient = get_person(NameOrId::Id(u), auth(cookies))
             .await?
             .person_view
             .person;
-        let ctx = context!(site_data, message: &form.message, recipient);
+        let ctx = context!(site_data, message, recipient);
         return Ok(Either::Left(Template::render(
             "private_message/editor",
             ctx,
