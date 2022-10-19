@@ -124,8 +124,12 @@
             <div class="content">{{{markdown this.comment.content}}}</div>
         </div>
         {{#if this.creator.bio}}
-            <div class="signature">
+            <div class="signature truncated">
                 {{{markdown this.creator.bio}}}
+                <div class="buttons">
+                    <button class="button remove" onclick="$('div.signature').removeClass('truncated')">Read more...</button>
+                    <button class="button add" onclick="$('div.signature').addClass('truncated')">Read less...</button>
+                </div>
             </div>
         {{/if}}
 
