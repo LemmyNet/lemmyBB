@@ -44,8 +44,8 @@
                     <dd class="topics">{{this.counts.posts}} <dfn>Posts</dfn></dd>
                     <dd class="posts">{{this.counts.comments}} <dfn>Comments</dfn></dd>
                     <dd class="lastpost">
-                        {{#if (len ../last_replies)}}
-                        {{#with (lookup ../last_replies @index)}}
+                        {{#if lookup ../last_replies @index}}
+                        {{#with lookup ../last_replies @index}}
                             <span>
                             <dfn>Last comment</dfn>
                             <a href="./viewtopic?t={{this.post_id}}#p{{this.reply_id}}" title="{{this.title}}" class="lastsubject">{{this.title}}</a> <br>
