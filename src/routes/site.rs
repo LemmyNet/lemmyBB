@@ -49,7 +49,6 @@ pub async fn index(
 
     let limit = PageLimit::Unknown(communities.len());
     let pagination = Pagination::new(page.unwrap_or(1), limit, "/?");
-    dbg!(&last_replies);
     let ctx = context! { site_data, communities, last_replies, pagination };
     Ok(Either::Right(Template::render("site/index", ctx)))
 }
