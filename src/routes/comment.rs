@@ -6,7 +6,7 @@ use crate::{
     },
     error::ErrorPage,
     routes::{auth, post::rocket_uri_macro_view_topic},
-    template_helpers::replace_smilies,
+    utils::replace_smilies,
 };
 use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};

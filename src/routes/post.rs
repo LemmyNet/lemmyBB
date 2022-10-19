@@ -8,7 +8,7 @@ use crate::{
     error::ErrorPage,
     pagination::{PageLimit, Pagination, PAGE_ITEMS},
     routes::{auth, CLIENT},
-    template_helpers::replace_smilies,
+    utils::replace_smilies,
 };
 use reqwest::header::HeaderName;
 use rocket::{form::Form, http::CookieJar, response::Redirect, Either};

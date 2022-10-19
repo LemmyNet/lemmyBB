@@ -1,10 +1,11 @@
 use crate::{
-    api::{get, post, NameOrId},
+    api::{get, post, put, NameOrId},
     routes::user::RegisterForm,
 };
 use anyhow::Error;
 use lemmy_api_common::{
     person::{
+        ChangePassword,
         GetCaptchaResponse,
         GetPersonDetails,
         GetPersonDetailsResponse,
@@ -16,6 +17,7 @@ use lemmy_api_common::{
         LoginResponse,
         MarkAllAsRead,
         Register,
+        SaveUserSettings,
     },
     sensitive::Sensitive,
 };
@@ -86,4 +88,11 @@ pub(crate) async fn list_replies(auth: Sensitive<String>) -> Result<GetRepliesRe
 pub async fn mark_all_as_read(auth: Sensitive<String>) -> Result<GetRepliesResponse, Error> {
     let params = MarkAllAsRead { auth };
     post("/user/mark_all_as_read", params).await
+}
+
+pub async fn change_password(params: ChangePassword) -> Result<LoginResponse, Error> {
+    put("/user/change_password", params).await
+}
+pub async fn save_settings(params: SaveUserSettings) -> Result<LoginResponse, Error> {
+    put("/user/save_user_settings", params).await
 }

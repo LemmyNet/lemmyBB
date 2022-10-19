@@ -8,8 +8,10 @@ use crate::{
         private_message::list_private_messages,
         CLIENT,
     },
+    env::lemmy_backend,
     error::ErrorPage,
     routes::auth,
+    utils::base_url,
 };
 use anyhow::{anyhow, Error};
 use chrono::Local;
@@ -35,14 +37,21 @@ use lemmy_api_common::{
 use lemmy_db_schema::newtypes::DbUrl;
 use lemmy_db_views::structs::SiteView;
 use once_cell::sync::OnceCell;
+use rand::distributions::{Alphanumeric, DistString};
+use reqwest::multipart::{Form, Part};
 use rocket::{
+    fs::TempFile,
     http::{Cookie, CookieJar, Status},
     response::Responder,
     Request,
     Response,
 };
-use serde::Serialize;
-use std::io::Cursor;
+use serde::{Deserialize, Serialize};
+use std::{
+    env::temp_dir,
+    fs::File,
+    io::{Cursor, Read},
+};
 use url::Url;
 
 #[derive(Serialize)]
@@ -210,4 +219,57 @@ async fn generate_favicon(site_view: Option<SiteView>) -> Result<(), Error> {
         .set(f)
         .map_err(|_| anyhow!("failed to init favicon"))?;
     Ok(())
+}
+
+#[derive(Deserialize)]
+pub struct UploadImageResponse {
+    msg: String,
+    files: Vec<UploadImageFile>,
+}
+
+#[derive(Deserialize)]
+struct UploadImageFile {
+    pub file: String,
+    #[allow(dead_code)]
+    pub delete_token: String,
+}
+
+pub async fn upload_image(
+    image: &mut TempFile<'_>,
+    auth: Sensitive<String>,
+    site_data: &SiteData,
+) -> Result<Url, Error> {
+    // TODO: currently need to persist tempfile to be able to read bytes
+    // https://github.com/SergioBenitez/Rocket/issues/2148
+    let filename = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
+    let tempfile = format!("{}/{}", temp_dir().as_path().display(), filename);
+    let file_name = image.raw_name().unwrap().as_str().unwrap().to_string();
+    let mime_str = image.content_type().unwrap().to_string();
+    image.persist_to(&tempfile).await?;
+    let mut file = File::open(&tempfile)?;
+    let mut data = Vec::new();
+    file.read_to_end(&mut data)?;
+
+    let part = Part::bytes(data).file_name(file_name).mime_str(&mime_str)?;
+    let form = Form::new().part("images[]", part);
+    let path = format!("{}/pictrs/image", lemmy_backend());
+    let res = CLIENT
+        .post(&path)
+        .header("cookie", format!("jwt={}", auth.into_inner()))
+        .multipart(form)
+        .send()
+        .await?;
+    let status = res.status();
+    let text = res.text().await?;
+    info!("post /pictrs/image status: {}, response: {}", status, &text);
+    let res: UploadImageResponse = handle_response(text, status)?;
+    if res.msg != "ok" {
+        return Err(anyhow!(res.msg));
+    }
+    let filename = &res.files[0].file;
+    Ok(Url::parse(&format!(
+        "{}/pictrs/image/{}?thumbnail=120",
+        base_url(site_data),
+        filename
+    ))?)
 }

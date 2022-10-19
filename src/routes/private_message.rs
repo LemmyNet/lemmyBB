@@ -10,8 +10,8 @@ use crate::{
         NameOrId,
     },
     error::ErrorPage,
-    replace_smilies,
     routes::auth,
+    utils::replace_smilies,
 };
 use chrono::NaiveDateTime;
 use futures::future::join_all;
@@ -44,7 +44,7 @@ impl Hash for PersonSafeWrapper {
     }
 }
 
-#[get("/private_messages_list")]
+#[get("/private_messages")]
 pub async fn private_messages_list(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
     let my_user_id = site_data

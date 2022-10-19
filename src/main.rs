@@ -9,6 +9,7 @@ mod routes;
 mod template_helpers;
 #[cfg(test)]
 mod test;
+mod utils;
 
 use crate::{
     api::site::favicon,
@@ -106,7 +107,9 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 redirect_apub_post,
                 redirect_apub_comment,
                 report,
-                do_report
+                do_report,
+                edit_profile,
+                do_edit_profile
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))

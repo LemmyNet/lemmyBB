@@ -1,14 +1,20 @@
 use crate::{
     api,
     api::{
-        site::get_site_data,
-        user::{get_captcha, get_person, mark_all_as_read},
+        site::{get_site_data, upload_image},
+        user::{change_password, get_captcha, get_person, mark_all_as_read, save_settings},
         NameOrId,
     },
     routes::{auth, ErrorPage},
+    utils::empty_to_opt,
+};
+use lemmy_api_common::{
+    person::{ChangePassword, SaveUserSettings},
+    sensitive::Sensitive,
 };
 use rocket::{
     form::Form,
+    fs::TempFile,
     http::{Cookie, CookieJar},
     response::Redirect,
     Either,
@@ -115,4 +121,63 @@ pub async fn view_profile(u: i32, cookies: &CookieJar<'_>) -> Result<Template, E
     let person = get_person(NameOrId::Id(u), auth(cookies)).await?;
     let ctx = context!(site_data, person);
     Ok(Template::render("user/view_profile", ctx))
+}
+
+#[derive(FromForm, Debug)]
+pub struct EditProfileForm<'r> {
+    pub displayname: String,
+    pub signature: String,
+    pub avatar_delete: bool,
+    pub avatar_upload_file: TempFile<'r>,
+    pub email: String,
+    pub new_password: String,
+    pub confirm_password: String,
+    pub cur_password: String,
+}
+
+#[get("/edit_profile")]
+pub async fn edit_profile(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
+    let site_data = get_site_data(cookies).await?;
+    let ctx = context!(site_data);
+    Ok(Template::render("user/edit_profile", ctx))
+}
+
+#[post("/edit_profile", data = "<form>")]
+pub async fn do_edit_profile(
+    mut form: Form<EditProfileForm<'_>>,
+    cookies: &CookieJar<'_>,
+) -> Result<Template, ErrorPage> {
+    let site_data = get_site_data(cookies).await?;
+    let auth = auth(cookies).unwrap();
+    let mut params = SaveUserSettings {
+        display_name: empty_to_opt(form.displayname.clone()),
+        email: empty_to_opt(form.email.clone()).map(Sensitive::new),
+        bio: empty_to_opt(form.signature.clone()),
+        auth: auth.clone(),
+        ..Default::default()
+    };
+    if form.avatar_delete {
+        params.avatar = Some("".to_string());
+    }
+    if form.avatar_upload_file.len() != 0 {
+        let avatar = upload_image(&mut form.avatar_upload_file, auth.clone(), &site_data).await?;
+        params.avatar = Some(avatar.to_string());
+    }
+    save_settings(params).await?;
+
+    if !form.new_password.is_empty()
+        && !form.confirm_password.is_empty()
+        && !form.cur_password.is_empty()
+    {
+        let params = ChangePassword {
+            new_password: Sensitive::new(form.new_password.clone()),
+            new_password_verify: Sensitive::new(form.confirm_password.clone()),
+            old_password: Sensitive::new(form.cur_password.clone()),
+            auth,
+        };
+        change_password(params).await?;
+    }
+    let message = "Settings updated successfully";
+    let ctx = context!(site_data, message);
+    Ok(Template::render("message", ctx))
 }

@@ -1,4 +1,4 @@
-use crate::{api::site::SiteData, pagination::PAGE_ITEMS};
+use crate::pagination::PAGE_ITEMS;
 use chrono::NaiveDateTime;
 use comrak::ComrakOptions;
 use lemmy_db_schema::{
@@ -22,38 +22,6 @@ static COMRAK: Lazy<ComrakOptions> = Lazy::new(|| {
     comrak.extension.autolink = true;
     comrak
 });
-
-#[rustfmt::skip]
-pub fn replace_smilies(text: &str, site_data: &SiteData) -> String {
-    let external_domain =
-        site_data.site.site_view.as_ref().unwrap().site.actor_id.domain().unwrap();
-    text
-        .replace(":D", "![]($DOMAIN/assets/images/smilies/icon_e_biggrin.gif)")
-        .replace(":)", "![]($DOMAIN/assets/images/smilies/icon_e_smile.gif)")
-        .replace(";)", "![]($DOMAIN/assets/images/smilies/icon_e_wink.gif)")
-        .replace(":(", "![]($DOMAIN/assets/images/smilies/icon_e_sad.gif)")
-        .replace(":oops:", "![]($DOMAIN/assets/images/smilies/icon_redface.gif)")
-        .replace(":o", "![]($DOMAIN/assets/images/smilies/icon_e_surprised.gif)")
-        .replace(":shock:", "![]($DOMAIN/assets/images/smilies/icon_eek.gif)")
-        .replace(":?", "![]($DOMAIN/assets/images/smilies/icon_e_confused.gif)")
-        .replace("8-)", "![]($DOMAIN/assets/images/smilies/icon_cool.gif)")
-        .replace(":lol:", "![]($DOMAIN/assets/images/smilies/icon_lol.gif)")
-        .replace(":x", "![]($DOMAIN/assets/images/smilies/icon_mad.gif)")
-        .replace(":P", "![]($DOMAIN/assets/images/smilies/icon_razz.gif)")
-        .replace(":cry:", "![]($DOMAIN/assets/images/smilies/icon_cry.gif)")
-        .replace(":evil:", "![]($DOMAIN/assets/images/smilies/icon_evil.gif)")
-        .replace(":twisted:", "![]($DOMAIN/assets/images/smilies/icon_twisted.gif)")
-        .replace(":roll:", "![]($DOMAIN/assets/images/smilies/icon_rolleyes.gif)")
-        .replace(":!:", "![]($DOMAIN/assets/images/smilies/icon_exclaim.gif)")
-        .replace(":?:", "![]($DOMAIN/assets/images/smilies/icon_question.gif)")
-        .replace(":idea:", "![]($DOMAIN/assets/images/smilies/icon_idea.gif)")
-        .replace(":arrow:", "![]($DOMAIN/assets/images/smilies/icon_arrow.gif)")
-        .replace(":|", "![]($DOMAIN/assets/images/smilies/icon_neutral.gif)")
-        .replace(":mrgreen:", "![]($DOMAIN/assets/images/smilies/icon_mrgreen.gif)")
-        .replace(":geek:", "![]($DOMAIN/assets/images/smilies/icon_e_geek.gif)")
-        .replace(":ugeek:", "![]($DOMAIN/assets/images/smilies/icon_e_ugeek.gif)")
-        .replace("$DOMAIN", external_domain)
-}
 
 handlebars_helper!(timestamp_machine: |ts: NaiveDateTime| {
     ts.format("%Y-%m-%dT%H:%M:%S%.f+00:00").to_string()

@@ -61,7 +61,7 @@
                     {{#if site_data.site.my_user}}
                             <li id="username_logged_in" class="rightside " data-skip-responsive="true">
                                 <div class="header-profile dropdown-container">
-                                    <a href="./ucp.php" class="header-avatar dropdown-trigger dropdown-toggle">
+                                    <a href="/control_panel" class="header-avatar dropdown-trigger dropdown-toggle">
                                         <span class="username">{{{user_actor_id site_data.site.my_user.local_user_view.person}}}</span>
                                     </a>
                                     <div class="dropdown">
@@ -69,7 +69,7 @@
                                         <ul class="dropdown-contents" role="menu">
 
                                             <li>
-                                                <a href="./ucp.php" title="User Control Panel" role="menuitem">
+                                                <a href="/edit_profile" title="User Control Panel" role="menuitem">
                                                     <i class="icon fa-sliders fa-fw" aria-hidden="true"></i><span>User Control Panel</span>
                                                 </a>
                                             </li>
@@ -91,7 +91,7 @@
                                 </div>
                             </li>
                             <li class="rightside" data-skip-responsive="true">
-                                <a href="/private_messages_list" role="menuitem">
+                                <a href="/private_messages" role="menuitem">
                                     <i class="icon fa-inbox fa-fw" aria-hidden="true"></i><span>Private messages </span>
                                     {{#if site_data.unread_pm_count}}
                                         <strong class="badge">{{site_data.unread_pm_count}}</strong>
