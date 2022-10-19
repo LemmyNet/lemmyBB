@@ -891,6 +891,7 @@ table.fixed-width-table {
 .postbody .content::-webkit-scrollbar, .topicreview::-webkit-scrollbar, .post_details::-webkit-scrollbar, .codebox code::-webkit-scrollbar, .attachbox dd::-webkit-scrollbar, .attach-image::-webkit-scrollbar, .dropdown-extended ul::-webkit-scrollbar {
 	width: 8px;
 	height: 8px;
+	appearance: none;
 	-webkit-appearance: none;
 	background: rgba(0, 0, 0, .1);
 	border-radius: 3px;
