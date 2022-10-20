@@ -109,7 +109,7 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 report,
                 do_report,
                 edit_profile,
-                do_edit_profile
+                do_edit_profile,
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))
