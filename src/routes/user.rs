@@ -126,7 +126,8 @@ pub async fn view_profile(u: i32, cookies: &CookieJar<'_>) -> Result<Template, E
 #[derive(FromForm, Debug)]
 pub struct EditProfileForm<'r> {
     pub displayname: String,
-    pub signature: String,
+    // the signature
+    pub message: String,
     pub avatar_delete: bool,
     pub avatar_upload_file: TempFile<'r>,
     pub email: String,
@@ -152,7 +153,7 @@ pub async fn do_edit_profile(
     let mut params = SaveUserSettings {
         display_name: empty_to_opt(form.displayname.clone()),
         email: empty_to_opt(form.email.clone()).map(Sensitive::new),
-        bio: empty_to_opt(form.signature.clone()),
+        bio: empty_to_opt(form.message.clone()),
         auth: auth.clone(),
         ..Default::default()
     };

@@ -23,7 +23,7 @@
                                     <dl>
                                         <dt><label for="signature">Signature:</label>
                                         </dt>
-                                        <dd><input type="text" class="inputbox autowidth" name="signature" id="signature" size="40" maxlength="255" value="{{site_data.site.my_user.local_user_view.person.bio}}" autocomplete="off">
+                                        <dd>{{> components/editor message=site_data.site.my_user.local_user_view.person.bio editor_action="" editor_title=""}}
                                         </dd>
                                     </dl>
                                 </fieldset>

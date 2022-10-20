@@ -14,7 +14,7 @@
                     </div>
                 </div>
 
-                {{> components/editor editor_action=(concat "/do_send_private_message?u=" recipient.id) editor_title="Compose message"}}
+                {{> components/editor_form editor_action=(concat "/do_send_private_message?u=" recipient.id) editor_title="Compose message"}}
 
             </div>
         </div>

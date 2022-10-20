@@ -1,0 +1,62 @@
+<form id="postform" method="post" action="{{editor_action}}">
+
+{{#if message}}
+        <div class="post bg2" id="preview">
+            <div class="inner">
+                <div class="postbody">
+                    <h3>Preview: </h3>
+                    <div class="content">
+                        {{{markdown message}}}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+{{/if}}
+
+<div class="panel" id="postingbox">
+<div class="inner">
+
+    <h3>{{editor_title}}</h3>
+
+<fieldset class="fields1">
+
+{{#if subject_field}}
+        <dl style="clear: left;">
+            <dt><label for="subject">Subject:</label></dt>
+            <dd>
+                <input type="text" name="subject" id="subject" {{#if subject}} value="{{subject}}" {{/if}} size="45" maxlength="124" tabindex="2" class="inputbox autowidth" />
+            </dd>
+        </dl>
+{{/if}}
+
+    {{> components/editor }}
+
+</fieldset>
+
+
+</div>
+</div>
+
+    <div class="panel bg2">
+        <div class="inner">
+            <fieldset class="submit-buttons">
+
+                <input type="hidden" name="topic_cur_post_id" value="3" />
+                <input type="submit" tabindex="5" name="preview" value="Preview" class="button1" onclick="document.getElementById('postform').action += '#preview';" />&nbsp;
+                <input type="submit" accesskey="s" tabindex="6" name="post" value="Submit" class="button1 default-submit-action" />&nbsp;
+
+            </fieldset>
+
+        </div>
+    </div>
+
+    <hr />
+
+    <p>
+        <a href="#postingbox" class="top">
+            <i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i><span>Top</span>
+        </a>
+    </p>
+
+</form>
