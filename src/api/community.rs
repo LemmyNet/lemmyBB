@@ -17,11 +17,12 @@ use lemmy_api_common::{
 use lemmy_db_schema::{newtypes::CommunityId, ListingType, SortType};
 
 pub async fn list_communities(
+    listing_type: ListingType,
     page: Option<i32>,
     auth: Option<Sensitive<String>>,
 ) -> Result<ListCommunitiesResponse, Error> {
     let params = ListCommunities {
-        type_: Some(ListingType::All),
+        type_: Some(listing_type),
         sort: Some(SortType::NewComments),
         page: page.map(Into::into),
         limit: Some(PAGE_ITEMS.into()),

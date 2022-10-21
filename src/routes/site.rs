@@ -11,6 +11,7 @@ use crate::{
 };
 use anyhow::Error;
 use futures::future::join_all;
+use lemmy_db_schema::ListingType;
 use lemmy_db_views_actor::structs::CommunityView;
 use rocket::{
     form::Form,
@@ -19,6 +20,7 @@ use rocket::{
     Either,
 };
 use rocket_dyn_templates::{context, Template};
+use std::str::FromStr;
 
 #[get("/")]
 pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>, ErrorPage> {
@@ -40,17 +42,20 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>
     }
 }
 
-// TODO: link this somewhere on index page
-// TODO: maybe add param type (subscribed, local, all)
-#[get("/community_list?<page>")]
+#[get("/community_list?<mode>&<page>")]
 pub async fn community_list(
     page: Option<i32>,
+    mode: Option<&str>,
     cookies: &CookieJar<'_>,
 ) -> Result<Either<Redirect, Template>, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
 
-    let mut communities: Vec<CommunityView> =
-        list_communities(page, auth(cookies)).await?.communities;
+    let listing_type: ListingType = mode
+        .map(ListingType::from_str)
+        .unwrap_or(Ok(ListingType::All))?;
+    let mut communities: Vec<CommunityView> = list_communities(listing_type, page, auth(cookies))
+        .await?
+        .communities;
     communities.sort_unstable_by_key(|c| c.community.id.0);
     let last_replies = join_all(
         communities
