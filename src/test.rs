@@ -1,7 +1,7 @@
 use crate::{
     api::site::rocket_uri_macro_favicon,
     init_rocket,
-    routes::{community::*, post::*, site::*, user::*},
+    routes::{post::*, site::*, user::*},
 };
 use log::LevelFilter;
 use rocket::{http::uri::Origin, local::blocking::Client};
@@ -42,7 +42,7 @@ fn setup() {
 #[test]
 #[serial]
 fn view_forum() {
-    test_with_uri(uri!(view_forum(f = 8, page = Some(1))))
+    test_with_uri(uri!("/viewforum?f=8"))
 }
 
 #[test]

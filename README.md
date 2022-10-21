@@ -142,17 +142,18 @@ systemctl restart lemmy_bb.service
 Create a file `lemmybb_categories.hjson` with content like the following:
 ```json
 {
+  "General": [
+    "!main@voyager.lemmy.ml",
+    "!lemmybb@lemmy.ml"
+  ],
   "Open Source": [
     "https://lemmy.ml/c/opensource",
     "https://lemmy.ml/c/linux",
     "https://lemmy.ml/c/rust"
-  ],
-  "General": [
-    "!main@voyager.lemmy.ml",
-    "!lemmybb@lemmy.ml"
   ]
 }
 ```
+Note, you must subscribe manually to remote communities, so that new activities are federated to your instances.
 
 ## Development
 

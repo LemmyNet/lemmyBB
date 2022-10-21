@@ -15,7 +15,11 @@ pub async fn redirect_apub_community(
 ) -> Result<Redirect, ErrorPage> {
     let community = get_community(NameOrId::Name(name), auth(cookies)).await?;
     let f = community.community_view.community.id.0;
-    Ok(Redirect::to(uri!(view_forum(f, Some(1)))))
+    Ok(Redirect::to(uri!(view_forum(
+        f,
+        Some(1),
+        Option::<String>::None
+    ))))
 }
 
 #[get("/u/<name>")]

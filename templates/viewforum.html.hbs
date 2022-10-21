@@ -9,6 +9,18 @@
 <div class="action-bar bar-top">
     <a href="./post_editor?f={{community.community_view.community.id}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
+    {{#if site_data.site.my_user}}
+        {{#if community.community_view.subscribed}}
+        <a href="/viewforum?f={{community.community_view.community.id}}&action=unsubscribe" class="button" title="Unsubscribe from forum">
+            <span>Unsubscribe</span> <i class="icon fa-minus fa-fw" aria-hidden="true"></i>
+        </a>
+        {{else}}
+        <a href="/viewforum?f={{community.community_view.community.id}}&action=subscribe" class="button" title="Subscribe to forum">
+            <span>Subscribe</span> <i class="icon fa-plus fa-fw" aria-hidden="true"></i>
+        </a>
+        {{/if}}
+    {{/if}}
+
     {{> components/pagination }}
 </div>
 

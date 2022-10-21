@@ -1,10 +1,17 @@
 use crate::{
-    api::{get, NameOrId},
+    api::{get, post, NameOrId},
     pagination::PAGE_ITEMS,
 };
 use anyhow::Error;
 use lemmy_api_common::{
-    community::{GetCommunity, GetCommunityResponse, ListCommunities, ListCommunitiesResponse},
+    community::{
+        CommunityResponse,
+        FollowCommunity,
+        GetCommunity,
+        GetCommunityResponse,
+        ListCommunities,
+        ListCommunitiesResponse,
+    },
     sensitive::Sensitive,
 };
 use lemmy_db_schema::{newtypes::CommunityId, ListingType, SortType};
@@ -36,4 +43,17 @@ pub async fn get_community(
         NameOrId::Id(c) => params.id = Some(CommunityId(c)),
     }
     get("/community", params).await
+}
+
+pub async fn follow_community(
+    community_id: i32,
+    follow: bool,
+    auth: Sensitive<String>,
+) -> Result<CommunityResponse, Error> {
+    let params = FollowCommunity {
+        community_id: CommunityId(community_id),
+        follow,
+        auth,
+    };
+    post("/community/follow", params).await
 }

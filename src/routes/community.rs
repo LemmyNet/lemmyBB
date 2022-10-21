@@ -1,7 +1,7 @@
 use crate::{
     api::{
         comment::report_comment,
-        community::get_community,
+        community::{follow_community, get_community},
         extra::{get_last_reply_in_thread, PostOrComment},
         post::{list_posts, report_post},
         site::get_site_data,
@@ -16,15 +16,23 @@ use futures::future::join_all;
 use rocket::{form::Form, http::CookieJar};
 use rocket_dyn_templates::{context, Template};
 
-#[get("/viewforum?<f>&<page>")]
+#[get("/viewforum?<f>&<page>&<action>")]
 pub async fn view_forum(
     f: i32,
     page: Option<i32>,
+    action: Option<String>,
     cookies: &CookieJar<'_>,
 ) -> Result<Template, ErrorPage> {
-    let page = page.unwrap_or(1);
     let site_data = get_site_data(cookies).await?;
     let auth = auth(cookies);
+    if let Some(action) = action {
+        if action == "subscribe" {
+            follow_community(f, true, auth.clone().unwrap()).await?;
+        } else if action == "unsubscribe" {
+            follow_community(f, false, auth.clone().unwrap()).await?;
+        }
+    }
+    let page = page.unwrap_or(1);
     let posts = list_posts(f, PAGE_ITEMS, page, auth.clone()).await?.posts;
     let community = get_community(NameOrId::Id(f), auth.clone()).await?;
     let last_replies = if increased_rate_limit() {
