@@ -1,12 +1,12 @@
 use crate::{
-    api::site::rocket_uri_macro_favicon,
+    api::{categories::CATEGORIES_FILE, site::rocket_uri_macro_favicon},
     init_rocket,
     routes::{post::*, site::*, user::*},
 };
 use log::LevelFilter;
 use rocket::{http::uri::Origin, local::blocking::Client};
 use serial_test::serial;
-use std::env;
+use std::{env, path::Path};
 
 #[ctor::ctor]
 fn init() {
@@ -24,6 +24,10 @@ fn test_with_uri(uri: Origin) {
 #[test]
 #[serial]
 fn index() {
+    if !Path::new(CATEGORIES_FILE).exists() {
+        // write empty categories file so there is no redirect returned (which would have wrong status code)
+        std::fs::write("lemmybb_categories.hjson", "[]").unwrap();
+    }
     test_with_uri(uri!("/"))
 }
 

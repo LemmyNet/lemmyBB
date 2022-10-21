@@ -9,11 +9,13 @@ use lemmy_api_common::{sensitive::Sensitive, site::ResolveObjectResponse};
 use lemmy_db_views_actor::structs::CommunityView;
 use std::fs::read_to_string;
 
+pub static CATEGORIES_FILE: &str = "lemmybb_categories.hjson";
+
 type CategoriesConfig = Vec<(String, Vec<String>)>;
 type CategoriesConfigParsed = Vec<(String, Vec<(CommunityView, Option<PostOrComment>)>)>;
 
 fn read_categories_file() -> Result<CategoriesConfig, Error> {
-    let config_str = read_to_string("lemmybb_categories.hjson")?;
+    let config_str = read_to_string(CATEGORIES_FILE)?;
     Ok(from_str::<CategoriesConfig>(&config_str)?)
 }
 
