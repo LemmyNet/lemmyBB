@@ -14,7 +14,7 @@
             <ul class="topiclist">
                 <li class="header">
                     <dl class="row-item">
-                        <dt><div class="list-inner">{{@key}}</div></dt>
+                        <dt><div class="list-inner">{{this.0}}</div></dt>
                         <dd class="topics">Topics</dd>
                         <dd class="posts">Posts</dd>
                         <dd class="lastpost"><span>Last post</span></dd>
@@ -22,7 +22,7 @@
                 </li>
             </ul>
             <ul class="topiclist forums">
-                {{#each this}}
+                {{#each this.1}}
                 <li class="row">
                     <dl class="row-item forum_read">
                         <dt title="No unread posts">

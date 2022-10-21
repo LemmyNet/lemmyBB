@@ -7,10 +7,10 @@ use deser_hjson::from_str;
 use futures::future::join_all;
 use lemmy_api_common::{sensitive::Sensitive, site::ResolveObjectResponse};
 use lemmy_db_views_actor::structs::CommunityView;
-use std::{collections::HashMap, fs::read_to_string};
+use std::fs::read_to_string;
 
-type CategoriesConfig = HashMap<String, Vec<String>>;
-type CategoriesConfigParsed = HashMap<String, Vec<(CommunityView, Option<PostOrComment>)>>;
+type CategoriesConfig = Vec<(String, Vec<String>)>;
+type CategoriesConfigParsed = Vec<(String, Vec<(CommunityView, Option<PostOrComment>)>)>;
 
 fn read_categories_file() -> Result<CategoriesConfig, Error> {
     let config_str = read_to_string("lemmybb_categories.hjson")?;
@@ -57,7 +57,7 @@ pub async fn get_categories(
             .into_iter()
             .zip(last_replies.into_iter())
             .collect();
-        resolved.insert(key, zipped);
+        resolved.push((key, zipped));
     }
 
     Ok(resolved)
