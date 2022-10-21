@@ -1,3 +1,4 @@
+pub mod categories;
 pub mod comment;
 pub mod community;
 pub mod extra;

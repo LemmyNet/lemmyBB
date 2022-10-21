@@ -24,6 +24,7 @@ futures = "0.3"
 itertools = "0.10.5"
 image = { version = "0.24.4", features = ["png"], default-features = false }
 rand = "0.8.5"
+deser-hjson = "1.0.2"
 
 [dev-dependencies]
 serial_test = "0.6.0"

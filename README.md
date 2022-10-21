@@ -127,6 +127,33 @@ cargo build --release
 systemctl restart lemmy_bb.service
 ```
 
+## Configuration
+
+### Environment variables
+
+| var                           | default value         | description                                                                                                                |
+|-------------------------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------|
+| LEMMY_BB_BACKEND              | http://localhost:8536 | Protocol, hostname and port where lemmy backend is available                                                               |
+| LEMMY_BB_LISTEN_ADDRESS       | 127.0.0.1:1244        | IP and port where lemmyBB listens for requests                                                                             |
+| LEMMY_BB_INCREASED_RATE_LIMIT |                       | Set this variable if rate limits of Lemmy backend are increased as in docker/lemmy.hjson. Necessary to render last replies |
+
+### Frontpage
+
+Create a file `lemmybb_categories.hjson` with content like the following:
+```json
+{
+  "Open Source": [
+    "https://lemmy.ml/c/opensource",
+    "https://lemmy.ml/c/linux",
+    "https://lemmy.ml/c/rust"
+  ],
+  "General": [
+    "!main@voyager.lemmy.ml",
+    "!lemmybb@lemmy.ml"
+  ]
+}
+```
+
 ## Development
 
 Execute the following command, with a Lemmy instance of your choice:
@@ -139,16 +166,6 @@ You can also run a local development instance of Lemmy, either [native](https://
 ```
 LEMMY_BB_BACKEND=http://localhost:8536 cargo run
 ```
-
-## Configuration
-
-lemmyBB is configured via environment variables:
-
-| var                           | default value         | description                                                                                                                |
-|-------------------------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------|
-| LEMMY_BB_BACKEND              | http://localhost:8536 | Protocol, hostname and port where lemmy backend is available                                                               |
-| LEMMY_BB_LISTEN_ADDRESS       | 127.0.0.1:1244        | IP and port where lemmyBB listens for requests                                                                             |
-| LEMMY_BB_INCREASED_RATE_LIMIT |                       | Set this variable if rate limits of Lemmy backend are increased as in docker/lemmy.hjson. Necessary to render last replies |
 
 ## License
 

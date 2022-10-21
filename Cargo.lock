@@ -373,6 +373,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "deser-hjson"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1f486ff51f3ecdf9364736375a4b358b6eb9f02555d5324fa4837c00b5aa23f5"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "devise"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1037,6 +1046,7 @@ dependencies = [
  "chrono",
  "comrak",
  "ctor",
+ "deser-hjson",
  "env_logger",
  "futures",
  "image",

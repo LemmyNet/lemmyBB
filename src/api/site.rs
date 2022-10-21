@@ -130,12 +130,7 @@ pub async fn search(
         auth: auth.clone(),
         ..Default::default()
     };
-    let resolve_params = ResolveObject { q: query, auth };
-    let (search, resolve) = join(
-        get("/search", &search_params),
-        get("/resolve_object", &resolve_params),
-    )
-    .await;
+    let (search, resolve) = join(get("/search", &search_params), resolve_object(query, auth)).await;
 
     // ignore resolve errors, those will happen every time that query is not an apub id
     let (mut search, resolve): (SearchResponse, ResolveObjectResponse) =
@@ -154,6 +149,14 @@ pub async fn search(
         search.users.push(p)
     };
     Ok(search)
+}
+
+pub async fn resolve_object(
+    query: String,
+    auth: Option<Sensitive<String>>,
+) -> Result<ResolveObjectResponse, Error> {
+    let resolve_params = ResolveObject { q: query, auth };
+    get("/resolve_object", &resolve_params).await
 }
 
 static FAVICON: OnceCell<Favicon> = OnceCell::new();

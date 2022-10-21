@@ -15,7 +15,7 @@ pub async fn list_communities(
 ) -> Result<ListCommunitiesResponse, Error> {
     let params = ListCommunities {
         type_: Some(ListingType::All),
-        sort: Some(SortType::TopMonth),
+        sort: Some(SortType::NewComments),
         page: page.map(Into::into),
         limit: Some(PAGE_ITEMS.into()),
         auth,

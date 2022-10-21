@@ -1,11 +1,11 @@
 use crate::{
     api::{
+        categories::get_categories,
         community::list_communities,
         extra::{get_last_reply_in_community, PostOrComment},
         site::{create_site, get_site_data},
         user::register,
     },
-    env::increased_rate_limit,
     pagination::{PageLimit, Pagination},
     routes::{auth, user::RegisterForm, ErrorPage},
 };
@@ -20,37 +20,51 @@ use rocket::{
 };
 use rocket_dyn_templates::{context, Template};
 
-#[get("/?<page>")]
-pub async fn index(
-    page: Option<i32>,
-    cookies: &CookieJar<'_>,
-) -> Result<Either<Redirect, Template>, ErrorPage> {
+#[get("/")]
+pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>, ErrorPage> {
     let site_data = get_site_data(cookies).await?;
     if site_data.site.site_view.is_none() {
         // need to setup site
         return Ok(Either::Left(Redirect::to(uri!(setup))));
     }
 
+    match get_categories(auth(cookies)).await {
+        Ok(categories) => {
+            let ctx = context! { site_data, categories };
+            Ok(Either::Right(Template::render("site/index", ctx)))
+        }
+        Err(e) => {
+            warn!("{}", e);
+            Ok(Either::Left(Redirect::to(uri!("/community_list"))))
+        }
+    }
+}
+
+// TODO: link this somewhere on index page
+// TODO: maybe add param type (subscribed, local, all)
+#[get("/community_list?<page>")]
+pub async fn community_list(
+    page: Option<i32>,
+    cookies: &CookieJar<'_>,
+) -> Result<Either<Redirect, Template>, ErrorPage> {
+    let site_data = get_site_data(cookies).await?;
+
     let mut communities: Vec<CommunityView> =
         list_communities(page, auth(cookies)).await?.communities;
     communities.sort_unstable_by_key(|c| c.community.id.0);
-    let last_replies = if increased_rate_limit() {
-        join_all(
-            communities
-                .iter()
-                .map(|c| get_last_reply_in_community(c.community.id, auth(cookies))),
-        )
-        .await
-        .into_iter()
-        .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?
-    } else {
-        vec![]
-    };
+    let last_replies = join_all(
+        communities
+            .iter()
+            .map(|c| get_last_reply_in_community(c.community.id, auth(cookies))),
+    )
+    .await
+    .into_iter()
+    .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
 
     let limit = PageLimit::Unknown(communities.len());
-    let pagination = Pagination::new(page.unwrap_or(1), limit, "/?");
+    let pagination = Pagination::new(page.unwrap_or(1), limit, "/community_list??");
     let ctx = context! { site_data, communities, last_replies, pagination };
-    Ok(Either::Right(Template::render("site/index", ctx)))
+    Ok(Either::Right(Template::render("site/community_list", ctx)))
 }
 
 #[get("/setup")]

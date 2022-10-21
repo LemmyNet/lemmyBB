@@ -1,8 +1,11 @@
-use crate::api::{
-    comment::list_comments,
-    post::{get_post, list_posts},
-    user::{get_person, list_mentions, list_replies},
-    NameOrId,
+use crate::{
+    api::{
+        comment::list_comments,
+        post::{get_post, list_posts},
+        user::{get_person, list_mentions, list_replies},
+        NameOrId,
+    },
+    env::increased_rate_limit,
 };
 use anyhow::Error;
 use chrono::NaiveDateTime;
@@ -63,6 +66,9 @@ pub async fn get_last_reply_in_community(
     community_id: CommunityId,
     auth: Option<Sensitive<String>>,
 ) -> Result<Option<PostOrComment>, Error> {
+    if !increased_rate_limit() {
+        return Ok(None);
+    }
     let (comment, post) = join(
         list_comments(community_id, auth.clone()),
         list_posts(community_id.0, 1, 1, auth.clone()),
@@ -99,7 +105,7 @@ pub async fn get_last_reply_in_community(
             Some(comment)
         }
     } else {
-        None
+        post
     })
 }
 

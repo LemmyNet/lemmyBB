@@ -29,6 +29,12 @@ fn index() {
 
 #[test]
 #[serial]
+fn community_list() {
+    test_with_uri(uri!("/community_list"))
+}
+
+#[test]
+#[serial]
 fn setup() {
     test_with_uri(uri!(setup))
 }

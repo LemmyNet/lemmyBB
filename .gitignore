@@ -3,3 +3,4 @@
 docker/volumes
 docker/lemmy.hjson
 .env
+lemmybb_categories.hjson
