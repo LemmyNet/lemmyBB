@@ -8,6 +8,12 @@ platform:
 
 steps:
 
+  - name: prepare repo
+    image: rustdocker/rust:nightly
+    commands:
+      - git submodule init
+      - git submodule update
+
   - name: check formatting
     image: rustdocker/rust:nightly
     commands:
