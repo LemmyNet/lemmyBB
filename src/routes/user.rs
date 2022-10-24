@@ -51,6 +51,7 @@ pub async fn do_login(
 #[get("/register")]
 pub async fn register(site_data: SiteData) -> Result<Template, ErrorPage> {
     let captcha = get_captcha().await?;
+    dbg!(&site_data.site.site_view.as_ref().unwrap().site);
     Ok(Template::render(
         "user/register",
         context!(site_data, captcha),
