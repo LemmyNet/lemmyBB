@@ -28,7 +28,7 @@ pub async fn list_communities(
         limit: Some(PAGE_ITEMS.into()),
         auth,
     };
-    get("/community/list", params).await
+    get("/community/list", &params).await
 }
 
 pub async fn get_community(
@@ -43,7 +43,7 @@ pub async fn get_community(
         NameOrId::Name(n) => params.name = Some(n),
         NameOrId::Id(c) => params.id = Some(CommunityId(c)),
     }
-    get("/community", params).await
+    get("/community", &params).await
 }
 
 pub async fn follow_community(
@@ -56,5 +56,5 @@ pub async fn follow_community(
         follow,
         auth,
     };
-    post("/community/follow", params).await
+    post("/community/follow", &params).await
 }

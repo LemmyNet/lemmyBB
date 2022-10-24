@@ -35,7 +35,7 @@ pub async fn list_posts(
         auth,
         ..Default::default()
     };
-    get("/post/list", params).await
+    get("/post/list", &params).await
 }
 
 pub async fn get_post(id: i32, auth: Option<Sensitive<String>>) -> Result<GetPostResponse, Error> {
@@ -43,7 +43,7 @@ pub async fn get_post(id: i32, auth: Option<Sensitive<String>>) -> Result<GetPos
         id: PostId(id),
         auth,
     };
-    let mut post: GetPostResponse = get("/post", params).await?;
+    let mut post: GetPostResponse = get("/post", &params).await?;
 
     // show oldest comments first
     post.comments.sort_unstable_by_key(|a| a.comment.published);
@@ -64,7 +64,7 @@ pub async fn create_post(
         auth,
         ..Default::default()
     };
-    post("/post", params).await
+    post("/post", &params).await
 }
 
 pub async fn edit_post(
@@ -80,7 +80,7 @@ pub async fn edit_post(
         auth,
         ..Default::default()
     };
-    put("/post", params).await
+    put("/post", &params).await
 }
 
 pub async fn report_post(
@@ -93,5 +93,5 @@ pub async fn report_post(
         reason,
         auth,
     };
-    post("/post/report", params).await
+    post("/post/report", &params).await
 }

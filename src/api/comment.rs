@@ -31,7 +31,7 @@ pub async fn list_comments(
         auth,
         ..Default::default()
     };
-    get("/comment/list", params).await
+    get("/comment/list", &params).await
 }
 
 pub async fn create_comment(
@@ -45,7 +45,7 @@ pub async fn create_comment(
         auth,
         ..Default::default()
     };
-    post("/comment", params).await
+    post("/comment", &params).await
 }
 
 pub async fn edit_comment(
@@ -59,7 +59,7 @@ pub async fn edit_comment(
         auth,
         ..Default::default()
     };
-    put("/comment", params).await
+    put("/comment", &params).await
 }
 
 pub async fn get_comment(
@@ -70,7 +70,7 @@ pub async fn get_comment(
         id: CommentId(comment_id),
         auth,
     };
-    get("/comment", params).await
+    get("/comment", &params).await
 }
 
 pub async fn report_comment(
@@ -83,5 +83,5 @@ pub async fn report_comment(
         reason,
         auth,
     };
-    post("/comment/report", params).await
+    post("/comment/report", &params).await
 }

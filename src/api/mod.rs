@@ -10,7 +10,7 @@ pub mod user;
 use crate::env::lemmy_backend;
 use anyhow::{anyhow, Error};
 use once_cell::sync::Lazy;
-use reqwest::{Client, StatusCode};
+use reqwest::{Client, Response};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{fmt::Debug, time::Duration};
 
@@ -38,7 +38,7 @@ pub enum NameOrId {
     Id(i32),
 }
 
-async fn post<T, Params>(path: &str, params: Params) -> Result<T, Error>
+async fn post<T, Params>(path: &str, params: &Params) -> Result<T, Error>
 where
     T: DeserializeOwned,
     Params: Serialize + Debug,
@@ -49,13 +49,10 @@ where
         .json(&params)
         .send()
         .await?;
-    let status = res.status();
-    let text = res.text().await?;
-    info!("post {} status: {}, response: {}", &path, status, &text);
-    handle_response(text, status)
+    handle_response(res, path).await
 }
 
-async fn put<T, Params>(path: &str, params: Params) -> Result<T, Error>
+async fn put<T, Params>(path: &str, params: &Params) -> Result<T, Error>
 where
     T: DeserializeOwned,
     Params: Serialize + Debug,
@@ -66,13 +63,10 @@ where
         .json(&params)
         .send()
         .await?;
-    let status = res.status();
-    let text = res.text().await?;
-    info!("put {} status: {}, response: {}", &path, status, &text);
-    handle_response(text, status)
+    handle_response(res, path).await
 }
 
-async fn get<T, Params>(path: &str, params: Params) -> Result<T, Error>
+async fn get<T, Params>(path: &str, params: &Params) -> Result<T, Error>
 where
     T: DeserializeOwned,
     Params: Serialize + Debug,
@@ -83,17 +77,20 @@ where
         .query(&params)
         .send()
         .await?;
-    let status = res.status();
-    let text = res.text().await?;
-    info!("get {} status: {}", &path, status);
-    handle_response(text, status)
+    handle_response(res, path).await
 }
 
-fn handle_response<T: DeserializeOwned>(response: String, status: StatusCode) -> Result<T, Error> {
+async fn handle_response<T>(response: Response, path: &str) -> Result<T, Error>
+where
+    T: DeserializeOwned,
+{
+    let status = response.status();
+    info!("{} status: {}", &path, status);
+    let text = response.text().await?;
     if status.is_success() {
-        Ok(serde_json::from_str(&response)?)
+        Ok(serde_json::from_str(&text)?)
     } else {
-        let error: ErrorResponse = serde_json::from_str(&response)?;
+        let error: ErrorResponse = serde_json::from_str(&text)?;
         Err(anyhow!(error.error))
     }
 }

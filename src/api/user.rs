@@ -35,7 +35,7 @@ pub async fn get_person(
         NameOrId::Name(n) => params.username = Some(n),
         NameOrId::Id(c) => params.person_id = Some(PersonId(c)),
     }
-    get("/user", params).await
+    get("/user", &params).await
 }
 
 pub async fn login(username_or_email: &str, password: &str) -> Result<LoginResponse, Error> {
@@ -47,7 +47,7 @@ pub async fn login(username_or_email: &str, password: &str) -> Result<LoginRespo
 }
 
 pub async fn get_captcha() -> Result<GetCaptchaResponse, Error> {
-    get("/user/get_captcha", ()).await
+    get("/user/get_captcha", &()).await
 }
 
 pub async fn register(form: RegisterForm) -> Result<LoginResponse, Error> {
@@ -73,7 +73,7 @@ pub(crate) async fn list_mentions(
         unread_only: Some(true),
         ..Default::default()
     };
-    get("/user/mention", params).await
+    get("/user/mention", &params).await
 }
 
 pub(crate) async fn list_replies(auth: Sensitive<String>) -> Result<GetRepliesResponse, Error> {
@@ -82,17 +82,17 @@ pub(crate) async fn list_replies(auth: Sensitive<String>) -> Result<GetRepliesRe
         unread_only: Some(true),
         ..Default::default()
     };
-    get("/user/replies", params).await
+    get("/user/replies", &params).await
 }
 
 pub async fn mark_all_as_read(auth: Sensitive<String>) -> Result<GetRepliesResponse, Error> {
     let params = MarkAllAsRead { auth };
-    post("/user/mark_all_as_read", params).await
+    post("/user/mark_all_as_read", &params).await
 }
 
 pub async fn change_password(params: ChangePassword) -> Result<LoginResponse, Error> {
-    put("/user/change_password", params).await
+    put("/user/change_password", &params).await
 }
 pub async fn save_settings(params: SaveUserSettings) -> Result<LoginResponse, Error> {
-    put("/user/save_user_settings", params).await
+    put("/user/save_user_settings", &params).await
 }

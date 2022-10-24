@@ -21,7 +21,7 @@ pub(crate) async fn list_private_messages(
         unread_only: Some(unread_only),
         ..Default::default()
     };
-    get("/private_message/list", params).await
+    get("/private_message/list", &params).await
 }
 
 pub(crate) async fn mark_private_message_read(
@@ -33,7 +33,7 @@ pub(crate) async fn mark_private_message_read(
         read: true,
         auth,
     };
-    post("/private_message/mark_as_read", params).await
+    post("/private_message/mark_as_read", &params).await
 }
 
 pub(crate) async fn create_private_message(
@@ -46,5 +46,5 @@ pub(crate) async fn create_private_message(
         recipient_id,
         auth,
     };
-    post("/private_message", params).await
+    post("/private_message", &params).await
 }

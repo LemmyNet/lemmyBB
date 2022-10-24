@@ -41,7 +41,7 @@ use rand::distributions::{Alphanumeric, DistString};
 use reqwest::multipart::{Form, Part};
 use rocket::{
     fs::TempFile,
-    http::{Cookie, CookieJar, Status},
+    http::{CookieJar, Status},
     response::Responder,
     Request,
     Response,
@@ -68,21 +68,12 @@ pub struct SiteData {
 pub async fn get_site_data(cookies: &CookieJar<'_>) -> Result<SiteData, Error> {
     let auth = auth(cookies);
     let params = GetSite { auth: auth.clone() };
-    let mut res = CLIENT
+    let res = CLIENT
         .get(&gen_request_url("/site"))
         .query(&params)
         .send()
         .await?;
-    let mut status = res.status();
-    let mut text = res.text().await?;
-    // auth token is not valid, delete it
-    if text == r#"{"error":"not_logged_in"}"# {
-        cookies.remove(Cookie::named("jwt"));
-        res = CLIENT.get(&gen_request_url("/site")).send().await?;
-        status = res.status();
-        text = res.text().await?;
-    }
-    let site: GetSiteResponse = handle_response(text, status)?;
+    let site: GetSiteResponse = handle_response(res, "/site").await?;
 
     let current_date_time = Local::now().naive_local().format("%a %v %R").to_string();
     Ok(if let Some(auth) = auth {
@@ -156,7 +147,13 @@ pub async fn resolve_object(
     auth: Option<Sensitive<String>>,
 ) -> Result<ResolveObjectResponse, Error> {
     let resolve_params = ResolveObject { q: query, auth };
-    get("/resolve_object", &resolve_params).await
+    match get("/resolve_object", &resolve_params).await {
+        Err(e) => {
+            warn!("Failed to resolve object {}: {}", resolve_params.q, e);
+            Err(e)
+        }
+        o => o,
+    }
 }
 
 static FAVICON: OnceCell<Favicon> = OnceCell::new();
@@ -181,7 +178,7 @@ impl<'r, 'o: 'r> Responder<'r, 'o> for &'o Favicon {
 
 #[get("/favicon.png")]
 pub async fn favicon() -> Result<&'static Favicon, ErrorPage> {
-    let site: GetSiteResponse = get("/site", GetSite::default()).await?;
+    let site: GetSiteResponse = get("/site", &GetSite::default()).await?;
     if let Some(f) = FAVICON.get() {
         // update favicon if url changed
         if let Some(site_view) = site.site_view {
@@ -262,10 +259,7 @@ pub async fn upload_image(
         .multipart(form)
         .send()
         .await?;
-    let status = res.status();
-    let text = res.text().await?;
-    info!("post /pictrs/image status: {}, response: {}", status, &text);
-    let res: UploadImageResponse = handle_response(text, status)?;
+    let res: UploadImageResponse = handle_response(res, &path).await?;
     if res.msg != "ok" {
         return Err(anyhow!(res.msg));
     }
