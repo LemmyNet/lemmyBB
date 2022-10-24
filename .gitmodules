@@ -1,2 +1,3 @@
 [submodule "translations"]
 	url = https://github.com/LemmyNet/lemmybb_translations.git
+	path = translations
