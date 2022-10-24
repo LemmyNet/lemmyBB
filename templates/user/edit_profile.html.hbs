@@ -21,6 +21,18 @@
                                         </dd>
                                     </dl>
                                     <dl>
+                                        <dt><label for="language">Language:</label>
+                                        </dt>
+                                        <dd>
+                                            <select class="inputbox autowidth" name="language" id="language">
+                                                {{#each all_languages}}
+                                                    {{log ../site_data.site.my_user.local_user_view.local_user.lang}}
+                                                    <option value="{{this.0}}" {{#if (eq this.0 ../site_data.site.my_user.local_user_view.local_user.lang)}}selected="selected"{{/if}}>{{this.1}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </dd>
+                                    </dl>
+                                    <dl>
                                         <dt><label for="signature">Signature:</label>
                                         </dt>
                                         <dd>{{> components/editor message=site_data.site.my_user.local_user_view.person.bio editor_action="" editor_title=""}}

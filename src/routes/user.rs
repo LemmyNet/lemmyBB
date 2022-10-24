@@ -8,6 +8,7 @@ use crate::{
     routes::{auth, ErrorPage},
     site_fairing::SiteData,
     utils::empty_to_opt,
+    ALL_LANGUAGES,
 };
 use lemmy_api_common::{
     person::{ChangePassword, SaveUserSettings},
@@ -124,6 +125,7 @@ pub async fn view_profile(u: i32, site_data: SiteData) -> Result<Template, Error
 #[derive(FromForm, Debug)]
 pub struct EditProfileForm<'r> {
     pub displayname: String,
+    pub language: String,
     // the signature
     pub message: String,
     pub avatar_delete: bool,
@@ -136,7 +138,9 @@ pub struct EditProfileForm<'r> {
 
 #[get("/edit_profile")]
 pub async fn edit_profile(site_data: SiteData) -> Result<Template, ErrorPage> {
-    let ctx = context!(site_data);
+    let mut all_languages = ALL_LANGUAGES.to_vec();
+    all_languages.push(("browser", "Browser default"));
+    let ctx = context!(site_data, all_languages);
     Ok(Template::render("user/edit_profile", ctx))
 }
 
@@ -150,6 +154,7 @@ pub async fn do_edit_profile(
         display_name: empty_to_opt(form.displayname.clone()),
         email: empty_to_opt(form.email.clone()).map(Sensitive::new),
         bio: empty_to_opt(form.message.clone()),
+        lang: empty_to_opt(form.language.clone()),
         auth: auth.clone(),
         ..Default::default()
     };

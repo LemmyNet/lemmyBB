@@ -18,6 +18,7 @@ use lemmy_api_common::{
 };
 use rocket::{
     fairing::{Fairing, Info, Kind},
+    http::Cookie,
     request,
     request::FromRequest,
     Data,
@@ -73,14 +74,31 @@ pub struct SiteData {
 /// `not_logged_in`. This commonly happens during development when Lemmy database was wiped, but
 /// cookie is still present in browser. In that case, delete jwt cookie.
 async fn get_site_data(request: &Request<'_>) -> Result<SiteData, Error> {
-    let auth = auth(request.cookies());
+    let mut auth = auth(request.cookies());
     let params = GetSite { auth: auth.clone() };
     let res = CLIENT
         .get(&gen_request_url("/site"))
         .query(&params)
         .send()
         .await?;
-    let site: GetSiteResponse = handle_response(res, "/site").await?;
+    let site: GetSiteResponse = match handle_response(res, "/site").await {
+        Ok(o) => o,
+        Err(e) => {
+            if e.to_string() == "not_logged_in" {
+                // if auth cookie is invalid, remove it and retry
+                request.cookies().remove(Cookie::named("jwt"));
+                auth = None;
+                let res = CLIENT
+                    .get(&gen_request_url("/site"))
+                    .query(&GetSite { auth: None })
+                    .send()
+                    .await?;
+                handle_response(res, "/site").await?
+            } else {
+                Err(e)?
+            }
+        }
+    };
     let browser_lang = request
         .headers()
         .get("accept-language")

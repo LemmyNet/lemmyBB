@@ -1,7 +1,7 @@
 use crate::{pagination::PAGE_ITEMS, site_fairing::SiteData};
 use chrono::NaiveDateTime;
 use comrak::ComrakOptions;
-use json_gettext::{static_json_gettext_build, JSONGetText};
+use json_gettext::{JSONGetText, JSONGetTextBuilder};
 use lemmy_db_schema::{
     newtypes::CommentId,
     source::{community::CommunitySafe, person::PersonSafe},
@@ -123,14 +123,16 @@ pub fn length(
     Ok(())
 }
 
+pub const ALL_LANGUAGES: [(&str, &str); 2] = [("en", "English"), ("de", "Deutsch")];
+
 handlebars_helper!(i18n: |site_data: SiteData, key: String, *args| {
     static LANG_CELL: OnceCell<JSONGetText> = OnceCell::new();
     let langs = LANG_CELL.get_or_init(|| {
-        static_json_gettext_build!(
-            "en";
-            "en" => "translations/translations/en.json",
-            "de" => "translations/translations/de.json",
-        ).unwrap()
+        let mut builder = JSONGetTextBuilder::new("en");
+        for l in ALL_LANGUAGES {
+            builder.add_json_file(l.0, format!("translations/translations/{}.json", l.0)).unwrap();
+        }
+        builder.build().unwrap()
     });
     let mut text = get_text!(langs, site_data.lang, key).unwrap().to_string();
     if text.contains("{}") {
