@@ -65,8 +65,6 @@ ul.topiclist.two-columns dt .list-inner {
 ul.topiclist dd {
 	border-left: 1px solid transparent;
 	padding: 4px 0;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
@@ -120,8 +118,6 @@ li.header dt .list-inner {
 
 li.header dd {
 	padding-left: 1px;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
@@ -275,8 +271,6 @@ dd.option {
 
 .postbody img.postimage {
 	max-width: 100%;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
@@ -548,8 +542,6 @@ blockquote .codebox {
 	padding: 6px;
 	border: 1px dashed transparent;
 	clear: left;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 

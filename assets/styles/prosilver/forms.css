@@ -267,10 +267,6 @@ fieldset.submit-buttons input {
 	resize: vertical;
 	outline: 3px dashed transparent;
 	outline-offset: -4px;
-	-webkit-transition: all .5s ease, height 1ms linear;
-	-moz-transition: all .5s ease, height 1ms linear;
-	-ms-transition: all .5s ease, height 1ms linear;
-	-o-transition: all .5s ease, height 1ms linear;
 	transition: all .5s ease, height 1ms linear;
 }
 
@@ -314,7 +310,8 @@ input[type="number"] {
 }
 
 input[type="search"] {
-	appearance: textfield;
+	-moz-appearance: textfield;
+	     appearance: textfield;
 	-webkit-appearance: textfield;
 	box-sizing: content-box;
 	-webkit-box-sizing: content-box;
@@ -399,8 +396,6 @@ input.button1:focus, input.button2:focus, input.button3:focus {
 	float: left;
 	height: 24px;
 	padding: 3px;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
