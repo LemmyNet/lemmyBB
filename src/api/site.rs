@@ -1,20 +1,11 @@
 use crate::{
-    api::{
-        extra::{get_notifications, Notification},
-        gen_request_url,
-        get,
-        handle_response,
-        post,
-        private_message::list_private_messages,
-        CLIENT,
-    },
+    api::{get, handle_response, post, CLIENT},
     env::lemmy_backend,
     error::ErrorPage,
-    routes::auth,
+    site_fairing::SiteData,
     utils::base_url,
 };
 use anyhow::{anyhow, Error};
-use chrono::Local;
 use futures::future::join;
 use image::{
     imageops::{resize, FilterType},
@@ -39,64 +30,14 @@ use lemmy_db_views::structs::SiteView;
 use once_cell::sync::OnceCell;
 use rand::distributions::{Alphanumeric, DistString};
 use reqwest::multipart::{Form, Part};
-use rocket::{
-    fs::TempFile,
-    http::{CookieJar, Status},
-    response::Responder,
-    Request,
-    Response,
-};
-use serde::{Deserialize, Serialize};
+use rocket::{fs::TempFile, http::Status, response::Responder, Request, Response};
+use serde::Deserialize;
 use std::{
     env::temp_dir,
     fs::File,
     io::{Cursor, Read},
 };
 use url::Url;
-
-#[derive(Serialize)]
-pub struct SiteData {
-    pub site: GetSiteResponse,
-    pub notifications: Vec<Notification>,
-    pub unread_pm_count: usize,
-    pub current_date_time: String,
-}
-
-/// Don't use get() function here, so that we can directly inspect api response, and handle error
-/// `not_logged_in`. This commonly happens during development when Lemmy database was wiped, but
-/// cookie is still present in browser. In that case, delete jwt cookie.
-pub async fn get_site_data(cookies: &CookieJar<'_>) -> Result<SiteData, Error> {
-    let auth = auth(cookies);
-    let params = GetSite { auth: auth.clone() };
-    let res = CLIENT
-        .get(&gen_request_url("/site"))
-        .query(&params)
-        .send()
-        .await?;
-    let site: GetSiteResponse = handle_response(res, "/site").await?;
-
-    let current_date_time = Local::now().naive_local().format("%a %v %R").to_string();
-    Ok(if let Some(auth) = auth {
-        let (notifications, private_messages) = join(
-            get_notifications(auth.clone()),
-            list_private_messages(true, auth),
-        )
-        .await;
-        SiteData {
-            site,
-            notifications: notifications?,
-            unread_pm_count: private_messages?.private_messages.len(),
-            current_date_time,
-        }
-    } else {
-        SiteData {
-            site,
-            notifications: vec![],
-            unread_pm_count: 0,
-            current_date_time,
-        }
-    })
-}
 
 pub async fn create_site(
     name: String,

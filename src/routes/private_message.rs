@@ -5,12 +5,11 @@ use crate::{
             list_private_messages,
             mark_private_message_read,
         },
-        site::get_site_data,
         user::get_person,
         NameOrId,
     },
     error::ErrorPage,
-    routes::auth,
+    site_fairing::SiteData,
     utils::replace_smilies,
 };
 use chrono::NaiveDateTime;
@@ -19,7 +18,7 @@ use itertools::Itertools;
 use lemmy_api_common::person::PrivateMessageResponse;
 use lemmy_db_schema::{newtypes::PersonId, source::person::PersonSafe};
 use lemmy_db_views::structs::PrivateMessageView;
-use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
+use rocket::{form::Form, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 use serde::Serialize;
 use std::hash::{Hash, Hasher};
@@ -45,8 +44,7 @@ impl Hash for PersonSafeWrapper {
 }
 
 #[get("/private_messages")]
-pub async fn private_messages_list(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
+pub async fn private_messages_list(site_data: SiteData) -> Result<Template, ErrorPage> {
     let my_user_id = site_data
         .site
         .my_user
@@ -55,7 +53,8 @@ pub async fn private_messages_list(cookies: &CookieJar<'_>) -> Result<Template, 
         .local_user_view
         .person
         .id;
-    let private_message_threads: Vec<_> = list_private_messages(false, auth(cookies).unwrap())
+    let auth = site_data.auth.clone().unwrap();
+    let private_message_threads: Vec<_> = list_private_messages(false, auth)
         .await?
         .private_messages
         .into_iter()
@@ -96,13 +95,9 @@ pub async fn private_messages_list(cookies: &CookieJar<'_>) -> Result<Template, 
 }
 
 #[get("/private_messages_thread?<u>")]
-pub async fn private_messages_thread(
-    u: i32,
-    cookies: &CookieJar<'_>,
-) -> Result<Template, ErrorPage> {
+pub async fn private_messages_thread(u: i32, site_data: SiteData) -> Result<Template, ErrorPage> {
     let other_user_id = PersonId(u);
-    let site_data = get_site_data(cookies).await?;
-    let auth = auth(cookies).unwrap();
+    let auth = site_data.auth.clone().unwrap();
     // TODO: would be nice if lemmy api could query PMs involving given user
     let private_messages: Vec<PrivateMessageView> = list_private_messages(false, auth.clone())
         .await?
@@ -140,12 +135,8 @@ pub async fn private_messages_thread(
 
 // TODO: need to be able to select recipient
 #[get("/private_messages_editor?<u>")]
-pub async fn private_message_editor(
-    cookies: &CookieJar<'_>,
-    u: i32,
-) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
-    let recipient = get_person(NameOrId::Id(u), auth(cookies))
+pub async fn private_message_editor(u: i32, site_data: SiteData) -> Result<Template, ErrorPage> {
+    let recipient = get_person(NameOrId::Id(u), site_data.auth.clone())
         .await?
         .person_view
         .person;
@@ -161,15 +152,14 @@ pub struct PrivateMessageForm {
 
 #[post("/do_send_private_message?<u>", data = "<form>")]
 pub async fn do_send_private_message(
-    cookies: &CookieJar<'_>,
     u: i32,
     form: Form<PrivateMessageForm>,
+    site_data: SiteData,
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
     let message = replace_smilies(&form.message, &site_data);
 
     if form.preview.is_some() {
-        let recipient = get_person(NameOrId::Id(u), auth(cookies))
+        let recipient = get_person(NameOrId::Id(u), site_data.auth.clone())
             .await?
             .person_view
             .person;
@@ -180,7 +170,7 @@ pub async fn do_send_private_message(
         )));
     }
 
-    create_private_message(form.message.clone(), PersonId(u), auth(cookies).unwrap()).await?;
+    create_private_message(form.message.clone(), PersonId(u), site_data.auth.unwrap()).await?;
     Ok(Either::Right(Redirect::to(uri!(private_messages_thread(
         u
     )))))

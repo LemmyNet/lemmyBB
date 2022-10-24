@@ -20,7 +20,7 @@ use lemmy_db_schema::{
     source::person::PersonSafe,
 };
 use lemmy_db_views::structs::PostView;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Debug)]
 pub struct PostOrComment {
@@ -109,7 +109,7 @@ pub async fn get_last_reply_in_community(
     })
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Deserialize, Clone)]
 pub struct Notification {
     pub title: String,
     pub from_user: PersonSafe,

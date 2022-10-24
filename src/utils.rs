@@ -1,4 +1,4 @@
-use crate::api::site::SiteData;
+use crate::site_fairing::SiteData;
 
 pub fn base_url(site_data: &SiteData) -> String {
     let site_actor = &site_data.site.site_view.as_ref().unwrap().site.actor_id;

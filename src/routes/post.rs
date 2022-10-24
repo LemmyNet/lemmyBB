@@ -2,16 +2,16 @@ use crate::{
     api::{
         community::get_community,
         post::{create_post, edit_post, get_post},
-        site::get_site_data,
         NameOrId,
     },
     error::ErrorPage,
     pagination::{PageLimit, Pagination, PAGE_ITEMS},
-    routes::{auth, CLIENT},
+    routes::CLIENT,
+    site_fairing::SiteData,
     utils::replace_smilies,
 };
 use reqwest::header::HeaderName;
-use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
+use rocket::{form::Form, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 use url::Url;
 
@@ -19,10 +19,9 @@ use url::Url;
 pub async fn view_topic(
     t: i32,
     page: Option<i32>,
-    cookies: &CookieJar<'_>,
+    site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
-    let mut post = get_post(t, auth(cookies)).await?;
+    let mut post = get_post(t, site_data.auth.clone()).await?;
 
     // simply ignore deleted/removed comments
     post.comments = post
@@ -59,14 +58,20 @@ pub async fn view_topic(
 pub async fn post_editor(
     f: i32,
     edit: Option<i32>,
-    cookies: &CookieJar<'_>,
+    site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
     match edit {
         Some(e) => {
-            let p = get_post(e, auth(cookies)).await?.post_view.post;
-            render_editor(f, Some((p.name, p.body.unwrap_or_default())), edit, cookies).await
+            let p = get_post(e, site_data.auth.clone()).await?.post_view.post;
+            render_editor(
+                f,
+                Some((p.name, p.body.unwrap_or_default())),
+                edit,
+                site_data,
+            )
+            .await
         }
-        None => render_editor(f, None, None, cookies).await,
+        None => render_editor(f, None, None, site_data).await,
     }
 }
 
@@ -74,10 +79,9 @@ async fn render_editor(
     community_id: i32,
     subject_and_message: Option<(String, String)>,
     edit_post_id: Option<i32>,
-    cookies: &CookieJar<'_>,
+    site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
-    let community = get_community(NameOrId::Id(community_id), auth(cookies)).await?;
+    let community = get_community(NameOrId::Id(community_id), site_data.auth.clone()).await?;
     let mut editor_action = format!("/do_post?f={}", community.community_view.community.id.0);
     if let Some(edit_post_id) = edit_post_id {
         editor_action = format!("{}&edit={}", editor_action, edit_post_id);
@@ -108,19 +112,18 @@ pub async fn do_post(
     f: i32,
     edit: Option<i32>,
     form: Form<PostForm>,
-    cookies: &CookieJar<'_>,
+    site_data: SiteData,
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
     let subject = form.subject.clone();
     let message = replace_smilies(&form.message, &site_data);
 
     if form.preview.is_some() {
         return Ok(Either::Left(
-            render_editor(f, Some((subject, message)), edit, cookies).await?,
+            render_editor(f, Some((subject, message)), edit, site_data).await?,
         ));
     }
 
-    let auth = auth(cookies).unwrap();
+    let auth = site_data.auth.unwrap();
     let post = match edit {
         None => create_post(subject, message, f, auth).await?,
         Some(e) => edit_post(subject, message, e, auth).await?,

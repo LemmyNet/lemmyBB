@@ -1,12 +1,13 @@
-use crate::pagination::PAGE_ITEMS;
+use crate::{pagination::PAGE_ITEMS, site_fairing::SiteData};
 use chrono::NaiveDateTime;
 use comrak::ComrakOptions;
+use json_gettext::{static_json_gettext_build, JSONGetText};
 use lemmy_db_schema::{
     newtypes::CommentId,
     source::{community::CommunitySafe, person::PersonSafe},
 };
 use lemmy_db_views::structs::CommentView;
-use once_cell::sync::Lazy;
+use once_cell::sync::{Lazy, OnceCell};
 use rocket_dyn_templates::handlebars::{
     handlebars_helper,
     Context,
@@ -30,10 +31,6 @@ handlebars_helper!(timestamp_machine: |ts: NaiveDateTime| {
 handlebars_helper!(timestamp_human: |ts: NaiveDateTime| {
     // Wed Oct 05, 2022 9:17 pm
     ts.format("%a %v %R").to_string()
-});
-
-handlebars_helper!(eq: |a: Option<i32>, b: Option<i32>| {
-    a == b
 });
 
 handlebars_helper!(add: |a: i32, b: i32| {
@@ -125,3 +122,19 @@ pub fn length(
 
     Ok(())
 }
+
+handlebars_helper!(i18n: |site_data: SiteData, key: String, *args| {
+    static LANG_CELL: OnceCell<JSONGetText> = OnceCell::new();
+    let langs = LANG_CELL.get_or_init(|| {
+        static_json_gettext_build!(
+            "en";
+            "en" => "translations/translations/en.json",
+            "de" => "translations/translations/de.json",
+        ).unwrap()
+    });
+    let mut text = get_text!(langs, site_data.lang, key).unwrap().to_string();
+    if text.contains("{}") {
+        text = text.replacen("{}", args[2].as_str().unwrap(), 1);
+    }
+    text
+});

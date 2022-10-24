@@ -24,7 +24,7 @@ pub static CLIENT: Lazy<Client> = Lazy::new(|| {
         .expect("build client")
 });
 
-fn gen_request_url(path: &str) -> String {
+pub fn gen_request_url(path: &str) -> String {
     format!("{}{}{}", lemmy_backend(), LEMMY_API_VERSION, path)
 }
 
@@ -80,7 +80,7 @@ where
     handle_response(res, path).await
 }
 
-async fn handle_response<T>(response: Response, path: &str) -> Result<T, Error>
+pub async fn handle_response<T>(response: Response, path: &str) -> Result<T, Error>
 where
     T: DeserializeOwned,
 {

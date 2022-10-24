@@ -3,11 +3,12 @@ use crate::{
         categories::get_categories,
         community::list_communities,
         extra::{get_last_reply_in_community, PostOrComment},
-        site::{create_site, get_site_data},
+        site::create_site,
         user::register,
     },
     pagination::{PageLimit, Pagination},
-    routes::{auth, user::RegisterForm, ErrorPage},
+    routes::{user::RegisterForm, ErrorPage},
+    site_fairing::SiteData,
 };
 use anyhow::Error;
 use futures::future::join_all;
@@ -23,14 +24,13 @@ use rocket_dyn_templates::{context, Template};
 use std::str::FromStr;
 
 #[get("/")]
-pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
+pub async fn index(site_data: SiteData) -> Result<Either<Redirect, Template>, ErrorPage> {
     if site_data.site.site_view.is_none() {
         // need to setup site
         return Ok(Either::Left(Redirect::to(uri!(setup))));
     }
 
-    match get_categories(auth(cookies)).await {
+    match get_categories(site_data.auth.clone()).await {
         Ok(categories) => {
             let ctx = context! { site_data, categories };
             Ok(Either::Right(Template::render("site/index", ctx)))
@@ -46,21 +46,20 @@ pub async fn index(cookies: &CookieJar<'_>) -> Result<Either<Redirect, Template>
 pub async fn community_list(
     page: Option<i32>,
     mode: Option<&str>,
-    cookies: &CookieJar<'_>,
+    site_data: SiteData,
 ) -> Result<Either<Redirect, Template>, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
-
+    let auth = site_data.auth.clone();
     let listing_type: ListingType = mode
         .map(ListingType::from_str)
         .unwrap_or(Ok(ListingType::All))?;
-    let mut communities: Vec<CommunityView> = list_communities(listing_type, page, auth(cookies))
+    let mut communities: Vec<CommunityView> = list_communities(listing_type, page, auth.clone())
         .await?
         .communities;
     communities.sort_unstable_by_key(|c| c.community.id.0);
     let last_replies = join_all(
         communities
             .iter()
-            .map(|c| get_last_reply_in_community(c.community.id, auth(cookies))),
+            .map(|c| get_last_reply_in_community(c.community.id, auth.clone())),
     )
     .await
     .into_iter()
@@ -73,8 +72,7 @@ pub async fn community_list(
 }
 
 #[get("/setup")]
-pub async fn setup(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
+pub async fn setup(site_data: SiteData) -> Result<Template, ErrorPage> {
     let ctx = context! { site_data };
     Ok(Template::render("site/setup", ctx))
 }
@@ -111,8 +109,7 @@ pub async fn do_setup(
 }
 
 #[get("/legal")]
-pub async fn legal(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
+pub async fn legal(site_data: SiteData) -> Result<Template, ErrorPage> {
     let message = site_data
         .site
         .site_view
@@ -123,9 +120,8 @@ pub async fn legal(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
 }
 
 #[get("/search?<keywords>")]
-pub async fn search(keywords: String, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
-    let search_results = crate::api::site::search(keywords.clone(), auth(cookies)).await?;
+pub async fn search(keywords: String, site_data: SiteData) -> Result<Template, ErrorPage> {
+    let search_results = crate::api::site::search(keywords.clone(), site_data.auth.clone()).await?;
     let search_results_count = search_results.users.len()
         + search_results.communities.len()
         + search_results.posts.len()

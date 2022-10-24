@@ -4,16 +4,16 @@ use crate::{
         community::{follow_community, get_community},
         extra::{get_last_reply_in_thread, PostOrComment},
         post::{list_posts, report_post},
-        site::get_site_data,
         NameOrId,
     },
     env::increased_rate_limit,
     pagination::{PageLimit, Pagination, PAGE_ITEMS},
-    routes::{auth, ErrorPage},
+    routes::ErrorPage,
+    site_fairing::SiteData,
 };
 use anyhow::Error;
 use futures::future::join_all;
-use rocket::{form::Form, http::CookieJar};
+use rocket::form::Form;
 use rocket_dyn_templates::{context, Template};
 
 #[get("/viewforum?<f>&<page>&<action>")]
@@ -21,10 +21,9 @@ pub async fn view_forum(
     f: i32,
     page: Option<i32>,
     action: Option<String>,
-    cookies: &CookieJar<'_>,
+    site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
-    let auth = auth(cookies);
+    let auth = site_data.auth.clone();
     if let Some(action) = action {
         if action == "subscribe" {
             follow_community(f, true, auth.clone().unwrap()).await?;
@@ -58,9 +57,8 @@ pub async fn view_forum(
 pub async fn report(
     thread: Option<i32>,
     reply: Option<i32>,
-    cookies: &CookieJar<'_>,
+    site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
     let action = if let Some(thread) = thread {
         format!("/do_report?thread={}", thread)
     } else if let Some(reply) = reply {
@@ -82,10 +80,9 @@ pub async fn do_report(
     thread: Option<i32>,
     reply: Option<i32>,
     form: Form<ReportForm>,
-    cookies: &CookieJar<'_>,
+    site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
-    let auth = auth(cookies).unwrap();
+    let auth = site_data.auth.clone().unwrap();
     if let Some(thread) = thread {
         report_post(thread, form.report_text.clone(), auth).await?;
     } else if let Some(reply) = reply {

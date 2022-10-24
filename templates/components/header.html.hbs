@@ -43,7 +43,7 @@
                     <form action="search" method="get" id="search">
                         <fieldset>
                             <input name="keywords" id="keywords" type="search" maxlength="128" title="Search for keywords" class="inputbox search tiny" size="20" value="" placeholder="Search…" />
-                            <button class="button button-search" type="submit" title="Search"><i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span></button>
+                            <button class="button button-search" type="submit" title="Search"><i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">{{{i18n site_data "search"}}}</span></button>
                         </fieldset>
                     </form>
                 </div>
@@ -52,11 +52,13 @@
         <div class="navbar" role="navigation">
             <div class="inner">
                 <ul id="nav-main" class="nav-main linklist" role="menubar">
+                    <!--
                     <li class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
                         <span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope>
                             <a itemprop="item" href="./" accesskey="h" data-navbar-reference="index"><i class="icon fa-home fa-fw"></i><span itemprop="name">Board index</span></a><meta itemprop="position" content="1" />
                         </span>
                     </li>
+                    -->
 
                     {{#if site_data.site.my_user}}
                             <li id="username_logged_in" class="rightside " data-skip-responsive="true">
@@ -70,12 +72,12 @@
 
                                             <li>
                                                 <a href="/edit_profile" title="User Control Panel" role="menuitem">
-                                                    <i class="icon fa-sliders fa-fw" aria-hidden="true"></i><span>User Control Panel</span>
+                                                    <i class="icon fa-sliders fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "user_control_panel"}}}</span>
                                                 </a>
                                             </li>
                                             <li>
                                                 <a href="/view_profile?u={{site_data.site.my_user.local_user_view.person.id}}" title="Profile" role="menuitem">
-                                                    <i class="icon fa-user fa-fw" aria-hidden="true"></i><span>Profile</span>
+                                                    <i class="icon fa-user fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "user_profile"}}}</span>
                                                 </a>
                                             </li>
 
@@ -83,7 +85,7 @@
                                             <li class="separator"></li>
                                             <li>
                                                 <a href="/logout" title="Logout" accesskey="x" role="menuitem">
-                                                    <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>Logout</span>
+                                                    <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "logout"}}}</span>
                                                 </a>
                                             </li>
                                         </ul>
@@ -92,7 +94,7 @@
                             </li>
                             <li class="rightside" data-skip-responsive="true">
                                 <a href="/private_messages" role="menuitem">
-                                    <i class="icon fa-inbox fa-fw" aria-hidden="true"></i><span>Private messages </span>
+                                    <i class="icon fa-inbox fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "private_messages"}}} </span>
                                     {{#if site_data.unread_pm_count}}
                                         <strong class="badge">{{site_data.unread_pm_count}}</strong>
                                     {{else}}
@@ -102,7 +104,7 @@
                             </li>
                             <li class="dropdown-container dropdown-right rightside" data-skip-responsive="true">
                                 <a href="./ucp.php?i=ucp_notifications" id="notification_list_button" class="dropdown-trigger dropdown-toggle">
-                                    <i class="icon fa-bell fa-fw" aria-hidden="true"></i><span>Notifications </span>
+                                    <i class="icon fa-bell fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "notifications"}}} </span>
                                     {{#if site.notifications}}
                                         <strong class="badge">{{length site.notifications}}</strong>
                                     {{else}}
@@ -113,7 +115,7 @@
                                 <div id="notification_list" class="dropdown dropdown-extended notification_list">
                                     <div class="pointer"><div class="pointer-inner"></div></div>
                                     <div class="dropdown-contents">
-                                        <div class="header">Notifications</div>
+                                        <div class="header">{{{i18n site_data "notifications"}}}</div>
 
                                         {{#each site.1}}
                                         <ul>
@@ -131,14 +133,14 @@
                                         {{else}}
                                         <ul>
                                             <li class="no_notifications">
-                                                You have no notifications
+                                                {{{i18n site_data "notifications_none"}}}
                                             </li>
                                         </ul>
                                         {{/each}}
 
                                         <div class="footer">
                                             <form action="/mark_all_notifications_read" method="POST">
-                                            <a href="#" onclick="this.parentNode.submit()"><span>Mark all as read</span></a>
+                                            <a href="#" onclick="this.parentNode.submit()"><span>{{{i18n site_data "notifications_mark_all_as_read"}}}</span></a>
                                             </form>
                                         </div>
                                     </div>
@@ -146,11 +148,11 @@
                             </li>
                     {{else}}
                     <li class="rightside" data-skip-responsive="true">
-                        <a href="./login" title="Login" accesskey="x" role="menuitem"> <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>Login</span> </a>
+                        <a href="./login" title="Login" accesskey="x" role="menuitem"> <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "login"}}}</span> </a>
                     </li>
                         {{#if site_data.site.site_view.site.open_registration}}
                         <li class="rightside" data-skip-responsive="true">
-                            <a href="./register" role="menuitem"> <i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i><span>Register</span> </a>
+                            <a href="./register" role="menuitem"> <i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "register"}}}</span> </a>
                         </li>
                         {{/if}}
                     {{/if}}
@@ -161,4 +163,4 @@
 
     <a id="start_here" class="anchor"></a>
     <div id="page-body" class="page-body" role="main">
-        <p class="right responsive-center time">It is currently {{site_data.current_date_time}}</p>
+        <p class="right responsive-center time">{{{i18n site_data "current_time" site_data.current_date_time}}}</p>

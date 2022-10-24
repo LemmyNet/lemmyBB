@@ -4,6 +4,8 @@
 
 A Lemmy frontend based on [phpBB 3.3](https://www.phpbb.com/).
 
+You can help to translate the project via [Weblate](https://weblate.join-lemmy.org/projects/lemmy/lemmybb/).
+
 ## Screenshots
 
 ![](./screenshots/lemmybb_1.png)

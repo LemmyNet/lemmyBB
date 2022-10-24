@@ -1,11 +1,14 @@
 #[macro_use]
 extern crate rocket;
+#[macro_use]
+extern crate json_gettext;
 
 mod api;
 mod env;
 mod error;
 mod pagination;
 mod routes;
+mod site_fairing;
 mod template_helpers;
 #[cfg(test)]
 mod test;
@@ -23,6 +26,7 @@ use crate::{
         site::*,
         user::*,
     },
+    site_fairing::SiteFairing,
     template_helpers::*,
 };
 use anyhow::Error;
@@ -55,7 +59,6 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("markdown", Box::new(markdown));
         reg.register_helper("timestamp_human", Box::new(timestamp_human));
         reg.register_helper("timestamp_machine", Box::new(timestamp_machine));
-        reg.register_helper("eq", Box::new(eq));
         reg.register_helper("add", Box::new(add));
         reg.register_helper("sub", Box::new(sub));
         reg.register_helper("mod", Box::new(modulo));
@@ -64,6 +67,7 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("community_actor_id", Box::new(community_actor_id));
         reg.register_helper("user_actor_id", Box::new(user_actor_id));
         reg.register_helper("concat", Box::new(concat));
+        reg.register_helper("i18n", Box::new(i18n));
     });
 
     let listen_address = listen_address();
@@ -76,6 +80,7 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
     Ok(rocket::build()
         .configure(config)
         .attach(template_fairing)
+        .attach(SiteFairing {})
         .mount(
             "/",
             routes![

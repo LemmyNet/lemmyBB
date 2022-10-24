@@ -1,11 +1,12 @@
 use crate::{
     api,
     api::{
-        site::{get_site_data, upload_image},
+        site::upload_image,
         user::{change_password, get_captcha, get_person, mark_all_as_read, save_settings},
         NameOrId,
     },
     routes::{auth, ErrorPage},
+    site_fairing::SiteData,
     utils::empty_to_opt,
 };
 use lemmy_api_common::{
@@ -22,8 +23,7 @@ use rocket::{
 use rocket_dyn_templates::{context, Template};
 
 #[get("/login")]
-pub async fn login(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
+pub async fn login(site_data: SiteData) -> Result<Template, ErrorPage> {
     Ok(Template::render("user/login", context!(site_data)))
 }
 
@@ -48,8 +48,7 @@ pub async fn do_login(
 }
 
 #[get("/register")]
-pub async fn register(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
+pub async fn register(site_data: SiteData) -> Result<Template, ErrorPage> {
     let captcha = get_captcha().await?;
     Ok(Template::render(
         "user/register",
@@ -75,6 +74,7 @@ pub struct RegisterForm {
 pub async fn do_register(
     mut form: Form<RegisterForm>,
     cookies: &CookieJar<'_>,
+    site_data: SiteData,
 ) -> Result<Either<Template, Redirect>, ErrorPage> {
     if form.refresh_captcha.is_some() {
         // user requested new captcha, so reload page
@@ -97,8 +97,7 @@ pub async fn do_register(
         "Registration successful, wait for admin approval"
     };
 
-    let site = get_site_data(cookies).await?;
-    let ctx = context!(site, message);
+    let ctx = context!(site_data, message);
     Ok(Either::Left(Template::render("message", ctx)))
 }
 
@@ -116,9 +115,8 @@ pub async fn mark_all_notifications_read(cookies: &CookieJar<'_>) -> Result<Redi
 }
 
 #[get("/view_profile?<u>")]
-pub async fn view_profile(u: i32, cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
-    let person = get_person(NameOrId::Id(u), auth(cookies)).await?;
+pub async fn view_profile(u: i32, site_data: SiteData) -> Result<Template, ErrorPage> {
+    let person = get_person(NameOrId::Id(u), site_data.auth.clone()).await?;
     let ctx = context!(site_data, person);
     Ok(Template::render("user/view_profile", ctx))
 }
@@ -137,8 +135,7 @@ pub struct EditProfileForm<'r> {
 }
 
 #[get("/edit_profile")]
-pub async fn edit_profile(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
+pub async fn edit_profile(site_data: SiteData) -> Result<Template, ErrorPage> {
     let ctx = context!(site_data);
     Ok(Template::render("user/edit_profile", ctx))
 }
@@ -146,10 +143,9 @@ pub async fn edit_profile(cookies: &CookieJar<'_>) -> Result<Template, ErrorPage
 #[post("/edit_profile", data = "<form>")]
 pub async fn do_edit_profile(
     mut form: Form<EditProfileForm<'_>>,
-    cookies: &CookieJar<'_>,
+    site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
-    let site_data = get_site_data(cookies).await?;
-    let auth = auth(cookies).unwrap();
+    let auth = site_data.auth.clone().unwrap();
     let mut params = SaveUserSettings {
         display_name: empty_to_opt(form.displayname.clone()),
         email: empty_to_opt(form.email.clone()).map(Sensitive::new),
