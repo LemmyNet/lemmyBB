@@ -1,0 +1,10 @@
+/* truncated signature */
+.signature {
+	display: -webkit-box;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	-webkit-line-clamp: 5;
+	-moz-box-orient: vertical;
+	-webkit-box-orient: vertical;
+}
