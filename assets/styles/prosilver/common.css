@@ -13,6 +13,7 @@ body {
 	margin: 0;
 	padding: 12px 0;
 	word-wrap: break-word;
+	print-color-adjust: exact;
 	-webkit-print-color-adjust: exact;
 }
 
@@ -437,6 +438,7 @@ a.header-avatar span:after {
 	border-bottom: 10px solid transparent;
 	border-left: 10px dashed transparent;
 	border-right: 10px dashed transparent;
+	transform: rotate(360deg); /* better anti-aliasing in webkit */
 	-webkit-transform: rotate(360deg); /* better anti-aliasing in webkit */
 	display: block;
 }
@@ -1238,7 +1240,6 @@ ul.linklist:after,
 	white-space: nowrap;
 	font-size: 10px;
 	line-height: 1;
-	float: right;
 	display: inline-block;
 	margin-left: 3px;
 	vertical-align: baseline;

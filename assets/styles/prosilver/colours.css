@@ -300,9 +300,6 @@ dl.details dd {
 li.reported:hover {
 	background-color: #ECD5D8 !important;
 }
-.sticky, .announce {
-	/* you can add a background for stickies and announcements*/
-}
 
 div.rules {
 	background-color: #ECD5D8;
@@ -389,10 +386,6 @@ dl.faq dt {
 .posthilit {
 	background-color: #F3BFCC;
 	color: #BC2A4D;
-}
-
-.announce, .unreadpost {
-	/* Highlight the announcements & unread posts box */
 }
 
 /* Post signature */

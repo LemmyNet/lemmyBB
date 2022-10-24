@@ -314,7 +314,9 @@ input[type="number"] {
 }
 
 input[type="search"] {
+	appearance: textfield;
 	-webkit-appearance: textfield;
+	box-sizing: content-box;
 	-webkit-box-sizing: content-box;
 }
 
