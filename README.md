@@ -77,7 +77,7 @@ Follow the [Lemmy installation instructions](https://join-lemmy.org/docs/en/admi
 Then install lemmyBB itself. First, ssh into your server and prepare by cloning the code repository.
 ```
 cd /opt
-git clone https://github.com/LemmyNet/lemmyBB.git
+git clone https://github.com/LemmyNet/lemmyBB.git --recursive
 ```
 
 Change to the folder and compile Lemmy.
@@ -167,6 +167,8 @@ Note, you must subscribe manually to remote communities, so that new activities 
 
 Execute the following command, with a Lemmy instance of your choice:
 ```
+git clone https://github.com/LemmyNet/lemmyBB.git --recursive
+cd lemmyBB
 LEMMY_BB_BACKEND=https://lemmy.ml cargo run
 ```
 
