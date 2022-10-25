@@ -19,4 +19,5 @@ WORKDIR app
 COPY --from=builder /app/target/release/lemmy_bb .
 COPY assets assets
 COPY templates templates
+COPY translations translations
 ENTRYPOINT ["/app/lemmy_bb"]
