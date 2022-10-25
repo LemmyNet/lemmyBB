@@ -3,6 +3,15 @@ name = "lemmy_bb"
 version = "0.1.0"
 edition = "2021"
 
+[profile.release]
+strip = "symbols"
+debug = 0
+lto = "thin"
+
+[profile.dev]
+strip = "symbols"
+debug = 0
+
 [dependencies]
 log = "0.4.17"
 env_logger = { version = "0.9.1", features = ["termcolor", "humantime", "atty"], default-features = false }
