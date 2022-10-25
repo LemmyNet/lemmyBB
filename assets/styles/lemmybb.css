@@ -1,6 +1,6 @@
 /* sidebar info */
 .inner h1 {
-  color: #28313F;
+  color: #28313f;
   font-size: 2.5em;
 }
 
@@ -13,6 +13,11 @@
   margin-top: 1em;
   margin-bottom: 0.5em;
   padding-bottom: 0.5em;
+}
+
+.postprofile dd,
+.postprofile dt {
+  overflow: hidden;
 }
 
 /* truncated signature */
