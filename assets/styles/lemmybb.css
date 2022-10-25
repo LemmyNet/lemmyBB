@@ -1,6 +1,6 @@
 /* sidebar info */
 .inner h1 {
-  color: #28313F;
+  color: #28313f;
   font-size: 2.5em;
 }
 
@@ -13,6 +13,13 @@
   margin-top: 1em;
   margin-bottom: 0.5em;
   padding-bottom: 0.5em;
+}
+
+.postprofile dt a {
+  width: 100%;
+  width: -moz-available;
+  width: -webkit-fill-available;
+  width: fill-available;
 }
 
 /* truncated signature */
