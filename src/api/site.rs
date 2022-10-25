@@ -211,9 +211,3 @@ pub async fn upload_image(
         filename
     ))?)
 }
-
-#[get("/image/<filename>")]
-pub async fn serve_image(filename: String
-) -> Result<Url, Error> {
-    CLIENT.get(format!("{}/image/original/{}", lemmy_backend(), filename))
-}
