@@ -15,9 +15,11 @@
   padding-bottom: 0.5em;
 }
 
-.postprofile dd,
-.postprofile dt {
-  overflow: hidden;
+.postprofile dt a {
+  width: 100%;
+  width: -moz-available;
+  width: -webkit-fill-available;
+  width: fill-available;
 }
 
 /* truncated signature */
