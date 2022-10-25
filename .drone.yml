@@ -18,8 +18,8 @@ steps:
     image: node:alpine
     commands:
       - npm install --save-dev --save-exact prettier
-      - prettier --check assets/
-      -
+      - ./node_modules/prettier/bin-prettier.js --check assets
+
   - name: check rust formatting
     image: rustdocker/rust:nightly
     commands:
