@@ -15,7 +15,7 @@ steps:
       - git submodule update
 
   - name: check css/js formatting
-    image: node/current-alpine
+    image: node:alpine
     commands:
       - npm install --save-dev --save-exact prettier
       - prettier --check assets/
