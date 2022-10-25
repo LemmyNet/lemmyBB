@@ -1,13 +1,10 @@
-/* truncated signature */
-.signature {
-  display: -webkit-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
+/* sidebar info */
+.inner h1 {
+  color: #28313F;
+  font-size: 2.5em;
 }
 
+/* topics */
 .content h1,
 .panel h1 {
   color: #115098;
@@ -16,4 +13,14 @@
   margin-top: 1em;
   margin-bottom: 0.5em;
   padding-bottom: 0.5em;
+}
+
+/* truncated signature */
+.signature {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
 }
