@@ -1,0 +1,16 @@
+# See the documentation for available config fields and descriptions:
+# https://join-lemmy.org/docs/en/administration/configuration.html
+{
+  hostname: example.com
+  pictrs_url: "http://pictrs:8080"
+  database: {
+    host: postgres
+  }
+  # increase read rate limit to handle extra requests necessary to render replies and frontpage
+  rate_limit: {
+    message: 9999
+    message_per_second: 1
+    search: 9999
+    search_per_second: 1
+  }
+}
