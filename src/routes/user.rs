@@ -91,7 +91,7 @@ pub async fn do_register(
     let res = api::user::register(form.into_inner()).await?;
     let message = if let Some(jwt) = res.jwt {
         cookies.add(Cookie::new("jwt", jwt.into_inner()));
-        "Registration successful"
+        return Ok(Either::Right(Redirect::to(uri!("/"))));
     } else if res.verify_email_sent {
         "Registration successful, confirm your email address"
     } else {

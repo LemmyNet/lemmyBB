@@ -70,9 +70,6 @@ pub struct SiteData {
     pub lang: String,
 }
 
-/// Don't use get() function here, so that we can directly inspect api response, and handle error
-/// `not_logged_in`. This commonly happens during development when Lemmy database was wiped, but
-/// cookie is still present in browser. In that case, delete jwt cookie.
 async fn get_site_data(request: &Request<'_>) -> Result<SiteData, Error> {
     let mut auth = auth(request.cookies());
     let params = GetSite { auth: auth.clone() };
