@@ -206,8 +206,8 @@ pub async fn upload_image(
     }
     let filename = &res.files[0].file;
     Ok(Url::parse(&format!(
-        "{}/image/{}?thumbnail=120",
-        lemmy_backend(),
+        "{}/pictrs/image/{}?thumbnail=120",
+        base_url(site_data),
         filename
     ))?)
 }
