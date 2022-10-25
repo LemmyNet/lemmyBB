@@ -92,7 +92,7 @@ async fn render_editor(
         .unwrap_or_default();
     let message = subject_and_message
         .as_ref()
-        .map(|s| s.0.clone())
+        .map(|s| s.1.clone())
         .unwrap_or_default();
     Ok(Template::render(
         "thread_editor",
