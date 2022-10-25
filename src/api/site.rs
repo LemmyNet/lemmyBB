@@ -206,8 +206,14 @@ pub async fn upload_image(
     }
     let filename = &res.files[0].file;
     Ok(Url::parse(&format!(
-        "{}/pictrs/image/{}?thumbnail=120",
-        base_url(site_data),
+        "{}/image/{}?thumbnail=120",
+        lemmy_backend(),
         filename
     ))?)
+}
+
+#[get("/image/<filename>")]
+pub async fn serve_image(filename: String
+) -> Result<Url, Error> {
+    CLIENT.get(format!("{}/image/original/{}", lemmy_backend(), filename))
 }
