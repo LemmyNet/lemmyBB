@@ -21,7 +21,6 @@ use rocket::{
     http::Cookie,
     request,
     request::FromRequest,
-    Data,
     Request,
 };
 use serde::{Deserialize, Serialize};
@@ -35,10 +34,6 @@ impl Fairing for SiteFairing {
             name: "Site data fetcher",
             kind: Kind::Request,
         }
-    }
-    async fn on_request(&self, request: &mut Request<'_>, _: &mut Data<'_>) {
-        let site_data = get_site_data(request).await.unwrap();
-        request.local_cache(|| RequestSiteData(Some(site_data)));
     }
 }
 
