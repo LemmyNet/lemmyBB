@@ -20,7 +20,7 @@ Here is a list of known lemmyBB instances:
 
 | Domain                                                             | Registration | lemmy-ui domain                                                | Notes                   |
 |--------------------------------------------------------------------|--------------|----------------------------------------------------------------|-------------------------|
-| [lemmybb.lemmy.ml](https://lemmybb.lemmy.ml/)                      | open         | [lemmyui.lemmy.ml](https://lemmyui.lemmy.ml/)                  | developer test instance |
+| [fedibb.ml](https://fedibb.ml/)                      | open         | | Flagship instance for lemmyBB |
 | [lemmybb.rollenspiel.monster](https://lemmybb.rollenspiel.monster) | open         | [lemmy.rollenspiel.monster](https://lemmy.rollenspiel.monster) | topic role play         |
 
 Please open a pull request if you know another instance.
