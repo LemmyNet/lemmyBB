@@ -49,6 +49,7 @@
                     </a>
                     <span class="responsive-hide">by <strong><a href="/view_profile?u={{post.post_view.creator.id}}" class="username">{{{user_actor_id post.post_view.creator}}}</a></strong> &raquo; </span>
                     <time datetime="{{timestamp_machine post.post_view.post.published}}">{{timestamp_human post.post_view.post.published}}</time>
+                    <a href="{{post.post_view.post.ap_id}}"><img src="/assets/images/icons/fedilink.svg" width="16px" height="16px"></a>
                 </p>
                 <div class="content">
                     {{#if post.post_view.post.url}}
@@ -115,8 +116,9 @@
                 </a>
                 <span class="responsive-hide">by <strong><a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a></strong> &raquo; </span>
                 <time datetime="{{timestamp_machine this.comment.published}}">{{timestamp_human this.comment.published}}</time>
+                <a href="{{this.comment.ap_id}}"><img src="/assets/images/icons/fedilink.svg" width="16px" height="16px"></a>
                 {{#if this.comment.parent_id}}
-                    <span style="float: right; margin-right: 48px">
+                    <span style="float: right; margin-right: 64px">
                         Responding to <a href="./viewtopic?t={{this.post.id}}&page={{comment_page this.comment.parent_id ../all_comments}}#p{{this.comment.parent_id}}">#{{this.comment.parent_id}}</a>
                     </span>
                 {{/if}}

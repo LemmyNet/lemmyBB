@@ -66,6 +66,7 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("length", Box::new(length));
         reg.register_helper("community_actor_id", Box::new(community_actor_id));
         reg.register_helper("user_actor_id", Box::new(user_actor_id));
+        reg.register_helper("user_name", Box::new(user_name));
         reg.register_helper("concat", Box::new(concat));
         reg.register_helper("i18n", Box::new(i18n));
     });

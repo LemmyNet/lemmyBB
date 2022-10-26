@@ -7,7 +7,9 @@
                 </a>
             {{/if}}
         </div>
-        <a href="/view_profile?u={{user.id}}" class="username">{{{user_actor_id user}}}</a>							</dt>
-
+        <a href="/view_profile?u={{user.id}}" class="username">{{{user_name user}}}</a>
+    </dt>
+    <br>
+    <dd class="profile-joined"><a href="{{user.actor_id}}">{{{user_actor_id user}}}</a></dd>
     <dd class="profile-joined"><strong>Joined:</strong>{{timestamp_human user.published}}</dd>
 </dl>

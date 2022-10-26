@@ -78,6 +78,10 @@ handlebars_helper!(community_actor_id: |c: CommunitySafe| {
     }
 });
 
+handlebars_helper!(user_name: |p: PersonSafe| {
+    p.display_name.unwrap_or(p.name)
+});
+
 handlebars_helper!(user_actor_id: |p: PersonSafe| {
     if p.local {
         format!("@{}", p.name)
