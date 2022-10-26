@@ -1,16 +1,17 @@
 {{> components/header }}
 
 <h2 class="topic-title"><a href="./viewtopic?t={{ post.post_view.post.id }}">{{ post.post_view.post.name }}</a></h2>
-<!-- NOTE: remove the style="display: none" when you want to have the forum description on the topic body -->
-<div style="display: none !important;">Description of your first forum.<br /></div>
-
 
 <div class="action-bar bar-top">
-
     <a href="./comment_editor?t={{ post.post_view.post.id }}" class="button" title="Post a reply">
         <span>Post Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
     </a>
 
+    <p class="jumpbox-return">
+        <a href="/viewforum?f={{ post.post_view.post.community_id }}" class="left-box arrow-left" accesskey="r">
+            <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to “Your first forum”</span>
+        </a>
+    </p>
 
     {{> components/pagination }}
 </div>
@@ -143,10 +144,15 @@
 {{/each}}
 
 <div class="action-bar bar-bottom">
-
     <a href="./comment_editor?t={{post.post_view.post.id}}" class="button" title="Post a reply">
         <span>Post Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
     </a>
+
+    <p class="jumpbox-return">
+        <a href="/viewforum?f={{ post.post_view.post.community_id }}" class="left-box arrow-left" accesskey="r">
+        <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to “Your first forum”</span>
+        </a>
+    </p>
 
     {{> components/pagination }}
 </div>
