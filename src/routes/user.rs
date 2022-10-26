@@ -1,7 +1,7 @@
 use crate::{
     api,
     api::{
-        site::upload_image,
+        image::upload_image,
         user::{change_password, get_captcha, get_person, mark_all_as_read, save_settings},
         NameOrId,
     },

@@ -1,5 +1,5 @@
 use crate::{
-    api::{categories::CATEGORIES_FILE, site::rocket_uri_macro_favicon},
+    api::categories::CATEGORIES_FILE,
     init_rocket,
     routes::{post::*, site::*, user::*},
 };
@@ -93,8 +93,10 @@ fn view_profile() {
 
 #[test]
 #[serial]
-fn favicon() {
-    test_with_uri(uri!(favicon))
+fn image() {
+    test_with_uri(uri!(
+        "/pictrs/image/24716431-8f92-417a-8492-06d5d3fe9fab.jpeg?thumbnail=120"
+    ))
 }
 
 #[test]

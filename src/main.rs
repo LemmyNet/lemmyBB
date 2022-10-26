@@ -15,7 +15,7 @@ mod test;
 mod utils;
 
 use crate::{
-    api::site::favicon,
+    api::image::image,
     env::listen_address,
     routes::{
         comment::*,
@@ -107,7 +107,7 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 private_messages_thread,
                 private_message_editor,
                 do_send_private_message,
-                favicon,
+                image,
                 redirect_apub_community,
                 redirect_apub_user,
                 redirect_apub_post,

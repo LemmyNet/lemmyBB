@@ -2,6 +2,7 @@ pub mod categories;
 pub mod comment;
 pub mod community;
 pub mod extra;
+pub mod image;
 pub mod post;
 pub mod private_message;
 pub mod site;

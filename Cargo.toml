@@ -31,7 +31,6 @@ chrono = "0.4.22"
 url = "2.3.1"
 futures = { version = "0.3.25", default-features = false }
 itertools = "0.10.5"
-image = { version = "0.24.4", features = ["png", "jpeg"], default-features = false }
 rand = "0.8.5"
 deser-hjson = "1.0.2"
 json-gettext = { version = "4.0.3", default-features = false }
