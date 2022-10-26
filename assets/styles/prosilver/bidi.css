@@ -760,7 +760,8 @@ li.breadcrumbs span:first-child > a {
 
 /* Responsive *CP navigation
 ----------------------------------------*/
-@media only screen and (max-width: 900px), only screen and (max-device-width: 900px) {
+@media only screen and (max-width: 900px),
+  only screen and (max-device-width: 900px) {
   .rtl .cp-menu,
   .rtl .navigation,
   .rtl .cp-main {
@@ -820,7 +821,8 @@ li.breadcrumbs span:first-child > a {
 
 /* Responsive *CP navigation
 ----------------------------------------*/
-@media only screen and (max-width: 900px), only screen and (max-device-width: 900px) {
+@media only screen and (max-width: 900px),
+  only screen and (max-device-width: 900px) {
   .rtl .cp-menu,
   .rtl .navigation,
   .rtl .cp-main {
@@ -1004,7 +1006,8 @@ li.breadcrumbs span:first-child > a {
 /**
 * responsive.css
 */
-@media only screen and (max-width: 700px), only screen and (max-device-width: 700px) {
+@media only screen and (max-width: 700px),
+  only screen and (max-device-width: 700px) {
   /* .topiclist lists
 	----------------------------------------*/
   .rtl ul.topiclist li.header dt,
@@ -1102,7 +1105,8 @@ li.breadcrumbs span:first-child > a {
   }
 }
 
-@media only screen and (max-width: 550px), only screen and (max-device-width: 550px) {
+@media only screen and (max-width: 550px),
+  only screen and (max-device-width: 550px) {
   /* .topiclist lists
 	----------------------------------------*/
   .rtl ul.topiclist.forums dt {
@@ -1114,7 +1118,8 @@ li.breadcrumbs span:first-child > a {
   }
 }
 
-@media only screen and (max-width: 500px), only screen and (max-device-width: 500px) {
+@media only screen and (max-width: 500px),
+  only screen and (max-device-width: 500px) {
   .rtl dl.details dt,
   .rtl dl.details dd {
     float: none;

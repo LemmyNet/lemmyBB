@@ -103,13 +103,25 @@ th a:hover {
 .headerbar,
 .forumbg {
   background-color: #12a3eb;
-  background-image: linear-gradient(to bottom, #6aceff 0%, #0076b1 2px, #12a3eb 92px, #12a3eb 100%);
+  background-image: linear-gradient(
+    to bottom,
+    #6aceff 0%,
+    #0076b1 2px,
+    #12a3eb 92px,
+    #12a3eb 100%
+  );
   background-repeat: repeat-x;
 }
 
 .forabg {
   background-color: #0076b1;
-  background-image: linear-gradient(to bottom, #6aceff 0%, #12a3eb 2px, #0076b1 92px, #0076b1 100%);
+  background-image: linear-gradient(
+    to bottom,
+    #6aceff 0%,
+    #12a3eb 2px,
+    #0076b1 92px,
+    #0076b1 100%
+  );
   background-repeat: repeat-x;
 }
 
@@ -339,7 +351,11 @@ Colours and backgrounds for content.css
 
 ul.forums {
   background-color: #eef5f9; /* Old browsers */ /* FF3.6+ */
-  background-image: linear-gradient(to bottom, #d2e0eb 0%, #eef5f9 100%); /* W3C */
+  background-image: linear-gradient(
+    to bottom,
+    #d2e0eb 0%,
+    #eef5f9 100%
+  ); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#D2E0EB', endColorstr='#EEF5F9',GradientType=0 ); /* IE6-9 */
 }
 
@@ -606,7 +622,11 @@ Colours and backgrounds for buttons.css
 .button {
   border-color: #c7c3bf;
   background-color: #e9e9e9; /* Old browsers */ /* FF3.6+ */
-  background-image: linear-gradient(to bottom, #ffffff 0%, #e9e9e9 100%); /* W3C */
+  background-image: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    #e9e9e9 100%
+  ); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#E9E9E9',GradientType=0 ); /* IE6-9 */
   box-shadow: 0 0 0 1px #ffffff inset;
   -webkit-box-shadow: 0 0 0 1px #ffffff inset;
@@ -617,9 +637,14 @@ Colours and backgrounds for buttons.css
 .button:focus {
   border-color: #0a8ed0;
   background-color: #ffffff; /* Old browsers */ /* FF3.6+ */
-  background-image: linear-gradient(to bottom, #e9e9e9 0%, #ffffff 100%); /* W3C */
+  background-image: linear-gradient(
+    to bottom,
+    #e9e9e9 0%,
+    #ffffff 100%
+  ); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E9E9E9', endColorstr='#FFFFFF',GradientType=0 ); /* IE6-9 */
-  text-shadow: 1px 1px 0 #ffffff, -1px -1px 0 #ffffff, -1px -1px 0 rgba(188, 42, 77, 0.2);
+  text-shadow: 1px 1px 0 #ffffff, -1px -1px 0 #ffffff,
+    -1px -1px 0 rgba(188, 42, 77, 0.2);
 }
 
 .button .icon,
@@ -945,7 +970,11 @@ ul.cplist {
 .tabs .activetab > a,
 .tabs .activetab > a:hover {
   background-color: #cadceb; /* Old browsers */ /* FF3.6+ */
-  background-image: linear-gradient(to bottom, #e2f2ff 0%, #cadceb 100%); /* W3C */
+  background-image: linear-gradient(
+    to bottom,
+    #e2f2ff 0%,
+    #cadceb 100%
+  ); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E2F2FF', endColorstr='#CADCEB',GradientType=0 ); /* IE6-9 */
   border-color: #cadceb;
   box-shadow: 0 1px 1px #f2f9ff inset;
@@ -1011,7 +1040,8 @@ ul.cplist {
   color: #d31141;
 }
 
-@media only screen and (max-width: 900px), only screen and (max-device-width: 900px) {
+@media only screen and (max-width: 900px),
+  only screen and (max-device-width: 900px) {
   #navigation a,
   .rtl #navigation a {
     background: #b2c2cf;
@@ -1187,7 +1217,11 @@ a.button2,
 input.button2 {
   color: #000;
   background-color: #efefef; /* Old browsers */ /* FF3.6+ */
-  background-image: linear-gradient(to bottom, #d2d2d2 0%, #efefef 100%); /* W3C */
+  background-image: linear-gradient(
+    to bottom,
+    #d2d2d2 0%,
+    #efefef 100%
+  ); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#D2D2D2', endColorstr='#EFEFEF',GradientType=0 ); /* IE6-9 */
 }
 
@@ -1222,7 +1256,11 @@ input.button3:hover {
   border-color: #d31141;
   color: #d31141;
   background-color: #d2d2d2; /* Old browsers */ /* FF3.6+ */
-  background-image: linear-gradient(to bottom, #efefef 0%, #d2d2d2 100%); /* W3C */
+  background-image: linear-gradient(
+    to bottom,
+    #efefef 0%,
+    #d2d2d2 100%
+  ); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#EFEFEF', endColorstr='#D2D2D2',GradientType=0 ); /* IE6-9 */
 }
 
@@ -1275,7 +1313,11 @@ input.disabled {
 
 .dropdown-extended .header {
   background-color: #f1f8ff; /* Old browsers */ /* FF3.6+ */
-  background-image: linear-gradient(to bottom, #f1f8ff 0%, #cadceb 100%); /* W3C */
+  background-image: linear-gradient(
+    to bottom,
+    #f1f8ff 0%,
+    #cadceb 100%
+  ); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#F1F8FF', endColorstr='#CADCEB',GradientType=0 ); /* IE6-9 */
 }
 

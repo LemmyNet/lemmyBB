@@ -14,7 +14,13 @@ steps:
       - git submodule init
       - git submodule update
 
-  - name: check formatting
+  - name: check css/js formatting
+    image: node:alpine
+    commands:
+      - npm install --save-dev --save-exact prettier
+      - ./node_modules/prettier/bin-prettier.js --check assets
+
+  - name: check rust formatting
     image: rustdocker/rust:nightly
     commands:
       - /root/.cargo/bin/cargo fmt -- --check
