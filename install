@@ -1,0 +1,65 @@
+#!/bin/bash
+installdir=/opt/lemmyBB
+
+git_init() {
+  git -C "${installdir}" clone https://github.com/LemmyNet/lemmyBB.git --recursive
+}
+git_update() {
+  git -C "${installdir}" pull >/dev/null 2>&1
+}
+
+build() {
+  LEMMYBB_VERSION=$(git describe --tag --always) cargo build --release
+}
+
+nginx() {
+  cp "${installdir}"/docker/nginx-lemmybb.conf /etc/nginx/sites-enabled/lemmybb.conf
+}
+
+systemd_create() {
+  cat >>/etc/systemd/system/lemmy_bb.service<<'END'
+[Unit]
+Description=lemmy_bb
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/lemmyBB/
+Environment="LEMMYBB_BACKEND=http://127.0.0.1:8536"
+Environment="LEMMYBB_LISTEN_ADDRESS=127.0.0.1:8703"
+Environment="LEMMYBB_INCREASED_RATE_LIMIT=1"
+Environment="LD_PRELOAD=libjemalloc.so"
+ExecStart=/opt/lemmyBB/target/release/lemmy_bb
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+END
+}
+
+systemd_start() {
+  systemctl enable --now lemmy_bb.service
+}
+
+systemd_restart() {
+  systemctl daemon-reload
+  systemctl restart lemmy_bb.service
+}
+isgit=$(git rev-parse --is-inside-work-tree)
+if [[ ${isgit} = "true" ]]; then
+  git -C "${installdir}" fetch --all >/dev/null 2>&1
+  uptodate=$(git -C "${installdir}" log HEAD..origin/release --oneline)
+  if [[ ${uptodate} = "" ]]; then
+    echo "up to date"
+  else
+    git_update
+    build
+    systemd_restart
+  fi
+else
+  git_init
+  build
+  nginx
+  systemd_create
+  systemd_start
+fi
