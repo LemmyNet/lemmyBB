@@ -7,9 +7,9 @@ services:
     ports:
       - "127.0.0.1:8701:8701"
     environment:
-      - LEMMY_BB_BACKEND=http://lemmy:8536
-      - LEMMY_BB_LISTEN_ADDRESS=0.0.0.0:8701
-      - LEMMY_BB_INCREASED_RATE_LIMIT=1
+      - LEMMYBB_BACKEND=http://lemmy:8536
+      - LEMMYBB_LISTEN_ADDRESS=0.0.0.0:8701
+      - LEMMYBB_INCREASED_RATE_LIMIT=1
     volumes:
       - ./lemmybb_categories.hjson:/app/lemmybb_categories.hjson:ro
     depends_on:

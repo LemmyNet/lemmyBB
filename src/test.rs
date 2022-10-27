@@ -10,7 +10,7 @@ use std::{env, path::Path};
 
 #[ctor::ctor]
 fn init() {
-    env::set_var("LEMMY_BB_BACKEND", "https://lemmy.ml");
+    env::set_var("LEMMYBB_BACKEND", "https://lemmy.ml");
     env_logger::builder().filter_level(LevelFilter::Info).init();
 }
 
