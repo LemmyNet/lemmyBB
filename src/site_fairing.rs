@@ -117,7 +117,7 @@ async fn get_site_data(request: &Request<'_>) -> Result<SiteData, Error> {
         current_date_time: Local::now().naive_local().format("%a %v %R").to_string(),
         auth: auth.clone(),
         lang,
-        lemmybb_version: option_env!("LEMMY_BB_VERSION")
+        lemmybb_version: option_env!("LEMMYBB_VERSION")
             .unwrap_or("unknown version")
             .to_string(),
     };

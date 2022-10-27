@@ -98,7 +98,7 @@ create systemd service file
 nano /etc/systemd/system/lemmy_bb.service
 ```
 
-and insert the following content and adapt 'LEMMY_BB_BACKEND' and 'LEMMY_BB_LISTEN_ADDRESS' to your installation
+and insert the following content and adapt 'LEMMYBB_BACKEND' and 'LEMMYBB_LISTEN_ADDRESS' to your installation
 ```
 [Unit]
 Description=lemmy_bb
@@ -107,8 +107,8 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/lemmyBB/
-Environment="LEMMY_BB_BACKEND=http://127.0.0.1:8536"
-Environment="LEMMY_BB_LISTEN_ADDRESS=127.0.0.1:8703"
+Environment="LEMMYBB_BACKEND=http://127.0.0.1:8536"
+Environment="LEMMYBB_LISTEN_ADDRESS=127.0.0.1:8703"
 Environment="LD_PRELOAD=libjemalloc.so"
 ExecStart=/opt/lemmyBB/target/release/lemmy_bb
 Restart=always
@@ -135,11 +135,12 @@ systemctl restart lemmy_bb.service
 
 ### Environment variables
 
-| var                           | default value         | description                                                                                                                |
-|-------------------------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------|
-| LEMMY_BB_BACKEND              | http://localhost:8536 | Protocol, hostname and port where lemmy backend is available                                                               |
-| LEMMY_BB_LISTEN_ADDRESS       | 127.0.0.1:1244        | IP and port where lemmyBB listens for requests                                                                             |
-| LEMMY_BB_INCREASED_RATE_LIMIT |                       | Set this variable if rate limits of Lemmy backend are increased as in docker/lemmy.hjson. Necessary to render last replies |
+| var                          | default value         | description                                                                                                                |
+|------------------------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------|
+| LEMMYBB_BACKEND              | http://localhost:8536 | Protocol, hostname and port where lemmy backend is available                                                               |
+| LEMMYBB_LISTEN_ADDRESS       | 127.0.0.1:1244        | IP and port where lemmyBB listens for requests                                                                             |
+| LEMMYBB_INCREASED_RATE_LIMIT |                       | Set this variable if rate limits of Lemmy backend are increased as in docker/lemmy.hjson. Necessary to render last replies |
+| LEMMYBB_VERSION              | unknown version       | Version to be shown in footer. Needs to be set at compile time                                                             |
 
 ### Frontpage
 
@@ -171,13 +172,13 @@ Execute the following command, with a Lemmy instance of your choice:
 ```
 git clone https://github.com/LemmyNet/lemmyBB.git --recursive
 cd lemmyBB
-LEMMY_BB_BACKEND=https://lemmy.ml cargo run
+LEMMYBB_BACKEND=https://lemmy.ml cargo run
 ```
 
 You can also run a local development instance of Lemmy, either [native](https://join-lemmy.org/docs/en/contributing/local_development.html) or in [Docker](https://join-lemmy.org/docs/en/contributing/docker_development.html), and connect to it with:
 
 ```
-LEMMY_BB_BACKEND=http://localhost:8536 cargo run
+LEMMYBB_BACKEND=http://localhost:8536 cargo run
 ```
 
 ## License
