@@ -85,7 +85,7 @@ git clone https://github.com/LemmyNet/lemmyBB.git --recursive
 Change to the folder and compile Lemmy.
 ```
 cd lemmyBB
-cargo build --release
+LEMMYBB_VERSION=$(git describe --tag --always) cargo build --release
 ```
 
 Copy the nginx config into the sites-enabled folder and edit it
