@@ -63,6 +63,7 @@ pub struct SiteData {
     pub current_date_time: String,
     pub auth: Option<Sensitive<String>>,
     pub lang: String,
+    pub lemmybb_version: String,
 }
 
 async fn get_site_data(request: &Request<'_>) -> Result<SiteData, Error> {
@@ -109,29 +110,25 @@ async fn get_site_data(request: &Request<'_>) -> Result<SiteData, Error> {
         None => browser_lang,
     };
 
-    let current_date_time = Local::now().naive_local().format("%a %v %R").to_string();
-    Ok(if let Some(auth) = auth {
+    let mut site_data = SiteData {
+        site,
+        notifications: vec![],
+        unread_pm_count: 0,
+        current_date_time: Local::now().naive_local().format("%a %v %R").to_string(),
+        auth: auth.clone(),
+        lang,
+        lemmybb_version: option_env!("LEMMY_BB_VERSION")
+            .unwrap_or("unknown version")
+            .to_string(),
+    };
+    if let Some(auth) = auth {
         let (notifications, private_messages) = join(
             get_notifications(auth.clone()),
             list_private_messages(true, auth.clone()),
         )
         .await;
-        SiteData {
-            site,
-            notifications: notifications?,
-            unread_pm_count: private_messages?.private_messages.len(),
-            current_date_time,
-            auth: Some(auth),
-            lang,
-        }
-    } else {
-        SiteData {
-            site,
-            notifications: vec![],
-            unread_pm_count: 0,
-            current_date_time,
-            auth: None,
-            lang,
-        }
-    })
+        site_data.notifications = notifications?;
+        site_data.unread_pm_count = private_messages?.private_messages.len();
+    }
+    Ok(site_data)
 }

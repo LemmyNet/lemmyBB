@@ -10,9 +10,10 @@ FROM chef AS builder
 COPY --from=planner /app/recipe.json recipe.json
 # Build dependencies - this is the caching Docker layer!
 RUN cargo chef cook --release --recipe-path recipe.json
+RUN apt update && apt install git --no-install-recommends --yes
 # Build application
 COPY . .
-RUN cargo build --release
+RUN LEMMYBB_VERSION=$(git describe --tag --always) cargo build --release
 
 FROM debian:bullseye-slim AS runtime
 WORKDIR app
