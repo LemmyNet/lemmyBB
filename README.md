@@ -85,7 +85,7 @@ git clone https://github.com/LemmyNet/lemmyBB.git --recursive
 Change to the folder and compile Lemmy.
 ```
 cd lemmyBB
-cargo build --release
+LEMMYBB_VERSION=$(git describe --tag --always) cargo build --release
 ```
 
 Copy the nginx config into the sites-enabled folder and edit it
@@ -109,6 +109,7 @@ Type=simple
 WorkingDirectory=/opt/lemmyBB/
 Environment="LEMMYBB_BACKEND=http://127.0.0.1:8536"
 Environment="LEMMYBB_LISTEN_ADDRESS=127.0.0.1:8703"
+Environment="LEMMYBB_INCREASED_RATE_LIMIT=1"
 Environment="LD_PRELOAD=libjemalloc.so"
 ExecStart=/opt/lemmyBB/target/release/lemmy_bb
 Restart=always
