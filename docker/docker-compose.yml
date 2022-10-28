@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   lemmybb:
-    image: lemmynet/lemmybb:dev
+    image: lemmynet/lemmybb:0.1
     restart: always
     ports:
       - "127.0.0.1:8701:8701"
