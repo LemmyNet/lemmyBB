@@ -1024,7 +1024,6 @@ name = "lemmy_bb"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "bytes",
  "chrono",
  "comrak",
  "ctor",
@@ -1707,7 +1706,6 @@ dependencies = [
  "serde_urlencoded",
  "tokio",
  "tokio-rustls",
- "tokio-util",
  "tower-service",
  "url",
  "wasm-bindgen",
