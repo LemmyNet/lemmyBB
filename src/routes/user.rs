@@ -5,7 +5,7 @@ use crate::{
         user::{change_password, get_captcha, get_person, mark_all_as_read, save_settings},
         NameOrId,
     },
-    routes::{auth, ErrorPage},
+    routes::{auth, build_jwt_cookie, ErrorPage},
     site_fairing::SiteData,
     utils::empty_to_opt,
     ALL_LANGUAGES,
@@ -42,9 +42,8 @@ pub async fn do_login(
     let jwt = api::user::login(&form.username, &form.password)
         .await?
         .jwt
-        .unwrap()
-        .into_inner();
-    cookies.add(Cookie::new("jwt", jwt));
+        .unwrap();
+    cookies.add(build_jwt_cookie(jwt));
     Ok(Redirect::to(uri!("/")))
 }
 
@@ -90,7 +89,7 @@ pub async fn do_register(
 
     let res = api::user::register(form.into_inner()).await?;
     let message = if let Some(jwt) = res.jwt {
-        cookies.add(Cookie::new("jwt", jwt.into_inner()));
+        cookies.add(build_jwt_cookie(jwt));
         return Ok(Either::Right(Redirect::to(uri!("/"))));
     } else if res.verify_email_sent {
         "Registration successful, confirm your email address"

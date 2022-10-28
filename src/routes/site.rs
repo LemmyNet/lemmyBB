@@ -7,19 +7,14 @@ use crate::{
         user::register,
     },
     pagination::{PageLimit, Pagination},
-    routes::{user::RegisterForm, ErrorPage},
+    routes::{build_jwt_cookie, user::RegisterForm, ErrorPage},
     site_fairing::SiteData,
 };
 use anyhow::Error;
 use futures::future::join_all;
 use lemmy_db_schema::ListingType;
 use lemmy_db_views_actor::structs::CommunityView;
-use rocket::{
-    form::Form,
-    http::{Cookie, CookieJar},
-    response::Redirect,
-    Either,
-};
+use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 use std::str::FromStr;
 
@@ -100,8 +95,8 @@ pub async fn do_setup(
         show_nsfw: form.show_nsfw,
         ..Default::default()
     };
-    let jwt = register(register_form).await?.jwt.unwrap().into_inner();
-    cookies.add(Cookie::new("jwt", jwt.clone()));
+    let jwt = register(register_form).await?.jwt.unwrap();
+    cookies.add(build_jwt_cookie(jwt.clone()));
 
     create_site(form.site_name.clone(), form.site_description.clone(), jwt).await?;
 
