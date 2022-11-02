@@ -185,7 +185,8 @@ a:hover {
   text-decoration: none;
 }
 
-.site_logo {
+.site_logo,
+.site_logo img {
   background-repeat: no-repeat;
   display: inline-block;
   width: 149px;
