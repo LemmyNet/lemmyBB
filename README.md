@@ -128,7 +128,7 @@ Run the following commands to update lemmyBB to the latest development version.
 ```
 cd /opt/lemmyBB
 git pull
-cargo build --release
+LEMMYBB_VERSION=$(git describe --tag --always) cargo build --release
 systemctl restart lemmy_bb.service
 ```
 
