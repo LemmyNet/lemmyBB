@@ -19,7 +19,7 @@ use lemmy_db_schema::{
     newtypes::{CommunityId, PostId},
     source::person::PersonSafe,
 };
-use lemmy_db_views::structs::PostView;
+use lemmy_db_views::structs::{CommentView, PostView};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Debug)]
@@ -49,9 +49,14 @@ pub async fn get_last_reply_in_thread(
         })
     } else {
         let post = get_post(post.post.id.0, auth.clone()).await?;
-        let creator_id = post.comments.last().unwrap().comment.creator_id;
+        let comments: Vec<&CommentView> = post
+            .comments
+            .iter()
+            .filter(|c| !c.comment.deleted && !c.comment.removed)
+            .collect();
+        let creator_id = comments.last().unwrap().comment.creator_id;
         let creator = get_person(NameOrId::Id(creator_id.0), auth).await?;
-        let last_comment = &post.comments.last().unwrap().comment;
+        let last_comment = &comments.last().unwrap().comment;
         Ok(PostOrComment {
             title: generate_comment_title(&post.post_view.post.name),
             creator: creator.person_view.person,
@@ -75,24 +80,36 @@ pub async fn get_last_reply_in_community(
     )
     .await;
     let (comment, post): (GetCommentsResponse, GetPostsResponse) = (comment?, post?);
-    let comment = join_all(comment.comments.first().map(|c| async {
-        PostOrComment {
-            title: generate_comment_title(&c.post.name),
-            creator: c.creator.clone(),
-            post_id: c.post.id,
-            reply_id: c.comment.id.0,
-            time: c.comment.published,
-        }
-    }))
+    let comment = join_all(
+        comment
+            .comments
+            .iter()
+            .filter(|c| !c.comment.deleted && !c.comment.removed)
+            .last()
+            .map(|c| async {
+                PostOrComment {
+                    title: generate_comment_title(&c.post.name),
+                    creator: c.creator.clone(),
+                    post_id: c.post.id,
+                    reply_id: c.comment.id.0,
+                    time: c.comment.published,
+                }
+            }),
+    )
     .await
     .pop();
-    let post = post.posts.first().map(|p| PostOrComment {
-        title: p.post.name.clone(),
-        creator: p.creator.clone(),
-        post_id: p.post.id,
-        reply_id: p.post.id.0,
-        time: p.post.published,
-    });
+    let post = post
+        .posts
+        .iter()
+        .filter(|p| !p.post.deleted && !p.post.removed)
+        .last()
+        .map(|p| PostOrComment {
+            title: p.post.name.clone(),
+            creator: p.creator.clone(),
+            post_id: p.post.id,
+            reply_id: p.post.id.0,
+            time: p.post.published,
+        });
     // return data for post or comment, depending which is newer
     Ok(if let Some(comment) = comment {
         if let Some(post) = post {
