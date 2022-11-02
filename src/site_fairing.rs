@@ -21,6 +21,7 @@ use rocket::{
     http::Cookie,
     request,
     request::FromRequest,
+    Data,
     Request,
 };
 use serde::{Deserialize, Serialize};
@@ -35,23 +36,24 @@ impl Fairing for SiteFairing {
             kind: Kind::Request,
         }
     }
-}
 
-/// Value stored in request-local state.
-#[derive(Clone)]
-struct RequestSiteData(Option<SiteData>);
+    /// Load site data for everything except /assets paths
+    async fn on_request(&self, req: &mut Request<'_>, _data: &mut Data<'_>) {
+        if !req.uri().path().starts_with("/assets") {
+            let _: &Option<SiteData> = req
+                .local_cache_async(async { get_site_data(req).await.ok() })
+                .await;
+        }
+    }
+}
 
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for SiteData {
     type Error = ();
 
     async fn from_request(request: &'r Request<'_>) -> request::Outcome<Self, ()> {
-        let cached = request.local_cache(|| RequestSiteData(None));
-        let site_data = match cached {
-            RequestSiteData(Some(s)) => s.clone(),
-            RequestSiteData(None) => get_site_data(request).await.unwrap(),
-        };
-        request::Outcome::Success(site_data)
+        let site_data: &Option<SiteData> = request.local_cache(|| None::<SiteData>);
+        request::Outcome::Success(site_data.clone().unwrap())
     }
 }
 

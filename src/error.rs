@@ -1,7 +1,9 @@
+use crate::site_fairing::SiteData;
 use json_gettext::{JSONGetText, JSONGetTextBuilder};
 use once_cell::sync::OnceCell;
 use rocket::{http::Status, response::Responder, Request};
 use rocket_dyn_templates::{context, Template};
+use std::fs::read_dir;
 
 #[derive(Debug)]
 pub struct ErrorPage(anyhow::Error);
@@ -10,8 +12,15 @@ pub struct ErrorPage(anyhow::Error);
 impl<'r> Responder<'r, 'static> for ErrorPage {
     fn respond_to(self, request: &'r Request<'_>) -> rocket::response::Result<'static> {
         warn!("{}", self.0);
-        let error = localize_error_message(self.0.to_string());
-        let template = Template::render("error", context! { error });
+        let site: &Option<SiteData> = request.local_cache(|| None::<SiteData>);
+        let error = self.0.to_string();
+        let template = match site {
+            Some(site_data) => {
+                let message = localize_error_message(error, &site_data.lang);
+                Template::render("message", context! { message, site_data})
+            }
+            None => Template::render("error", context! { error }),
+        };
         let mut res = template.respond_to(request)?;
         res.set_status(Status::InternalServerError);
         Ok(res)
@@ -27,19 +36,36 @@ where
     }
 }
 
-// TODO: need to pass in SiteData to get actual user language
-fn localize_error_message(key: String) -> String {
+fn localize_error_message(key: String, lang: &str) -> String {
     static LANG_CELL: OnceCell<JSONGetText> = OnceCell::new();
-    let langs = LANG_CELL.get_or_init(|| {
+    let langs_list = LANG_CELL.get_or_init(|| {
         let mut builder = JSONGetTextBuilder::new("en");
-        // TODO: when adding other languages, getting many errors TextInKeyNotInDefaultKey
-        //       because translation key is included in eg ru.json, but not en.json
-        builder
-            .add_json_file("en", "lemmy-translations/translations/en.json")
-            .unwrap();
+        for file in read_dir("lemmy-translations/translations/").unwrap() {
+            let file = file.unwrap();
+            let key = file.file_name().to_str().unwrap().replace(".json", "");
+            // Workaround for https://github.com/magiclen/json-gettext/issues/1
+            let ignored = [
+                "lt", "ar", "uk", "ru", "cy", "sr_Latn", "sk", "pl", "cs", "ga",
+            ];
+            if !ignored.contains(&&*key) {
+                builder.add_json_file(key, file.path()).ok();
+            }
+        }
         builder.build().unwrap()
     });
-    get_text!(langs, "en", &key)
+    get_text!(langs_list, lang, &key)
         .map(|t| t.to_string())
         .unwrap_or(key)
+}
+
+#[test]
+fn localize_error() {
+    assert_eq!(
+        "No se pudo encontrar ese nombre de usuario o correo electrónico.",
+        localize_error_message("couldnt_find_that_username_or_email".to_string(), "es")
+    );
+    assert_eq!(
+        "missing_key",
+        localize_error_message("missing_key".to_string(), "fr")
+    );
 }
