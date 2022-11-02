@@ -16,12 +16,12 @@ use lemmy_api_common::{
 pub async fn create_site(
     name: String,
     description: Option<String>,
-    auth: String,
+    auth: Sensitive<String>,
 ) -> Result<SiteResponse, Error> {
     let params = CreateSite {
         name,
         description,
-        auth: Sensitive::new(auth),
+        auth,
         ..Default::default()
     };
     post("/site", &params).await
