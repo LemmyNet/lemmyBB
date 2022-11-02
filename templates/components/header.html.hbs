@@ -31,7 +31,9 @@
                 <div id="site-description" class="site-description">
                     <a id="logo" class="logo" href="./" title="Board index">
                         {{#if site_data.site.site_view.site.banner}}
-                            <span class="site_logo" style="background-image: url('{{site_data.site.site_view.site.banner}}');"></span>
+                            <span class="site_logo custome">
+                                <img src="{{site_data.site.site_view.site.banner}}" />
+                            </span>
                         {{else}}
                             <span class="site_logo"></span>
                         {{/if}}

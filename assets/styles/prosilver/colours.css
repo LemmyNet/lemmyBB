@@ -173,7 +173,7 @@ ul.zebra-list li:nth-child(even) {
   background-color: #e7e8ea;
 }
 
-.site_logo {
+.site_logo:not(.custome) {
   background-image: url("./images/site_logo.svg");
 }
 
