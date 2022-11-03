@@ -11,7 +11,7 @@ use std::{env, path::Path};
 #[ctor::ctor]
 fn init() {
     env::set_var("LEMMYBB_BACKEND", "https://lemmy.ml");
-    env_logger::builder().filter_level(LevelFilter::Info).init();
+    env_logger::builder().filter_level(LevelFilter::Warn).init();
 }
 
 fn test_with_uri(uri: Origin) {
@@ -46,7 +46,7 @@ fn setup() {
 #[test]
 #[serial]
 fn view_forum() {
-    test_with_uri(uri!("/viewforum?f=8"))
+    test_with_uri(uri!("/view_forum?f=8"))
 }
 
 #[test]
