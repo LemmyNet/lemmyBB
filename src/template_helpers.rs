@@ -134,7 +134,7 @@ handlebars_helper!(i18n: |site_data: SiteData, key: String, *args| {
     let langs = LANG_CELL.get_or_init(|| {
         let mut builder = JSONGetTextBuilder::new("en");
         for l in ALL_LANGUAGES {
-            builder.add_json_file(l.0, format!("translations/translations/{}.json", l.0)).unwrap();
+            builder.add_json_file(l.0, format!("lemmybb-translations/translations/{}.json", l.0)).unwrap();
         }
         builder.build().unwrap()
     });
