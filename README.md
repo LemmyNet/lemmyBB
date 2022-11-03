@@ -90,7 +90,7 @@ LEMMYBB_VERSION=$(git describe --tag --always) cargo build --release
 
 Copy the nginx config into the sites-enabled folder and edit it
 ```
-cp docker/nginx-lemmybb.conf /etc/nginx/sites-enabled/lemmybb.conf
+cp docker/nginx.conf /etc/nginx/sites-enabled/lemmybb.conf
 ```
 
 create systemd service file
