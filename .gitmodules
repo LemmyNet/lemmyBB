@@ -1,6 +1,6 @@
-[submodule "lemmybb-translations"]
-	url = https://github.com/LemmyNet/lemmybb_translations.git
-	path = lemmybb-translations
 [submodule "lemmy-translations"]
 	path = lemmy-translations
 	url = https://github.com/LemmyNet/lemmy-translations.git
+[submodule "lemmybb-translations"]
+	path = lemmybb-translations
+	url = https://github.com/LemmyNet/lemmybb_translations.git
