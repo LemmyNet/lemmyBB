@@ -1,51 +1,48 @@
 {{> components/header }}
 
-        <h2 class="memberlist-title">Viewing profile - {{{user_name person.person_view.person}}}</h2>
+    <h2 class="memberlist-title">Viewing profile - {{{user_name person.person_view.person}}}</h2>
 
-        <form method="post" action="./memberlist.php?mode=group" id="viewprofile">
-            <div class="panel bg1">
-                <div class="inner">
+    <div class="panel bg1">
+        <div class="inner">
 
-                    {{#if person.person_view.person.avatar}}
-                    <dl class="left-box">
-                        <dt class="profile-avatar"><img src="{{person.person_view.person.avatar}}?thumbnail=120" width="120" height="120" alt="User avatar" /></dt>
-                    </dl>
-                    {{/if}}
+            {{#if person.person_view.person.avatar}}
+            <dl class="left-box">
+                <dt class="profile-avatar"><img src="{{person.person_view.person.avatar}}?thumbnail=120" width="120" height="120" alt="User avatar" /></dt>
+            </dl>
+            {{/if}}
 
-                    <dl class="left-box details profile-details">
-                        <dt>Username:</dt>
-                        <dd><a href="{{person.person_view.person.actor_id}}">{{{user_actor_id person.person_view.person}}}</a></dd>
-                    </dl>
+            <dl class="left-box details profile-details">
+                <dt>Username:</dt>
+                <dd><a href="{{person.person_view.person.actor_id}}">{{{user_actor_id person.person_view.person}}}</a></dd>
+            </dl>
 
-                </div>
+        </div>
+    </div>
+
+    <div class="panel bg2">
+        <div class="inner">
+
+            <div class="column1">
+                <h3>Contact {{person.person_view.person.name}}</h3>
+
+                <dl class="details">
+                    <dt>PM:</dt>
+                    <dd><a href="/private_messages_editor?u={{person.person_view.person.id}}">Send private message</a></dd>
+                </dl>
             </div>
 
-            <div class="panel bg2">
-                <div class="inner">
-
-                    <div class="column1">
-                        <h3>Contact {{person.person_view.person.name}}</h3>
-
-                        <dl class="details">
-                            <dt>PM:</dt>
-                            <dd><a href="/private_messages_editor?u={{person.person_view.person.id}}">Send private message</a></dd>
-                        </dl>
-                    </div>
-
-                    <div class="column2">
-                        <h3>User statistics</h3>
-                        <dl class="details">
-                            <dt>Joined:</dt> <dd>{{timestamp_human person.person_view.person.published}}</dd>
-                            <dt>Total posts:</dt>
-                            <dd>{{person.person_view.counts.post_count}}</dd>
-                            <dt>Total comments:</dt>
-                            <dd>{{person.person_view.counts.comment_count}}</dd>
-                        </dl>
-                    </div>
-
-                </div>
+            <div class="column2">
+                <h3>User statistics</h3>
+                <dl class="details">
+                    <dt>Joined:</dt> <dd>{{timestamp_human person.person_view.person.published}}</dd>
+                    <dt>Total posts:</dt>
+                    <dd>{{person.person_view.counts.post_count}}</dd>
+                    <dt>Total comments:</dt>
+                    <dd>{{person.person_view.counts.comment_count}}</dd>
+                </dl>
             </div>
 
-        </form>
+        </div>
+    </div>
 
 {{> components/footer }}
