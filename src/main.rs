@@ -30,7 +30,7 @@ use crate::{
     template_helpers::*,
 };
 use anyhow::Error;
-use log::LevelFilter;
+use env_logger::Env;
 use rocket::{
     fs::{relative, FileServer},
     Build,
@@ -41,12 +41,10 @@ use rocket_dyn_templates::Template;
 
 #[main]
 async fn main() -> Result<(), Error> {
-    env_logger::builder()
-        .filter_level(LevelFilter::Warn)
-        .filter(Some("lemmy_bb"), LevelFilter::Debug)
-        .filter(Some("rocket"), LevelFilter::Info)
-        .filter(Some("handlebars"), LevelFilter::Info)
-        .init();
+    env_logger::Builder::from_env(
+        Env::default().default_filter_or("warn,lemmybb=debug,rocket=info,handlebars=info"),
+    )
+    .init();
     let _ = init_rocket()?.launch().await?;
     Ok(())
 }
