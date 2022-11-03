@@ -16,12 +16,12 @@
                 <ul>
                 {{#each search_results.communities}}
                     <li>
-                        <a href="/viewforum?f={{this.community.id}}">{{community_actor_id this.community}}</a>
+                        <a href="/view_forum?f={{this.community.id}}">{{community_actor_id this.community}}</a>
                     </li>
                 {{/each}}
                 {{#each search_results.users}}
                     <li>
-                        <a href="/viewforum?f={{this.person.id}}">{{user_actor_id this.person}}</a>
+                        <a href="/view_forum?f={{this.person.id}}">{{user_actor_id this.person}}</a>
                     </li>
                 {{/each}}
                 </ul>
@@ -35,13 +35,13 @@
                 <dl class="postprofile">
                     <dt class="author">by <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a></dt>
                     <dd class="search-result-date">{{{timestamp_human this.creator.published}}}</dd>
-                    <dd>Forum: <a href="viewforum?f={{this.community.id}}">{{{community_actor_id this.community}}}</a></dd>
-                    <dd>Topic: <a href="viewtopic?t={{this.post.id}}">{{this.post.name}}</a></dd>
+                    <dd>Forum: <a href="/view_forum?f={{this.community.id}}">{{{community_actor_id this.community}}}</a></dd>
+                    <dd>Topic: <a href="/view_topic?t={{this.post.id}}">{{this.post.name}}</a></dd>
                     <dd>Replies: <strong>{{this.counts.comments}}</strong></dd>
                 </dl>
 
                 <div class="postbody">
-                    <h3><a href="/viewtopic?t={{this.post.id}}#p1">{{this.post.name}}</a></h3>
+                    <h3><a href="/view_topic?t={{this.post.id}}#p1">{{this.post.name}}</a></h3>
                     <div class="content">
                     {{#if this.post.url}}
                         {{#if is_image_url}}
@@ -60,7 +60,7 @@
 
                 <ul class="searchresults">
                     <li>
-                        <a href="/viewtopic?t={{this.post.id}}#p1" class="arrow-right">
+                        <a href="/view_topic?t={{this.post.id}}#p1" class="arrow-right">
                             <i class="icon fa-angle-right fa-fw icon-black" aria-hidden="true"></i><span>Jump to post</span>
                         </a>
                     </li>
@@ -77,19 +77,19 @@
                 <dl class="postprofile">
                     <dt class="author">by <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a></dt>
                     <dd class="search-result-date">{{{timestamp_human this.creator.published}}}</dd>
-                    <dd>Forum: <a href="/viewforum?f={{this.community.id}}">{{{community_actor_id this.community}}}</a></dd>
-                    <dd>Topic: <a href="/viewtopic?t={{this.post.id}}">{{this.post.name}}</a></dd>
+                    <dd>Forum: <a href="/view_forum?f={{this.community.id}}">{{{community_actor_id this.community}}}</a></dd>
+                    <dd>Topic: <a href="/view_topic?t={{this.post.id}}">{{this.post.name}}</a></dd>
                     <dd>Replies: <strong>?</strong></dd>
                 </dl>
 
                 <div class="postbody">
-                    <h3><a href="/viewtopic?t={{this.post.id}}#p2"><span class="posthilit">test</span> post</a></h3>
+                    <h3><a href="/view_topic?t={{this.post.id}}#p2"><span class="posthilit">test</span> post</a></h3>
                     <div class="content">{{{markdown this.comment.content}}}</div>
                 </div>
 
                 <ul class="searchresults">
                     <li>
-                        <a href="/viewtopic?t={{this.post.id}}#p2" class="arrow-right">
+                        <a href="/view_topic?t={{this.post.id}}#p2" class="arrow-right">
                             <i class="icon fa-angle-right fa-fw icon-black" aria-hidden="true"></i><span>Jump to post</span>
                         </a>
                     </li>

@@ -14,11 +14,11 @@
 
     {{#if site_data.site.my_user}}
         {{#if community.community_view.subscribed}}
-        <a href="/viewforum?f={{community.community_view.community.id}}&action=unsubscribe" class="button" title="Unsubscribe from forum">
+        <a href="/view_forum?f={{community.community_view.community.id}}&action=unsubscribe" class="button" title="Unsubscribe from forum">
             <span>Unsubscribe</span> <i class="icon fa-minus fa-fw" aria-hidden="true"></i>
         </a>
         {{else}}
-        <a href="/viewforum?f={{community.community_view.community.id}}&action=subscribe" class="button" title="Subscribe to forum">
+        <a href="/view_forum?f={{community.community_view.community.id}}&action=subscribe" class="button" title="Subscribe to forum">
             <span>Subscribe</span> <i class="icon fa-plus fa-fw" aria-hidden="true"></i>
         </a>
         {{/if}}
@@ -44,7 +44,7 @@
                 <dl class="row-item topic_read">
                     <dt title="No unread posts">
                         <div class="list-inner">
-                            <a href="./viewtopic?t={{this.post.id}}" class="topictitle">{{this.post.name}}</a> <br />
+                            <a href="/view_topic?t={{this.post.id}}" class="topictitle">{{this.post.name}}</a> <br />
 
                             <div class="topic-poster left-box">
                                 by <a href="/view_profile?u={{this.creator.id}}">{{{user_actor_id this.creator}}}</a> &raquo;
@@ -58,7 +58,7 @@
                         {{#with (lookup ../last_replies @index)}}
                         <span>
                             <dfn>Last post </dfn>by <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
-                            <a href="./viewtopic?t={{../this.post.id}}#p{{this.reply_id}}" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
+                            <a href="/view_topic?t={{../this.post.id}}#p{{this.reply_id}}" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
                             <time datetime="{{timestamp_machine this.time}}">{{timestamp_human this.time}}</time>
                         </span>
                         {{/with}}

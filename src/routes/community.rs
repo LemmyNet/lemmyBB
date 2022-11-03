@@ -16,7 +16,7 @@ use futures::future::join_all;
 use rocket::form::Form;
 use rocket_dyn_templates::{context, Template};
 
-#[get("/viewforum?<f>&<page>&<action>")]
+#[get("/view_forum?<f>&<page>&<action>")]
 pub async fn view_forum(
     f: i32,
     page: Option<i32>,
@@ -50,7 +50,7 @@ pub async fn view_forum(
     let limit = PageLimit::Unknown(posts.len());
     let pagination = Pagination::new(page, limit, format!("/viewforum?f={}&", f));
     let ctx = context! { site_data, community, posts, last_replies, pagination };
-    Ok(Template::render("viewforum", ctx))
+    Ok(Template::render("view_forum", ctx))
 }
 
 #[get("/report?<thread>&<reply>")]

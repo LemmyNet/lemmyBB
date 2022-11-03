@@ -1,6 +1,6 @@
 {{> components/header }}
 
-<h2 class="topic-title"><a href="./viewtopic?t={{ post.post_view.post.id }}">{{ post.post_view.post.name }}</a></h2>
+<h2 class="topic-title"><a href="/view_topic?t={{ post.post_view.post.id }}">{{ post.post_view.post.name }}</a></h2>
 
 <div class="action-bar bar-top">
     <a href="./comment_editor?t={{ post.post_view.post.id }}" class="button" title="Post a reply">
@@ -8,7 +8,7 @@
     </a>
 
     <p class="jumpbox-return">
-        <a href="/viewforum?f={{ post.post_view.post.community_id }}" class="left-box arrow-left" accesskey="r">
+        <a href="/view_forum?f={{ post.post_view.post.community_id }}" class="left-box arrow-left" accesskey="r">
             <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to "{{post.community_view.community.title}}"</span>
         </a>
     </p>
@@ -26,7 +26,7 @@
             <div id="post_content1">
 
                 <h3 class="first">
-                    <a href="./viewtopic?p={{post.post_view.post.id}}#p1">{{post.post_view.post.name}}</a>
+                    <a href="/view_topic?p={{post.post_view.post.id}}#p1">{{post.post_view.post.name}}</a>
                 </h3>
                 {{#if site_data.site.my_user.local_user_view.person.id}}
                 <ul class="post-buttons">
@@ -45,7 +45,7 @@
                 </ul>
                 {{/if}}
                 <p class="author">
-                    <a class="unread" href="./viewtopic?t={{post.post_view.post.id}}#p1" title="Post">
+                    <a class="unread" href="/view_topic?t={{post.post_view.post.id}}#p1" title="Post">
                         <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
                     </a>
                     <span class="responsive-hide">by <strong><a href="/view_profile?u={{post.post_view.creator.id}}" class="username">{{{user_actor_id post.post_view.creator}}}</a></strong> &raquo; </span>
@@ -93,7 +93,7 @@
 
         <div class="postbody">
             <h3>
-                <a href="./viewtopic?p={{this.post.id}}#p1">{{this.post.name}}</a>
+                <a href="/view_topic?p={{this.post.id}}#p1">{{this.post.name}}</a>
             </h3>
             {{#if ../site_data.site.my_user.local_user_view.person.id}}
             <ul class="post-buttons">
@@ -112,7 +112,7 @@
             </ul>
             {{/if}}
             <p class="author">
-                <a class="unread" href="./viewtopic?t={{this.post.id}}&page={{../pagination.current_page}}#p{{this.comment.id}}" title="Post">
+                <a class="unread" href="/view_topic?t={{this.post.id}}&page={{../pagination.current_page}}#p{{this.comment.id}}" title="Post">
                     <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
                 </a>
                 <span class="responsive-hide">by <strong><a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a></strong> &raquo; </span>
@@ -120,7 +120,7 @@
                 <a href="{{this.comment.ap_id}}"><img src="/assets/images/icons/fedilink.svg" width="16px" height="16px"></a>
                 {{#if this.comment.parent_id}}
                     <span style="float: right; margin-right: 64px">
-                        Responding to <a href="./viewtopic?t={{this.post.id}}&page={{comment_page this.comment.parent_id ../all_comments}}#p{{this.comment.parent_id}}">#{{this.comment.parent_id}}</a>
+                        Responding to <a href="/view_topic?t={{this.post.id}}&page={{comment_page this.comment.parent_id ../all_comments}}#p{{this.comment.parent_id}}">#{{this.comment.parent_id}}</a>
                     </span>
                 {{/if}}
             </p>
@@ -149,7 +149,7 @@
     </a>
 
     <p class="jumpbox-return">
-        <a href="/viewforum?f={{ post.post_view.post.community_id }}" class="left-box arrow-left" accesskey="r">
+        <a href="/view_forum?f={{ post.post_view.post.community_id }}" class="left-box arrow-left" accesskey="r">
         <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to "{{post.community_view.community.title}}"</span>
         </a>
     </p>

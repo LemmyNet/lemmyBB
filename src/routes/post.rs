@@ -15,7 +15,7 @@ use rocket::{form::Form, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 use url::Url;
 
-#[get("/viewtopic?<t>&<page>")]
+#[get("/view_topic?<t>&<page>")]
 pub async fn view_topic(
     t: i32,
     page: Option<i32>,
@@ -51,7 +51,7 @@ pub async fn view_topic(
     let pagination = Pagination::new(page.unwrap_or(1), limit, &format!("/viewtopic?t={}&", t));
 
     let ctx = context! { site_data, post, is_image_url, all_comments, pagination };
-    Ok(Template::render("viewtopic", ctx))
+    Ok(Template::render("view_topic", ctx))
 }
 
 #[get("/post_editor?<f>&<edit>")]
