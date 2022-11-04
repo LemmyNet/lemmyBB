@@ -34,7 +34,7 @@ pub struct LoginForm {
     password: String,
 }
 
-#[post("/do_login", data = "<form>")]
+#[post("/login", data = "<form>")]
 pub async fn do_login(
     form: Form<LoginForm>,
     cookies: &CookieJar<'_>,
@@ -70,7 +70,7 @@ pub struct RegisterForm {
     pub refresh_captcha: Option<String>,
 }
 
-#[post("/do_register", data = "<form>")]
+#[post("/register", data = "<form>")]
 pub async fn do_register(
     mut form: Form<RegisterForm>,
     cookies: &CookieJar<'_>,

@@ -60,9 +60,9 @@ pub async fn report(
     site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
     let action = if let Some(thread) = thread {
-        format!("/do_report?thread={}", thread)
+        format!("/report?thread={}", thread)
     } else if let Some(reply) = reply {
-        format!("/do_report?reply={}", reply)
+        format!("/report?reply={}", reply)
     } else {
         unreachable!()
     };
@@ -75,7 +75,7 @@ pub struct ReportForm {
     report_text: String,
 }
 
-#[post("/do_report?<thread>&<reply>", data = "<form>")]
+#[post("/report?<thread>&<reply>", data = "<form>")]
 pub async fn do_report(
     thread: Option<i32>,
     reply: Option<i32>,

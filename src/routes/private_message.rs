@@ -150,7 +150,7 @@ pub struct PrivateMessageForm {
     preview: Option<String>,
 }
 
-#[post("/do_send_private_message?<u>", data = "<form>")]
+#[post("/send_private_message?<u>", data = "<form>")]
 pub async fn do_send_private_message(
     u: i32,
     form: Form<PrivateMessageForm>,

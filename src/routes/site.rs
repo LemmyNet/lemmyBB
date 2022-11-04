@@ -83,7 +83,7 @@ pub struct SetupForm {
     pub site_description: Option<String>,
 }
 
-#[post("/do_setup", data = "<form>")]
+#[post("/setup", data = "<form>")]
 pub async fn do_setup(
     form: Form<SetupForm>,
     cookies: &CookieJar<'_>,

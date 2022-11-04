@@ -33,7 +33,7 @@ async fn render_editor(
     site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
     let post = get_post(post_id, site_data.auth.clone()).await?;
-    let mut editor_action = format!("/do_comment?t={}", post.post_view.post.id.0);
+    let mut editor_action = format!("/comment?t={}", post.post_view.post.id.0);
     if let Some(edit_comment_id) = edit_comment_id {
         editor_action = format!("{}&edit={}", editor_action, edit_comment_id);
     }
@@ -50,7 +50,7 @@ pub struct CommentForm {
     preview: Option<String>,
 }
 
-#[post("/do_comment?<t>&<edit>", data = "<form>")]
+#[post("/comment?<t>&<edit>", data = "<form>")]
 pub async fn do_comment(
     t: i32,
     edit: Option<i32>,

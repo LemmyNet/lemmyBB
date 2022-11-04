@@ -82,7 +82,7 @@ async fn render_editor(
     site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
     let community = get_community(NameOrId::Id(community_id), site_data.auth.clone()).await?;
-    let mut editor_action = format!("/do_post?f={}", community.community_view.community.id.0);
+    let mut editor_action = format!("/post?f={}", community.community_view.community.id.0);
     if let Some(edit_post_id) = edit_post_id {
         editor_action = format!("{}&edit={}", editor_action, edit_post_id);
     }
@@ -107,7 +107,7 @@ pub struct PostForm {
     preview: Option<String>,
 }
 
-#[post("/do_post?<f>&<edit>", data = "<form>")]
+#[post("/post?<f>&<edit>", data = "<form>")]
 pub async fn do_post(
     f: i32,
     edit: Option<i32>,
