@@ -27,7 +27,7 @@ body:
       description: |
         Let us know about other solutions you've tried or researched.
   - type: textarea
-    id: solution-alt
+    id: additional
     attributes:
       label: Additional context
       description: |
