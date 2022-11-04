@@ -24,18 +24,18 @@ body:
   - type: checkboxes
     id: device
     attributes:
-      label: What browsers are you seeing the problem on?
-      multiple: true
+      label: On which operating systems are you seeing the problem on?
+      description: On which operating systems can you reproduce the problem?
       options:
-        - Wdinwos
-        - Linux
-        - macOS
-        - Andorid
-        - iOS/iPadOS
+        - label: Wdinwos
+        - label: Linux
+        - label: macOS
+        - label: Andorid
+        - label: iOS/iPadOS
   - type: dropdown
     id: browsers
     attributes:
-      label: What browsers are you seeing the problem on?
+      label: On which browsers are you seeing the problem on?
       multiple: true
       options:
         - Firefox
