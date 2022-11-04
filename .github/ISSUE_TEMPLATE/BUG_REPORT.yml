@@ -1,7 +1,7 @@
 name: "\U0001F41E Bug Report"
 description: Create a report to help us improve LemmyBB
 title: "[Bug]: "
-labels: ["bug", "triage"]
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
