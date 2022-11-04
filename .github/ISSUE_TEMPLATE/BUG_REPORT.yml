@@ -1,0 +1,54 @@
+name: "\U0001F41E Bug Report"
+description: Create a report to help us improve LemmyBB
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Found a bug? Please fill out the sections below. 👍
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Describe the steps to reproduce the bug.
+        The better your description is _(go 'here', click 'there'...)_ the fastest you'll get an _(accurate)_ answer. 
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+    validations:
+      required: false
+  - type: input
+    id: lemmybb-version
+    attributes:
+      label: Version
+      description: Which LemmyBB instance do you use?
+      placeholder: ex. 0.1.0
+    validations:
+      required: false
+  - type: textarea
+    id: lemmybb-log
+    attributes:
+      label: LemmyBB Logs
+      description: |
+        Provide LemmyBB logs lines.
+        To get this information, execute one of the following commands on the CLI:
+        ```shell
+        docker-compose log -f
+        ```
+      render: shell
