@@ -9,46 +9,75 @@ use crate::{
 };
 use anyhow::Error;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
-use rocket::{http::CookieJar, response::Redirect};
+use rocket::{
+    http::CookieJar,
+    request::{FromRequest, Outcome},
+    response::Redirect,
+    Either,
+};
 use std::{path::PathBuf, str::FromStr};
 
+type ReturnType = Result<Either<Redirect, String>, ErrorPage>;
+
 #[get("/c/<name>")]
-pub async fn redirect_apub_community(
+pub async fn apub_community(
     name: String,
+    accept: AcceptHeader,
     cookies: &CookieJar<'_>,
-) -> Result<Redirect, ErrorPage> {
+) -> ReturnType {
+    if accept.0.starts_with("application/") {
+        return foward_apub_fetch(format!("{}/c/{}", lemmy_backend(), name), accept).await;
+    }
     let community = get_community(NameOrId::Name(name), auth(cookies)).await?;
     let f = community.community_view.community.id.0;
-    Ok(Redirect::to(uri!(view_forum(
+    Ok(Either::Left(Redirect::to(uri!(view_forum(
         f,
         Some(1),
         Option::<String>::None
-    ))))
+    )))))
 }
 
 #[get("/u/<name>")]
-pub async fn redirect_apub_user(
-    name: String,
-    cookies: &CookieJar<'_>,
-) -> Result<Redirect, ErrorPage> {
+pub async fn apub_user(name: String, accept: AcceptHeader, cookies: &CookieJar<'_>) -> ReturnType {
+    if accept.0.starts_with("application/") {
+        return foward_apub_fetch(format!("{}/u/{}", lemmy_backend(), name), accept).await;
+    }
     let user = get_person(NameOrId::Name(name), auth(cookies)).await?;
     let u = user.person_view.person.id.0;
-    Ok(Redirect::to(uri!(view_profile(u))))
+    Ok(Either::Left(Redirect::to(uri!(view_profile(u)))))
 }
 
 #[get("/post/<id>")]
-pub async fn redirect_apub_post(id: i32) -> Redirect {
-    Redirect::to(uri!(view_topic(id, Some(1))))
+pub async fn apub_post(id: i32, accept: AcceptHeader) -> ReturnType {
+    if accept.0.starts_with("application/") {
+        return foward_apub_fetch(format!("{}/post/{}", lemmy_backend(), id), accept).await;
+    }
+    Ok(Either::Left(Redirect::to(uri!(view_topic(id, Some(1))))))
 }
 
 #[get("/comment/<t>")]
-pub async fn redirect_apub_comment(t: i32, cookies: &CookieJar<'_>) -> Result<Redirect, ErrorPage> {
+pub async fn apub_comment(t: i32, accept: AcceptHeader, cookies: &CookieJar<'_>) -> ReturnType {
+    if accept.0.starts_with("application/") {
+        return foward_apub_fetch(format!("{}/comment/{}", lemmy_backend(), t), accept).await;
+    }
     let comment = get_comment(t, auth(cookies)).await?;
     // TODO: figure out actual page
-    Ok(Redirect::to(format!(
-        "/viewtopic?t={}&page=1#p{}",
+    Ok(Either::Left(Redirect::to(format!(
+        "/view_topic?t={}&page=1#p{}",
         t, comment.comment_view.comment.id
-    )))
+    ))))
+}
+
+/// In case an activitypub object is being fetched, forward request to Lemmy backend
+async fn foward_apub_fetch(url: String, accept: AcceptHeader) -> ReturnType {
+    let res = CLIENT
+        .get(url)
+        .header("accept", accept.0)
+        .send()
+        .await?
+        .text()
+        .await?;
+    Ok(Either::Right(res))
 }
 
 #[post("/<path..>", data = "<body>")]
@@ -84,12 +113,26 @@ pub async fn inboxes(
 pub struct Headers<'r>(&'r rocket::http::HeaderMap<'r>);
 
 #[rocket::async_trait]
-impl<'r> rocket::request::FromRequest<'r> for Headers<'r> {
+impl<'r> FromRequest<'r> for Headers<'r> {
     type Error = std::convert::Infallible;
 
-    async fn from_request(
-        req: &'r rocket::Request<'_>,
-    ) -> rocket::request::Outcome<Self, Self::Error> {
-        rocket::request::Outcome::Success(Headers(req.headers()))
+    async fn from_request(req: &'r rocket::Request<'_>) -> Outcome<Self, Self::Error> {
+        Outcome::Success(Headers(req.headers()))
+    }
+}
+
+pub struct AcceptHeader(String);
+
+#[rocket::async_trait]
+impl<'r> FromRequest<'r> for AcceptHeader {
+    type Error = std::convert::Infallible;
+
+    async fn from_request(req: &'r rocket::Request<'_>) -> Outcome<Self, Self::Error> {
+        Outcome::Success(AcceptHeader(
+            req.headers()
+                .get_one("accept")
+                .unwrap_or_default()
+                .to_string(),
+        ))
     }
 }
