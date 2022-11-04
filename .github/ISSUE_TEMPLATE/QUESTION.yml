@@ -1,0 +1,13 @@
+name: "? Question"
+description: "General questions about LemmyBB"
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question description
+      description: |
+        What's the question you have about lemmy?
+    validations:
+      required: true

@@ -1,0 +1,72 @@
+name: "\U0001F41E Bug Report"
+description: Create a report to help us improve LemmyBB
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Found a bug? Please fill out the sections below. 👍
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Describe the steps to reproduce the bug.
+        The better your description is _(go 'here', click 'there'...)_ the fastest you'll get an _(accurate)_ answer. 
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: checkboxes
+    id: device
+    attributes:
+      label: On which operating systems are you seeing the problem on?
+      description: On which operating systems can you reproduce the problem?
+      options:
+        - label: Wdinwos
+        - label: Linux
+        - label: macOS
+        - label: Android
+        - label: iOS/iPadOS
+  - type: checkboxes
+    id: browsers
+    attributes:
+      label: On which browsers are you seeing the problem on?
+      options:
+        - label: Firefox
+        - label: Chrome
+        - label: Safari
+        - label: Microsoft Edge
+        - label: Other (please describe in more detail under Additional context)
+    validations:
+      required: false
+  - type: input
+    id: lemmybb-version
+    attributes:
+      label: Version
+      description: Which LemmyBB version do you use? Displayed in the footer.
+      placeholder: ex. 0.1.0
+    validations:
+      required: false
+  - type: textarea
+    id: lemmybb-log
+    attributes:
+      label: LemmyBB Logs
+      description: |
+        Provide LemmyBB logs lines.
+        To get this information, execute one of the following commands on the CLI:
+        ```shell
+        docker-compose log -f
+        ```
+      render: shell
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: |
+        Is there anything else you can add about the proposal?
+        You might want to link to related issues here, if you haven't already.
