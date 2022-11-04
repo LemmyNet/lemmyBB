@@ -1,8 +1,8 @@
 pub mod comment;
 pub mod community;
+pub mod federation;
 pub mod post;
 pub mod private_message;
-pub mod redirects;
 pub mod site;
 pub mod user;
 

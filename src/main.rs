@@ -20,9 +20,9 @@ use crate::{
     routes::{
         comment::*,
         community::*,
+        federation::*,
         post::*,
         private_message::*,
-        redirects::*,
         site::*,
         user::*,
     },
@@ -106,15 +106,16 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 private_message_editor,
                 do_send_private_message,
                 image,
-                redirect_apub_community,
-                redirect_apub_user,
-                redirect_apub_post,
-                redirect_apub_comment,
+                apub_community,
+                apub_user,
+                apub_post,
+                apub_comment,
                 report,
                 do_report,
                 edit_profile,
                 do_edit_profile,
-                community_list
+                community_list,
+                inboxes
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))
