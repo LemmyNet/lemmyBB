@@ -30,7 +30,7 @@ body:
         - label: Wdinwos
         - label: Linux
         - label: macOS
-        - label: Andorid
+        - label: Android
         - label: iOS/iPadOS
   - type: checkboxes
     id: browsers
