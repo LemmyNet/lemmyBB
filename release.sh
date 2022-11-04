@@ -9,4 +9,4 @@ sed -i "0,/version = \"$old_tag\"/s//version = \"$new_tag\"/g" Cargo.toml
 git add Cargo.toml
 git commit -m "Update to $new_tag"
 git tag "$new_tag"
-git push --all
+git push origin main --tags
