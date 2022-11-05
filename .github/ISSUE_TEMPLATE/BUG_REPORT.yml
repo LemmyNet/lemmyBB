@@ -27,7 +27,7 @@ body:
       label: On which operating systems are you seeing the problem on?
       description: On which operating systems can you reproduce the problem?
       options:
-        - label: Wdinwos
+        - label: Windows
         - label: Linux
         - label: macOS
         - label: Android
