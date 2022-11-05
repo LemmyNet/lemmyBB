@@ -25,7 +25,7 @@ body:
     attributes:
       label: Describe alternatives you've considered
       description: |
-        Let us know about other solutions you've tried or researched.
+        Please let us know about other solutions you've tried or researched.
   - type: textarea
     id: additional
     attributes:

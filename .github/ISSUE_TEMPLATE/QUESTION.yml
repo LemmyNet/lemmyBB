@@ -8,6 +8,6 @@ body:
     attributes:
       label: Question description
       description: |
-        What's the question you have about lemmy?
+        What's the question you have about lemmyBB?
     validations:
       required: true
