@@ -32,6 +32,8 @@ body:
         - label: macOS
         - label: Android
         - label: iOS/iPadOS
+    validations:
+      required: true
   - type: checkboxes
     id: browsers
     attributes:
@@ -43,7 +45,7 @@ body:
         - label: Microsoft Edge
         - label: Other (please describe in more detail under Additional context)
     validations:
-      required: false
+      required: true
   - type: input
     id: lemmybb-version
     attributes:
@@ -51,7 +53,7 @@ body:
       description: Which LemmyBB version do you use? Displayed in the footer.
       placeholder: ex. 0.1.0
     validations:
-      required: false
+      required: true
   - type: textarea
     id: lemmybb-log
     attributes:
