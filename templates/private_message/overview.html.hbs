@@ -13,7 +13,7 @@
 
                                     <div class="pagination">
                                         <form action="/mark_all_notifications_read" method="POST">
-                                            <a href="#" onclick="this.parentNode.submit()"><span>Mark all as read</span></a>
+                                            <a href="#" onclick="this.parentNode.submit()"><span>{{{i18n site_data "notifications_mark_all_as_read"}}}</span></a>
                                             &bull; {{{length private_message_threads}}} threads
                                             &bull; Page <strong>1</strong> of <strong>1</strong>
                                         </form>
@@ -23,7 +23,7 @@
                                 <ul class="topiclist two-columns">
                                     <li class="header">
                                         <dl>
-                                            <dt><div class="list-inner">Message</div></dt>
+                                            <dt><div class="list-inner">{{{i18n site_data "message"}}}</div></dt>
                                         </dl>
                                     </li>
                                 </ul>
@@ -38,7 +38,7 @@
                                                     <a href="/private_messages_thread?u={{this.other_participant.id}}" class="topictitle">{{{user_actor_id this.other_participant}}}</a>
                                                 </div>
                                             </dt>
-                                            <dd class="info"><span>Last message: {{{timestamp_human this.last_message}}}</span></dd>
+                                            <dd class="info"><span>{{{i18n ../site_data "last_reply" (timestamp_human this.last_message)}}}</span></dd>
                                         </dl>
                                     </li>
                                     {{/each}}

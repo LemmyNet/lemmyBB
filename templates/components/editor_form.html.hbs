@@ -23,7 +23,7 @@
 
 {{#if subject_field}}
         <dl style="clear: left;">
-            <dt><label for="subject">Subject:</label></dt>
+            <dt><label for="subject">{{{i18n site_data "subject"}}}</label></dt>
             <dd>
                 <input type="text" name="subject" id="subject" {{#if subject}} value="{{subject}}" {{/if}} size="45" maxlength="124" tabindex="2" class="inputbox autowidth" />
             </dd>
@@ -42,7 +42,6 @@
         <div class="inner">
             <fieldset class="submit-buttons">
 
-                <input type="hidden" name="topic_cur_post_id" value="3" />
                 <input type="submit" tabindex="5" name="preview" value="Preview" class="button1" onclick="document.getElementById('postform').action += '#preview';" />&nbsp;
                 <input type="submit" accesskey="s" tabindex="6" name="post" value="Submit" class="button1 default-submit-action" />&nbsp;
 

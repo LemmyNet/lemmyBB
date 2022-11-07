@@ -1,12 +1,11 @@
 {{> components/header }}
 
-        <h2 class="searchresults-title">Search found {{search_results_count}} matches: <a href="./search?keywords={{keywords}}">{{keywords}}</a></h2>
-        <p>Searched query: <strong>{{keywords}}</strong></p>
+        <h2 class="searchresults-title">{{{i18n site_data "search_match_count" search_results_count}}} <a href="./search?keywords={{keywords}}">{{keywords}}</a></h2>
+        <p>{{{i18n site_data "searched_query"}}} <strong>{{keywords}}</strong></p>
 
 
         <div class="action-bar bar-top">
             <div class="pagination">
-                Search found {{search_results_count}} matches
                 &bull; Page <strong>1</strong> of <strong>1</strong>
             </div>
         </div>
@@ -35,9 +34,9 @@
                 <dl class="postprofile">
                     <dt class="author">by <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a></dt>
                     <dd class="search-result-date">{{{timestamp_human this.creator.published}}}</dd>
-                    <dd>Forum: <a href="/view_forum?f={{this.community.id}}">{{{community_actor_id this.community}}}</a></dd>
-                    <dd>Topic: <a href="/view_topic?t={{this.post.id}}">{{this.post.name}}</a></dd>
-                    <dd>Replies: <strong>{{this.counts.comments}}</strong></dd>
+                    <dd>{{{i18n ../site_data "forum_title"}}} <a href="/view_forum?f={{this.community.id}}">{{{community_actor_id this.community}}}</a></dd>
+                    <dd>{{{i18n ../site_data "topic_title"}}} <a href="/view_topic?t={{this.post.id}}">{{this.post.name}}</a></dd>
+                    <dd>{{{i18n ../site_data "replies_title"}}} <strong>{{this.counts.comments}}</strong></dd>
                 </dl>
 
                 <div class="postbody">
@@ -77,9 +76,9 @@
                 <dl class="postprofile">
                     <dt class="author">by <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a></dt>
                     <dd class="search-result-date">{{{timestamp_human this.creator.published}}}</dd>
-                    <dd>Forum: <a href="/view_forum?f={{this.community.id}}">{{{community_actor_id this.community}}}</a></dd>
-                    <dd>Topic: <a href="/view_topic?t={{this.post.id}}">{{this.post.name}}</a></dd>
-                    <dd>Replies: <strong>?</strong></dd>
+                    <dd>{{{i18n ../site_data "forum_title"}}} <a href="/view_forum?f={{this.community.id}}">{{{community_actor_id this.community}}}</a></dd>
+                    <dd>{{{i18n ../site_data "topic_title"}}} <a href="/view_topic?t={{this.post.id}}">{{this.post.name}}</a></dd>
+                    <dd>{{{i18n ../site_data "replies_title"}}} <strong>?</strong></dd>
                 </dl>
 
                 <div class="postbody">
@@ -102,14 +101,13 @@
         {{#unless search_results_count}}
             <div class="panel">
                 <div class="inner">
-                    <strong>No suitable matches were found.</strong>
+                    <strong>{{{i18n site_data "search_no_matches"}}}</strong>
                 </div>
             </div>
         {{/unless}}
 
         <div class="action-bar bottom">
             <div class="pagination">
-                Search found {{search_results_count}} matches
                 &bull; Page <strong>1</strong> of <strong>1</strong>
             </div>
         </div>

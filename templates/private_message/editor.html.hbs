@@ -9,12 +9,12 @@
 
                 <div class="panel" id="pmheader-postingbox">
                     <div class="inner">
-                        <label><strong>Recipient:</strong></label></dt>
+                        <label><strong>{{{i18n site_data "recipient"}}}</strong></label></dt>
                         <a href="/view_profile?u={{recipient.id}}" class="username">{{{user_actor_id recipient}}}</a>
                     </div>
                 </div>
 
-                {{> components/editor_form editor_action=(concat "/send_private_message?u=" recipient.id) editor_title="Compose message"}}
+                {{> components/editor_form editor_action=(concat "/send_private_message?u=" recipient.id) editor_title=(i18n site_data "compose_private_message")}}
 
             </div>
         </div>

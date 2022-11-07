@@ -7,6 +7,7 @@ use crate::{
     },
     routes::{auth, build_jwt_cookie, ErrorPage},
     site_fairing::SiteData,
+    template_helpers::i18n_,
     utils::empty_to_opt,
     ALL_LANGUAGES,
 };
@@ -92,9 +93,9 @@ pub async fn do_register(
         cookies.add(build_jwt_cookie(jwt));
         return Ok(Either::Right(Redirect::to(uri!("/"))));
     } else if res.verify_email_sent {
-        "Registration successful, confirm your email address"
+        i18n_(&site_data, "registration_confirm_email")
     } else {
-        "Registration successful, wait for admin approval"
+        i18n_(&site_data, "registration_admin_approval")
     };
 
     let ctx = context!(site_data, message);
@@ -138,7 +139,8 @@ pub struct EditProfileForm<'r> {
 #[get("/edit_profile")]
 pub async fn edit_profile(site_data: SiteData) -> Result<Template, ErrorPage> {
     let mut all_languages = ALL_LANGUAGES.to_vec();
-    all_languages.push(("browser", "Browser default"));
+    let l = i18n_(&site_data, "browser_default_language");
+    all_languages.push(("browser", &l));
     let ctx = context!(site_data, all_languages);
     Ok(Template::render("user/edit_profile", ctx))
 }
@@ -178,7 +180,7 @@ pub async fn do_edit_profile(
         };
         change_password(params).await?;
     }
-    let message = "Settings updated successfully";
+    let message = i18n_(&site_data, "settings_updated");
     let ctx = context!(site_data, message);
     Ok(Template::render("message", ctx))
 }

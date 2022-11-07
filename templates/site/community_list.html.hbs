@@ -9,9 +9,9 @@
 {{/if}}
 
 <div class="action-bar bar-top">
-    <a class="forumtitle" href="/community_list?mode=Subscribed" class="left-box arrow-left">Subscribed</a> |
-    <a class="forumtitle" href="/community_list?mode=Local" class="left-box arrow-left">Local</a> |
-    <a class="forumtitle" href="/community_list?mode=All" class="left-box arrow-left">All</a>
+    <a class="forumtitle" href="/community_list?mode=Subscribed" class="left-box arrow-left">{{{i18n site_data "listing_subscribed"}}}</a> |
+    <a class="forumtitle" href="/community_list?mode=Local" class="left-box arrow-left">{{{i18n site_data "listing_local"}}}</a> |
+    <a class="forumtitle" href="/community_list?mode=All" class="left-box arrow-left">{{{i18n site_data "listing_all"}}}</a>
     {{> components/pagination }}
 </div>
 
@@ -20,10 +20,10 @@
         <ul class="topiclist">
             <li class="header">
                 <dl class="row-item">
-                    <dt><div class="list-inner"><a href="/view_forum?f=1">Communities</a></div></dt>
-                    <dd class="topics">Posts</dd>
-                    <dd class="posts">Comments</dd>
-                    <dd class="lastpost"><span>Last comment</span></dd>
+                    <dt><div class="list-inner"><a href="/view_forum?f=1">{{{i18n site_data "header_communities_info"}}}</a></div></dt>
+                    <dd class="topics">{{{i18n site_data "header_topics_count"}}}</dd>
+                    <dd class="posts">{{{i18n site_data "header_replies_count"}}}</dd>
+                    <dd class="lastpost"><span>{{{i18n site_data "view_latest_reply"}}}</span></dd>
                 </dl>
             </li>
         </ul>
@@ -32,7 +32,7 @@
             {{#each communities}}
                 <li class="row">
                     <dl class="row-item forum_read">
-                        <dt title="No unread posts">
+                        <dt>
                             <div class="list-inner">
                                 <a href="/view_forum?f={{this.community.id}}" class="forumtitle">{{{community_actor_id this.community}}}</a>
                                 <br>
@@ -41,17 +41,17 @@
                                 </p>
                             </div>
                         </dt>
-                        <dd class="topics">{{this.counts.posts}} <dfn>Posts</dfn></dd>
-                        <dd class="posts">{{this.counts.comments}} <dfn>Comments</dfn></dd>
+                        <dd class="topics">{{this.counts.posts}} <dfn>{{{i18n ../site_data "header_topics_count"}}}</dfn></dd>
+                        <dd class="posts">{{this.counts.comments}} <dfn>{{{i18n ../site_data "header_replies_count"}}}</dfn></dd>
                         <dd class="lastpost">
                             {{#if lookup ../last_replies @index}}
                                 {{#with lookup ../last_replies @index}}
                                     <span>
-                            <dfn>Last comment</dfn>
+                            <dfn>{{{i18n ../site_data "header_last_comment"}}}</dfn>
                             <a href="/view_topic?t={{this.post_id}}#p{{this.reply_id}}" title="{{this.title}}" class="lastsubject">{{this.title}}</a> <br>
                             by <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a>
-                                        <a href="/view_topic?t={{this.post_id}}#p{{this.reply_id}}" title="View the latest comment">
-                            <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">View the latest comment</span>
+                                        <a href="/view_topic?t={{this.post_id}}#p{{this.reply_id}}">
+                            <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">{{{i18n ../site_data "view_latest_comment"}}}</span>
                                         </a>
                                         <br><time datetime="{{timestamp_machine this.time}}">{{timestamp_human this.time}}</time>
                         </span>

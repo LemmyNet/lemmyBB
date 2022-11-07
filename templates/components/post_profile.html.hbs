@@ -10,6 +10,7 @@
         <a href="/view_profile?u={{user.id}}" class="username">{{{user_name user}}}</a>
     </dt>
     <br>
+    {{log site_data}}
     <dd class="profile-joined"><a href="{{user.actor_id}}">{{{user_actor_id user}}}</a></dd>
-    <dd class="profile-joined"><strong>Joined:</strong>{{timestamp_human user.published}}</dd>
+    <dd class="profile-joined"><strong>{{{i18n site_data "joined"}}}</strong>{{timestamp_human user.published}}</dd>
 </dl>

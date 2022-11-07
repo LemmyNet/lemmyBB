@@ -1,6 +1,6 @@
 {{> components/header }}
 
-    <h2 class="memberlist-title">Viewing profile - {{{user_name person.person_view.person}}}</h2>
+    <h2 class="memberlist-title">{{{i18n site_data "view_user_profile_title" (user_name person.person_view.person)}}}</h2>
 
     <div class="panel bg1">
         <div class="inner">
@@ -12,7 +12,7 @@
             {{/if}}
 
             <dl class="left-box details profile-details">
-                <dt>Username:</dt>
+                <dt>{{{i18n site_data "username"}}}</dt>
                 <dd><a href="{{person.person_view.person.actor_id}}">{{{user_actor_id person.person_view.person}}}</a></dd>
             </dl>
 
@@ -23,21 +23,21 @@
         <div class="inner">
 
             <div class="column1">
-                <h3>Contact {{person.person_view.person.name}}</h3>
+                <h3>{{{i18n site_data "contact_user" person.person_view.person.name}}}</h3>
 
                 <dl class="details">
-                    <dt>PM:</dt>
-                    <dd><a href="/private_messages_editor?u={{person.person_view.person.id}}">Send private message</a></dd>
+                    <dt>{{{i18n site_data "pm"}}}</dt>
+                    <dd><a href="/private_messages_editor?u={{person.person_view.person.id}}">{{{i18n site_data "send_private_message"}}}</a></dd>
                 </dl>
             </div>
 
             <div class="column2">
-                <h3>User statistics</h3>
+                <h3>{{{i18n site_data "user_statistics"}}}</h3>
                 <dl class="details">
-                    <dt>Joined:</dt> <dd>{{timestamp_human person.person_view.person.published}}</dd>
-                    <dt>Total posts:</dt>
+                    <dt>{{{i18n site_data "joined"}}}</dt> <dd>{{timestamp_human person.person_view.person.published}}</dd>
+                    <dt>{{{i18n site_data "total_posts"}}}</dt>
                     <dd>{{person.person_view.counts.post_count}}</dd>
-                    <dt>Total comments:</dt>
+                    <dt>{{{i18n site_data "total_comments"}}}</dt>
                     <dd>{{person.person_view.counts.comment_count}}</dd>
                 </dl>
             </div>

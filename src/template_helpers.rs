@@ -17,6 +17,7 @@ use rocket_dyn_templates::handlebars::{
     RenderContext,
     RenderError,
 };
+use serde_json::Value;
 
 static COMRAK: Lazy<ComrakOptions> = Lazy::new(|| {
     let mut comrak = ComrakOptions::default();
@@ -130,17 +131,31 @@ pub fn length(
 pub const ALL_LANGUAGES: [(&str, &str); 2] = [("en", "English"), ("de", "Deutsch")];
 
 handlebars_helper!(i18n: |site_data: SiteData, key: String, *args| {
+    i18n_private(site_data.lang, key, args)
+});
+
+fn i18n_private(lang: String, key: String, args: Vec<&Value>) -> String {
     static LANG_CELL: OnceCell<JSONGetText> = OnceCell::new();
     let langs = LANG_CELL.get_or_init(|| {
         let mut builder = JSONGetTextBuilder::new("en");
         for l in ALL_LANGUAGES {
-            builder.add_json_file(l.0, format!("lemmybb-translations/translations/{}.json", l.0)).unwrap();
+            builder
+                .add_json_file(
+                    l.0,
+                    format!("lemmybb-translations/translations/{}.json", l.0),
+                )
+                .unwrap();
         }
         builder.build().unwrap()
     });
-    let mut text = get_text!(langs, site_data.lang, key).unwrap().to_string();
+    let mut text = get_text!(langs, lang, key).unwrap().to_string();
     if text.contains("{}") {
-        text = text.replacen("{}", args[2].as_str().unwrap(), 1);
+        let str = &args[2].to_string();
+        text = text.replacen("{}", args[2].as_str().unwrap_or(str), 1);
     }
     text
-});
+}
+
+pub fn i18n_(site_data: &SiteData, key: &'static str) -> String {
+    i18n_private(site_data.lang.clone(), key.to_string(), vec![])
+}

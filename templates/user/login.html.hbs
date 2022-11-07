@@ -5,15 +5,15 @@
             <div class="inner">
 
                 <div class="content">
-                    <h2 class="login-title">Login</h2>
+                    <h2 class="login-title">{{{i18n site_data "login"}}}</h2>
 
                     <fieldset class="fields1">
                         <dl>
-                            <dt><label for="username">Username:</label></dt>
+                            <dt><label for="username">{{{i18n site_data "username"}}}</label></dt>
                             <dd><input type="text" tabindex="1" name="username" id="username" size="25" value="" class="inputbox autowidth" /></dd>
                         </dl>
                         <dl>
-                            <dt><label for="password">Password:</label></dt>
+                            <dt><label for="password">{{{i18n site_data "password"}}}</label></dt>
                             <dd><input type="password" tabindex="2" id="password" name="password" size="25" class="inputbox autowidth" autocomplete="off" /></dd>
                         </dl>
 
@@ -32,10 +32,10 @@
             <div class="inner">
 
                 <div class="content">
-                    <h3>Register</h3>
-                    <p>In order to login you must be registered. Registering takes only a few moments but gives you increased capabilities.</p>
+                    <h3>{{{i18n site_data "register"}}}</h3>
+                    <p>{{{i18n site_data "register_info"}}}</p>
                     <hr class="dashed" />
-                    <p><a href="/register" class="button2">Register</a></p>
+                    <p><a href="/register" class="button2">{{{i18n site_data "register"}}}</a></p>
                 </div>
 
             </div>
