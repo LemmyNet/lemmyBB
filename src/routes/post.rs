@@ -6,6 +6,7 @@ use crate::{
     },
     error::ErrorPage,
     pagination::{PageLimit, Pagination, PAGE_ITEMS},
+    rocket_uri_macro_login,
     routes::CLIENT,
     site_fairing::SiteData,
     utils::replace_smilies,
@@ -59,19 +60,24 @@ pub async fn post_editor(
     f: i32,
     edit: Option<i32>,
     site_data: SiteData,
-) -> Result<Template, ErrorPage> {
+) -> Result<Either<Template, Redirect>, ErrorPage> {
+    if site_data.auth.is_none() {
+        return Ok(Either::Right(Redirect::to(uri!(login))));
+    }
     match edit {
         Some(e) => {
             let p = get_post(e, site_data.auth.clone()).await?.post_view.post;
-            render_editor(
-                f,
-                Some((p.name, p.body.unwrap_or_default())),
-                edit,
-                site_data,
-            )
-            .await
+            Ok(Either::Left(
+                render_editor(
+                    f,
+                    Some((p.name, p.body.unwrap_or_default())),
+                    edit,
+                    site_data,
+                )
+                .await?,
+            ))
         }
-        None => render_editor(f, None, None, site_data).await,
+        None => Ok(Either::Left(render_editor(f, None, None, site_data).await?)),
     }
 }
 
@@ -123,7 +129,7 @@ pub async fn do_post(
         ));
     }
 
-    let auth = site_data.auth.unwrap();
+    let auth = site_data.auth.expect("user not logged in");
     let post = match edit {
         None => create_post(subject, message, f, auth).await?,
         Some(e) => edit_post(subject, message, e, auth).await?,

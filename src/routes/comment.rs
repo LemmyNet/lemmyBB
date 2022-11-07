@@ -4,6 +4,7 @@ use crate::{
         post::get_post,
     },
     error::ErrorPage,
+    rocket_uri_macro_login,
     routes::post::rocket_uri_macro_view_topic,
     site_fairing::SiteData,
     utils::replace_smilies,
@@ -16,13 +17,18 @@ pub async fn comment_editor(
     t: i32,
     edit: Option<i32>,
     site_data: SiteData,
-) -> Result<Template, ErrorPage> {
+) -> Result<Either<Template, Redirect>, ErrorPage> {
+    if site_data.auth.is_none() {
+        return Ok(Either::Right(Redirect::to(uri!(login))));
+    }
     match edit {
         Some(e) => {
             let c = get_comment(e, site_data.auth.clone()).await?;
-            render_editor(t, Some(c.comment_view.comment.content), edit, site_data).await
+            Ok(Either::Left(
+                render_editor(t, Some(c.comment_view.comment.content), edit, site_data).await?,
+            ))
         }
-        None => render_editor(t, None, None, site_data).await,
+        None => Ok(Either::Left(render_editor(t, None, None, site_data).await?)),
     }
 }
 
@@ -64,7 +70,7 @@ pub async fn do_comment(
         ));
     }
 
-    let auth = site_data.auth.unwrap();
+    let auth = site_data.auth.expect("user not logged in");
     match edit {
         Some(e) => edit_comment(e, message, auth).await?,
         None => create_comment(t, message, auth).await?,
