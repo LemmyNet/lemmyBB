@@ -112,8 +112,8 @@
                             <li class="dropdown-container dropdown-right rightside" data-skip-responsive="true">
                                 <a id="notification_list_button" class="dropdown-trigger dropdown-toggle">
                                     <i class="icon fa-bell fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "notifications"}}} </span>
-                                    {{#if site.notifications}}
-                                        <strong class="badge">{{length site.notifications}}</strong>
+                                    {{#if site_data.notifications}}
+                                        <strong class="badge">{{length site_data.notifications}}</strong>
                                     {{else}}
                                         <strong class="badge hidden">0</strong>
                                     {{/if}}
@@ -124,7 +124,7 @@
                                     <div class="dropdown-contents">
                                         <div class="header">{{{i18n site_data "notifications"}}}</div>
 
-                                        {{#each site.1}}
+                                        {{#each site_data.notifications}}
                                         <ul>
                                             <li class="">
                                                 <a class="notification-block" href="{{this.link}}">

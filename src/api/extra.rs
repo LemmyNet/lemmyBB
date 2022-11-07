@@ -148,7 +148,7 @@ pub async fn get_notifications(auth: Sensitive<String>) -> Result<Vec<Notificati
             from_user: m.creator,
             reference: m.comment.content,
             time: m.comment.published,
-            link: format!("/viewtopic?t={}", m.post.id),
+            link: format!("/view_topic?t={}", m.post.id),
         })
         .collect();
     let mut replies = r?
@@ -159,7 +159,7 @@ pub async fn get_notifications(auth: Sensitive<String>) -> Result<Vec<Notificati
             from_user: r.creator,
             reference: r.comment.content,
             time: r.comment.published,
-            link: format!("/viewtopic?t={}", r.post.id),
+            link: format!("/view_topic?t={}", r.post.id),
         })
         .collect();
     let mut notifications = mentions;
