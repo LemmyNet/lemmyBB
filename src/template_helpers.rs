@@ -91,6 +91,12 @@ handlebars_helper!(user_actor_id: |p: PersonSafe| {
     }
 });
 
+// Handlebars is automatically inserting spaces at line beginning in editor text area, this
+// workaround avoids that.
+handlebars_helper!(raw: |s: String| {
+    s
+});
+
 pub fn concat(
     h: &Helper,
     _: &Handlebars,

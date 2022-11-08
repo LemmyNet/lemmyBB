@@ -42,7 +42,7 @@ use rocket_dyn_templates::Template;
 #[main]
 async fn main() -> Result<(), Error> {
     env_logger::Builder::from_env(
-        Env::default().default_filter_or("warn,lemmybb=debug,handlebars=info"),
+        Env::default().default_filter_or("warn,lemmybb=debug,rocket=info,handlebars=info"),
     )
     .init();
     let _ = init_rocket()?.launch().await?;
@@ -67,6 +67,7 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("user_name", Box::new(user_name));
         reg.register_helper("concat", Box::new(concat));
         reg.register_helper("i18n", Box::new(i18n));
+        reg.register_helper("raw", Box::new(raw));
     });
 
     let listen_address = listen_address();
