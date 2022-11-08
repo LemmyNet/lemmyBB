@@ -24,13 +24,6 @@ pub async fn view_topic(
 ) -> Result<Template, ErrorPage> {
     let mut post = get_post(t, site_data.auth.clone()).await?;
 
-    // simply ignore deleted/removed comments
-    post.comments = post
-        .comments
-        .into_iter()
-        .filter(|c| !c.comment.deleted && !c.comment.removed)
-        .collect();
-    post.comments.sort_by_key(|c| c.comment.published);
     let all_comments = post.comments.clone();
     post.comments = post
         .comments

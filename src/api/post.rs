@@ -45,6 +45,12 @@ pub async fn get_post(id: i32, auth: Option<Sensitive<String>>) -> Result<GetPos
     };
     let mut post: GetPostResponse = get("/post", &params).await?;
 
+    // simply ignore deleted/removed comments
+    post.comments = post
+        .comments
+        .into_iter()
+        .filter(|c| !c.comment.deleted && !c.comment.removed)
+        .collect();
     // show oldest comments first
     post.comments.sort_unstable_by_key(|a| a.comment.published);
 

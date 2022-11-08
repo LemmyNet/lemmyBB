@@ -1,0 +1,68 @@
+<div id="p1" class="post has-profile bg2">
+    <div class="inner">
+
+        {{#unless hide_author }}
+        {{> components/post_profile user=post.post_view.creator }}
+        {{/unless}}
+
+        <div class="postbody">
+            <div id="post_content1">
+
+                <h3 class="first">
+                    <a href="/view_topic?p={{post.post_view.post.id}}#p1">{{post.post_view.post.name}}</a>
+                </h3>
+                {{#if site_data.site.my_user.local_user_view.person.id}}
+                    <ul class="post-buttons">
+                        {{#if (eq post.post_view.creator.id site_data.site.my_user.local_user_view.person.id)}}
+                            <li>
+                                <a href="/post_editor?f={{post.post_view.community.id}}&edit={{post.post_view.post.id}}" class="button button-icon-only">
+                                <i class="icon fa-pencil fa-fw" aria-hidden="true"></i><span class="sr-only">{{{i18n site_data "action_edit"}}}</span>
+                                </a>
+                            </li>
+                        {{/if}}
+                        <li>
+                            <a href="/report?thread={{post.post_view.post.id}}" class="button button-icon-only">
+                            <i class="icon fa-exclamation fa-fw" aria-hidden="true"></i><span class="sr-only">{{{i18n site_data "action_report"}}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                {{/if}}
+                <p class="author">
+                    <a class="unread" href="/view_topic?t={{post.post_view.post.id}}#p1">
+                    <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+                    </a>
+                    <span class="responsive-hide">by <strong><a href="/view_profile?u={{post.post_view.creator.id}}" class="username">{{{user_actor_id post.post_view.creator}}}</a></strong> &raquo; </span>
+                    <time datetime="{{timestamp_machine post.post_view.post.published}}">{{timestamp_human post.post_view.post.published}}</time>
+                    <a href="{{post.post_view.post.ap_id}}"><img src="/assets/images/icons/fedilink.svg" width="16px" height="16px"></a>
+                </p>
+                <div class="content">
+                    {{#if post.post_view.post.url}}
+                        {{#if is_image_url}}
+                            <img src="{{post.post_view.post.url}}" />
+                            <br />
+                            <br />
+                        {{else}}
+                            <a href="{{post.post_view.post.url}}">{{post.post_view.post.url}}</a>
+                            <br />
+                            <br />
+                        {{/if}}
+                    {{/if}}
+                    {{{markdown post.post_view.post.body}}}
+                </div>
+                {{#if post.post_view.creator.bio}}
+                    <div class="signature">
+                        {{{markdown post.post_view.creator.bio}}}
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+
+        <div class="back2top">
+            <a href="#top" class="top">
+                <i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+                <span class="sr-only">{{{i18n site_data "go_to_top"}}}</span>
+            </a>
+        </div>
+
+    </div>
+</div>
