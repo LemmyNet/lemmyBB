@@ -6,9 +6,12 @@ use crate::{
         site::create_site,
         user::register,
     },
+    env::lemmy_backend,
+    forward_get_request,
     pagination::{PageLimit, Pagination},
-    routes::{build_jwt_cookie, user::RegisterForm, ErrorPage},
+    routes::{backend_endpoints::AcceptHeader, build_jwt_cookie, user::RegisterForm, ErrorPage},
     site_fairing::SiteData,
+    BackendResponse,
 };
 use anyhow::Error;
 use futures::future::join_all;
@@ -16,23 +19,33 @@ use lemmy_db_schema::ListingType;
 use lemmy_db_views_actor::structs::CommunityView;
 use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
-use std::str::FromStr;
+use std::{collections::HashMap, str::FromStr};
 
 #[get("/")]
-pub async fn index(site_data: SiteData) -> Result<Either<Redirect, Template>, ErrorPage> {
+pub async fn index(
+    site_data: SiteData,
+    accept: AcceptHeader,
+) -> Result<Either<Either<Redirect, Template>, BackendResponse>, ErrorPage> {
+    use Either::*;
     if site_data.site.site_view.is_none() {
         // need to setup site
-        return Ok(Either::Left(Redirect::to(uri!(setup))));
+        return Ok(Left(Left(Redirect::to(uri!(setup)))));
+    }
+    // fetch apub site actor
+    if accept.0.starts_with("application/") {
+        return Ok(Right(
+            forward_get_request(lemmy_backend(), accept, HashMap::new()).await?,
+        ));
     }
 
     match get_categories(site_data.auth.clone()).await {
         Ok(categories) => {
             let ctx = context! { site_data, categories };
-            Ok(Either::Right(Template::render("site/index", ctx)))
+            Ok(Left(Right(Template::render("site/index", ctx))))
         }
         Err(e) => {
             warn!("{}", e);
-            Ok(Either::Left(Redirect::to(uri!("/community_list"))))
+            Ok(Left(Left(Redirect::to(uri!("/community_list")))))
         }
     }
 }

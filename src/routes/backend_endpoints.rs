@@ -10,15 +10,16 @@ use crate::{
 use anyhow::Error;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use rocket::{
-    http::CookieJar,
+    http::{CookieJar, Header},
     request::{FromRequest, Outcome},
     response::Redirect,
     Either,
 };
-use std::{path::PathBuf, str::FromStr};
+use std::{collections::HashMap, path::PathBuf, str::FromStr};
 
-type ReturnType = Result<Either<Redirect, String>, ErrorPage>;
+type ReturnType = Result<Either<Redirect, BackendResponse>, ErrorPage>;
 
+/// Fetch apub community
 #[get("/c/<name>")]
 pub async fn apub_community(
     name: String,
@@ -37,6 +38,7 @@ pub async fn apub_community(
     )))))
 }
 
+/// Fetch apub user
 #[get("/u/<name>")]
 pub async fn apub_user(name: String, accept: AcceptHeader, cookies: &CookieJar<'_>) -> ReturnType {
     if accept.0.starts_with("application/") {
@@ -47,6 +49,7 @@ pub async fn apub_user(name: String, accept: AcceptHeader, cookies: &CookieJar<'
     Ok(Either::Left(Redirect::to(uri!(view_profile(u)))))
 }
 
+/// Fetch apub post
 #[get("/post/<id>")]
 pub async fn apub_post(id: i32, accept: AcceptHeader) -> ReturnType {
     if accept.0.starts_with("application/") {
@@ -55,6 +58,7 @@ pub async fn apub_post(id: i32, accept: AcceptHeader) -> ReturnType {
     Ok(Either::Left(Redirect::to(uri!(view_topic(id, Some(1))))))
 }
 
+/// Fetch apub comment
 #[get("/comment/<t>")]
 pub async fn apub_comment(t: i32, accept: AcceptHeader, cookies: &CookieJar<'_>) -> ReturnType {
     if accept.0.starts_with("application/") {
@@ -68,18 +72,44 @@ pub async fn apub_comment(t: i32, accept: AcceptHeader, cookies: &CookieJar<'_>)
     ))))
 }
 
-/// In case an activitypub object is being fetched, forward request to Lemmy backend
 async fn foward_apub_fetch(url: String, accept: AcceptHeader) -> ReturnType {
+    Ok(Either::Right(
+        forward_get_request(url, accept, HashMap::new()).await?,
+    ))
+}
+
+#[derive(Responder)]
+pub struct BackendResponse {
+    text: String,
+    header: Header<'static>,
+}
+
+/// In case an activitypub object is being fetched, forward request to Lemmy backend
+pub async fn forward_get_request(
+    url: String,
+    accept: AcceptHeader,
+    query: HashMap<String, String>,
+) -> Result<BackendResponse, ErrorPage> {
     let res = CLIENT
         .get(url)
         .header("accept", accept.0)
+        .query(&query)
         .send()
-        .await?
-        .text()
         .await?;
-    Ok(Either::Right(res))
+    let content_type = res
+        .headers()
+        .get("content-type")
+        .unwrap()
+        .to_str()?
+        .to_string();
+    let text = res.text().await?;
+    Ok(BackendResponse {
+        text,
+        header: Header::new("content-type", content_type),
+    })
 }
 
+/// Incoming federation requests
 #[post("/<path..>", data = "<body>")]
 pub async fn inboxes(
     path: PathBuf,
@@ -121,7 +151,7 @@ impl<'r> FromRequest<'r> for Headers<'r> {
     }
 }
 
-pub struct AcceptHeader(String);
+pub struct AcceptHeader(pub String);
 
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for AcceptHeader {
@@ -135,4 +165,40 @@ impl<'r> FromRequest<'r> for AcceptHeader {
                 .to_string(),
         ))
     }
+}
+
+/// RSS feeds
+#[get("/feeds/<path..>?<query..>")]
+pub async fn feeds(
+    path: PathBuf,
+    query: HashMap<String, String>,
+    accept: AcceptHeader,
+) -> Result<BackendResponse, ErrorPage> {
+    let url = format!("{}/feeds/{}", lemmy_backend(), path.to_str().unwrap());
+    forward_get_request(url, accept, query).await
+}
+
+/// well-known endpoints, used for webfinger and resolving nodeinfo endpoint.
+#[get("/.well-known/<path..>?<query..>")]
+pub async fn well_known(
+    path: PathBuf,
+    query: HashMap<String, String>,
+    accept: AcceptHeader,
+) -> Result<BackendResponse, ErrorPage> {
+    let url = format!("{}/.well-known/{}", lemmy_backend(), path.to_str().unwrap());
+    forward_get_request(url, accept, query).await
+}
+
+/// Federated node metadata, necessary for statistics crawlers.
+#[get("/nodeinfo/<path..>")]
+pub async fn node_info(path: PathBuf, accept: AcceptHeader) -> Result<BackendResponse, ErrorPage> {
+    let url = format!("{}/nodeinfo/{}", lemmy_backend(), path.to_str().unwrap());
+    forward_get_request(url, accept, HashMap::new()).await
+}
+
+/// Site metadata, necessary for lemmy crawler. Note that jwt cookie is not passed through.
+#[get("/api/v3/site")]
+pub async fn api_site(accept: AcceptHeader) -> Result<BackendResponse, ErrorPage> {
+    let url = format!("{}/api/v3/site", lemmy_backend());
+    forward_get_request(url, accept, HashMap::new()).await
 }

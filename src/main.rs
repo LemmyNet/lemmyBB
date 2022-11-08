@@ -18,9 +18,9 @@ use crate::{
     api::image::image,
     env::listen_address,
     routes::{
+        backend_endpoints::*,
         comment::*,
         community::*,
-        federation::*,
         post::*,
         private_message::*,
         site::*,
@@ -116,7 +116,11 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 edit_profile,
                 do_edit_profile,
                 community_list,
-                inboxes
+                inboxes,
+                feeds,
+                well_known,
+                node_info,
+                api_site
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))
