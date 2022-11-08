@@ -5,38 +5,38 @@
     <div class="panel">
         <div class="inner">
 
-            <h2>yourdomain.com - Registration</h2>
+            <h2>{{{i18n site_data "registration_title" site_data.site.site_view.site.name}}}</h2>
 
             <fieldset class="fields2">
                 <dl>
-                    <dt><label for="username">Username:</label><br /><span>Length must be between 3 characters and 20 characters.</span></dt>
-                    <dd><input type="text" tabindex="1" name="username" size="25" value="" class="inputbox autowidth" title="Username" /></dd>
+                    <dt><label for="username">{{{i18n site_data "username"}}}</label><br /><span>{{{i18n site_data "username_length_hint"}}}</span></dt>
+                    <dd><input type="text" tabindex="1" name="username" size="25" value="" class="inputbox autowidth" /></dd>
                 </dl>
                 <dl>
-                    <dt><label for="password">Password:</label><br /><span>Must be between 10 and 60 characters long.</span></dt>
-                    <dd><input type="password" tabindex="2" name="password" size="25" value="" class="inputbox autowidth" title="New password" autocomplete="off" /></dd>
+                    <dt><label for="password">{{{i18n site_data "password"}}}</label><br /><span>{{{i18n site_data "password_length_hint"}}}</span></dt>
+                    <dd><input type="password" tabindex="2" name="password" size="25" value="" class="inputbox autowidth" autocomplete="off" /></dd>
                 </dl>
                 <dl>
-                    <dt><label for="password_verify">Confirm password:</label></dt>
-                    <dd><input type="password"  tabindex="3" name="password_verify" size="25" value="" class="inputbox autowidth" title="Confirm password" autocomplete="off" /></dd>
+                    <dt><label for="password_verify">{{{i18n site_data "confirm_password"}}}</label></dt>
+                    <dd><input type="password"  tabindex="3" name="password_verify" size="25" value="" class="inputbox autowidth" autocomplete="off" /></dd>
                 </dl>
                 <dl>
                     <dt>
-                        <label for="email">Email address:</label><br />
+                        <label for="email">{{{i18n site_data "email_address"}}}</label><br />
                         {{#if site_data.site.site_view.site.require_email_verification}}
-                        <span>Required</span>
+                        <span>{{{i18n site_data "required"}}}</span>
                         {{else}}
-                        <span>Optional</span>
+                        <span>{{{i18n site_data "optional"}}}</span>
                         {{/if}}
                     </dt>
-                    <dd><input type="email" tabindex="4" name="email" size="25" maxlength="100" value="" class="inputbox autowidth" title="Email address" autocomplete="off" /></dd>
+                    <dd><input type="email" tabindex="4" name="email" size="25" maxlength="100" value="" class="inputbox autowidth" autocomplete="off" /></dd>
                 </dl>
                 <dl>
-                    <dt><label for="email">Show NSFW content:</label></dt>
-                    <dd><input type="checkbox" tabindex="5" name="show_nsfw" size="25" maxlength="100" value="" class="inputbox autowidth" title="Show NSFW content" /></dd>
+                    <dt><label for="email">{{{i18n site_data "show_adult_content"}}}</label></dt>
+                    <dd><input type="checkbox" tabindex="5" name="show_nsfw" size="25" maxlength="100" value="" class="inputbox autowidth" /></dd>
                 </dl>
                 <dl>
-                    <dd><input type="hidden" name="honeypot" id="honeypot" size="25" maxlength="100" value="" class="inputbox autowidth" title="Honeypot" autocomplete="off" /></dd>
+                    <dd><input type="hidden" name="honeypot" id="honeypot" size="25" maxlength="100" value="" class="inputbox autowidth" autocomplete="off" /></dd>
                 </dl>
 
                 <hr />
@@ -47,7 +47,7 @@
     <div class="panel captcha-panel">
         <div class="inner">
 
-            <h3 class="captcha-title">Confirmation of registration</h3>
+            <h3 class="captcha-title">{{{i18n site_data "confirmation_of_registration_title"}}}</h3>
 
             {{#if site_data.site.site_view.site.require_application}}
             <p>{{site_data.site.site_view.site.application_question}}</p>
@@ -55,7 +55,7 @@
             <fieldset class="fields2">
                 <dl>
                     <dd>
-                        <dt><label for="application_answer">Application answer:</label></dt>
+                        <dt><label for="application_answer">{{{i18n site_data "application_answer"}}}</label></dt>
                         <textarea name="application_answer" rows="5" cols="50" tabindex="6" class="inputbox"></textarea>
                     </dd>
                 </dl>
@@ -66,19 +66,19 @@
             <hr/>
             {{/if}}
             {{#if captcha.ok}}
-            <p>To prevent automated registrations the board requires you to enter a confirmation code. The code is displayed in the image you should see below. If you are visually impaired or cannot otherwise read this code please contact the Board Administrator.</p>
+            <p>{{{i18n site_data "captcha_hint"}}}</p>
 
             <fieldset class="fields2">
 
                 <dl>
-                    <dt><label for="confirm_code">Confirmation code:</label></dt>
+                    <dt><label for="confirm_code">{{{i18n site_data "captcha_confirmation_code"}}}</label></dt>
                     <dd class="captcha captcha-image"><img src="data:image/png;base64,{{captcha.ok.png}}" alt="Confirmation code" width="360"/></dd>
                     <dd>
-                        <input type="text" name="captcha_answer" size="8" maxlength="8" tabindex="7" class="inputbox narrow" title="Confirmation code" autocomplete="off" />
-                        <input type="submit" name="refresh_captcha" tabindex="9" class="button2" value="Refresh confirmation code">
+                        <input type="text" name="captcha_answer" size="8" maxlength="8" tabindex="7" class="inputbox narrow" autocomplete="off" />
+                        <input type="submit" name="refresh_captcha" tabindex="9" class="button2" value="{{{i18n site_data "refresh_confirmation_code"}}}">
                         <input type="hidden" name="captcha_uuid" value="{{captcha.ok.uuid}}"/>
                     </dd>
-                    <dd>Enter the code exactly as it appears. All letters are case insensitive.</dd>
+                    <dd>{{{i18n site_data "captcha_hint_2"}}}</dd>
                 </dl>
 
             </fieldset>
@@ -90,7 +90,7 @@
         <div class="inner">
 
             <fieldset class="submit-buttons">
-                <input type="submit" tabindex="10" name="submit" id="submit" value="Submit" class="button1 default-submit-action" />
+                <input type="submit" tabindex="10" name="submit" id="submit" value="{{{i18n site_data "form_submit"}}}" class="button1 default-submit-action" />
             </fieldset>
 
         </div>

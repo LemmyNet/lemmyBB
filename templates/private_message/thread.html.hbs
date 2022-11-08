@@ -10,13 +10,13 @@
                         <div class="panel">
                             <div class="inner">
                                 <div class="action-bar bar-top">
-                                    <a title="Reply to message" href="/private_messages_editor?u={{other_user_id}}" class="button">
-                                        <span>Send Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
+                                    <a href="/private_messages_editor?u={{other_user_id}}" class="button">
+                                        <span>{{{i18n site_data "send_pm_reply"}}}</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
                                     </a>
 
                                     <div class="pagination">
                                         <a class="arrow-left" href="/private_messages_list">
-                                            <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to Private messages overview</span>
+                                            <i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>{{{i18n site_data "return_private_messages_overview"}}}</span>
                                         </a>
                                     </div>
                                 </div>
@@ -40,19 +40,19 @@
                                         <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a>
                                     </dt>
 
-                                    <dd class="profile-joined"><strong>Joined:</strong>{{{timestamp_human this.creator.published}}}</dd>
+                                    <dd class="profile-joined"><strong>{{{i18n ../site_data "joined"}}}</strong>{{{timestamp_human this.creator.published}}}</dd>
                                 </dl>
 
                                 <div class="postbody">
                                     <!--
                                     <ul class="post-buttons">
                                         <li>
-                                            <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=-1&amp;p=1" title="Delete message" class="button button-icon-only">
+                                            <a href="./ucp.php?i=pm&amp;mode=compose&amp;action=delete&amp;f=-1&amp;p=1" class="button button-icon-only">
                                                 <i class="icon fa-times fa-fw" aria-hidden="true"></i><span class="sr-only">Delete</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="/33x/app.php/pm/1/report" title="Report private message" class="button button-icon-only">
+                                            <a href="/33x/app.php/pm/1/report" class="button button-icon-only">
                                                 <i class="icon fa-exclamation fa-fw" aria-hidden="true"></i><span class="sr-only">Report</span>
                                             </a>
                                         </li>
@@ -60,22 +60,19 @@
                                     -->
 
                                     <p class="author">
-                                        <strong>Sent:</strong>{{{timestamp_human this.private_message.published}}}
-                                        <br /><strong>From:</strong> <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a>
-                                        <br /><strong>Recipient:</strong> <a href="/view_profile?u={{this.recipient.id}}" class="username">{{{user_actor_id this.recipient}}}</a>&nbsp;					</p>
+                                        <strong>{{{i18n ../site_data "sent"}}}</strong>{{{timestamp_human this.private_message.published}}}
+                                        <br /><strong>{{{i18n ../site_data "from"}}}</strong> <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a>
+                                        <br /><strong>{{{i18n ../site_data "recipient"}}}</strong> <a href="/view_profile?u={{this.recipient.id}}" class="username">{{{user_actor_id this.recipient}}}</a>&nbsp;					</p>
 
 
                                     <div class="content">{{{markdown this.private_message.content}}}</div>
 
-
-
-
                                 </div>
 
                                 <div class="back2top">
-                                    <a href="#top" class="top" title="Top">
+                                    <a href="#top" class="top">
                                         <i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
-                                        <span class="sr-only">Top</span>
+                                        <span class="sr-only">{{{i18n ../site_data "go_to_top"}}}</span>
                                     </a>
                                 </div>
 

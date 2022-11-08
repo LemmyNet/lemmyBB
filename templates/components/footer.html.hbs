@@ -6,13 +6,12 @@
             <ul id="nav-footer" class="nav-footer linklist" role="menubar">
                 <li class="breadcrumbs">
                                 <span class="crumb">
-                                    <a href="/" data-navbar-reference="index"><i class="icon fa-home fa-fw" aria-hidden="true"></i><span>Board index</span></a>
+                                    <a href="/" data-navbar-reference="index"><i class="icon fa-home fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "board_index"}}}</span></a>
                                 </span>
                 </li>
 
-                <li class="rightside">All times are <span title="UTC">UTC</span></li>
                 <li class="rightside">
-                    <a href="/logout" data-ajax="true" data-refresh="true" role="menuitem"> <i class="icon fa-trash fa-fw" aria-hidden="true"></i><span>Delete cookies</span> </a>
+                    <a href="/logout" data-ajax="true" data-refresh="true" role="menuitem"> <i class="icon fa-trash fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "delete_cookies"}}}</span> </a>
                 </li>
             </ul>
         </div>
@@ -20,42 +19,14 @@
 
     <div class="copyright">
         <p class="footer-row">
-            <span class="footer-copyright">Powered by <a href="https://github.com/LemmyNet/lemmyBB">lemmyBB</a>&reg; Forum Software {{site_data.lemmybb_version}}, Design by <a href="https://www.phpbb.com/">phpBB</a></span>
+            <span class="footer-copyright">{{{i18n site_data "powered_by" site_data.lemmybb_version}}}</a></span>
         </p>
         <p class="footer-row" role="menu">
-            <a class="footer-link" href="/legal" title="Legal" role="menuitem">
-                <span class="footer-link-text">Legal</span>
+            <a class="footer-link" href="/legal" role="menuitem">
+                <span class="footer-link-text">{{{i18n site_data "legal"}}}</span>
             </a>
         </p>
     </div>
-
-    <div
-            id="darkenwrapper"
-            class="darkenwrapper"
-            data-ajax-error-title="AJAX error"
-            data-ajax-error-text="Something went wrong when processing your request."
-            data-ajax-error-text-abort="User aborted request."
-            data-ajax-error-text-timeout="Your request timed out; please try again."
-            data-ajax-error-text-parsererror="Something went wrong with the request and the server returned an invalid reply."
-    >
-        <div id="darken" class="darken">&nbsp;</div>
-    </div>
-
-    <div id="phpbb_alert" class="phpbb_alert" data-l-err="Error" data-l-timeout-processing-req="Request timed out.">
-        <a href="#" class="alert_close">
-            <i class="icon fa-times-circle fa-fw" aria-hidden="true"></i>
-        </a>
-        <h3 class="alert_title">&nbsp;</h3>
-        <p class="alert_text"></p>
-    </div>
-    <div id="phpbb_confirm" class="phpbb_alert">
-        <a href="#" class="alert_close">
-            <i class="icon fa-times-circle fa-fw" aria-hidden="true"></i>
-        </a>
-        <div class="alert_text"></div>
-    </div>
-</div>
-</div>
 
 <div>
     <a id="bottom" class="anchor" accesskey="z"></a>

@@ -2,7 +2,7 @@
 <div class="pagination">
     <ul>
         {{#unless (eq current_page 1)}}
-            <li class="arrow previous"><a class="button button-icon-only" href="{{base_link}}page={{{sub current_page 1}}}" rel="prev" role="button"><i class="icon fa-chevron-left fa-fw" aria-hidden="true"></i><span class="sr-only">Previous</span></a></li>
+            <li class="arrow previous"><a class="button button-icon-only" href="{{base_link}}page={{{sub current_page 1}}}" rel="prev" role="button"><i class="icon fa-chevron-left fa-fw" aria-hidden="true"></i><span class="sr-only">{{{i18n ../site_data "previous_page"}}}</span></a></li>
             <li><a class="button" href="{{base_link}}page=1" role="button">1</a></li>
         {{/unless}}
         {{#if before_separator}}
@@ -21,11 +21,11 @@
         {{#if has_known_limit}}
             {{#unless (eq current_page last_page)}}
                 <li><a class="button" href="{{base_link}}page={{last_page}}" role="button">{{last_page}}</a></li>
-                <li class="arrow next"><a class="button button-icon-only" href="{{base_link}}page={{{add current_page 1}}}" rel="next" role="button"><i class="icon fa-chevron-right fa-fw" aria-hidden="true"></i><span class="sr-only">Next</span></a></li>
+                <li class="arrow next"><a class="button button-icon-only" href="{{base_link}}page={{{add current_page 1}}}" rel="next" role="button"><i class="icon fa-chevron-right fa-fw" aria-hidden="true"></i><span class="sr-only">{{{i18n ../site_data "next_page"}}}</span></a></li>
             {{/unless}}
         {{else}}
             {{#unless is_last_page}}
-                <li class="arrow next"><a class="button button-icon-only" href="{{base_link}}page={{{add current_page 1}}}" rel="next" role="button"><i class="icon fa-chevron-right fa-fw" aria-hidden="true"></i><span class="sr-only">Next</span></a></li>
+                <li class="arrow next"><a class="button button-icon-only" href="{{base_link}}page={{{add current_page 1}}}" rel="next" role="button"><i class="icon fa-chevron-right fa-fw" aria-hidden="true"></i><span class="sr-only">{{{i18n ../site_data "next_page"}}}</span></a></li>
             {{/unless}}
         {{/if}}
     </ul>

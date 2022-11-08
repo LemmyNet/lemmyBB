@@ -69,18 +69,6 @@ fn register() {
 
 #[test]
 #[serial]
-fn post_editor() {
-    test_with_uri(uri!("/post_editor?f=8"))
-}
-
-#[test]
-#[serial]
-fn comment_editor() {
-    test_with_uri(uri!("/comment_editor?t=360976"))
-}
-
-#[test]
-#[serial]
 fn search_results() {
     test_with_uri(uri!(search(keywords = "my search")))
 }

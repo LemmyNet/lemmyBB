@@ -9,27 +9,27 @@
 
             <fieldset class="fields2">
                 <dl>
-                    <dt><label for="username">Username:</label><br /><span>Length must be between 3 characters and 20 characters.</span></dt>
-                    <dd><input type="text" tabindex="1" name="username" size="25" value="" class="inputbox autowidth" title="Username" /></dd>
+                    <dt><label for="username">{{{i18n site_data "username"}}}</label><br /><span>{{{i18n site_data "username_length_hint"}}}</span></dt>
+                    <dd><input type="text" tabindex="1" name="username" size="25" value="" class="inputbox autowidth" /></dd>
                 </dl>
                 <dl>
-                    <dt><label for="password">Password:</label><br /><span>Must be at least 10 characters long.</span></dt>
-                    <dd><input type="password" tabindex="2" name="password" size="25" value="" class="inputbox autowidth" title="New password" autocomplete="off" /></dd>
+                    <dt><label for="password">{{{i18n site_data "password"}}}</label><br /><span>{{{i18n site_data "password_length_hint"}}}</span></dt>
+                    <dd><input type="password" tabindex="2" name="password" size="25" value="" class="inputbox autowidth" autocomplete="off" /></dd>
                 </dl>
                 <dl>
-                    <dt><label for="password_verify">Confirm password:</label></dt>
-                    <dd><input type="password"  tabindex="3" name="password_verify" size="25" value="" class="inputbox autowidth" title="Confirm password" autocomplete="off" /></dd>
+                    <dt><label for="password_verify">{{{i18n site_data "confirm_password"}}}</label></dt>
+                    <dd><input type="password"  tabindex="3" name="password_verify" size="25" value="" class="inputbox autowidth" autocomplete="off" /></dd>
                 </dl>
                 <dl>
                     <dt>
-                        <label for="email">Email address:</label><br />
-                        <span>Optional</span>
+                        <label for="email">{{{i18n site_data "email_address"}}}</label><br />
+                        <span>{{{i18n site_data "optional"}}}</span>
                     </dt>
-                    <dd><input type="email" tabindex="4" name="email" size="25" maxlength="100" value="" class="inputbox autowidth" title="Email address" autocomplete="off" /></dd>
+                    <dd><input type="email" tabindex="4" name="email" size="25" maxlength="100" value="" class="inputbox autowidth" autocomplete="off" /></dd>
                 </dl>
                 <dl>
-                    <dt><label for="email">Show NSFW content:</label></dt>
-                    <dd><input type="checkbox" tabindex="5" name="show_nsfw" size="25" maxlength="100" value="" class="inputbox autowidth" title="Show NSFW content" /></dd>
+                    <dt><label for="email">{{{i18n site_data "show_adult_content"}}}</label></dt>
+                    <dd><input type="checkbox" tabindex="5" name="show_nsfw" size="25" maxlength="100" value="" class="inputbox autowidth" /></dd>
                 </dl>
 
                 <hr />
@@ -40,16 +40,16 @@
     <div class="panel">
         <div class="inner">
 
-            <h2>Site configuration</h2>
+            <h2>{{{i18n site_data "site_configuration_title"}}}</h2>
 
             <fieldset class="fields2">
                 <dl>
-                    <dt><label for="site_name">Name:</label></dt>
-                    <dd><input type="text" tabindex="7" name="site_name" size="25" value="" class="inputbox autowidth" title="Name" /></dd>
+                    <dt><label for="site_name">{{{i18n site_data "site_name"}}}</label></dt>
+                    <dd><input type="text" tabindex="7" name="site_name" size="25" value="" class="inputbox autowidth" /></dd>
                 </dl>
                 <dl>
-                    <dt><label for="site_description">Description:</label><span>Optional</span></dt>
-                    <dd><input type="text" tabindex="8" name="site_description" size="25" value="" class="inputbox autowidth" title="Description" /></dd>
+                    <dt><label for="site_description">{{{i18n site_data "site_description"}}}</label><span>{{{i18n site_data "optional"}}}</span></dt>
+                    <dd><input type="text" tabindex="8" name="site_description" size="25" value="" class="inputbox autowidth" /></dd>
                 </dl>
             </fieldset>
 
@@ -60,7 +60,7 @@
         <div class="inner">
 
             <fieldset class="submit-buttons">
-                <input type="submit" tabindex="10" name="submit" id="submit" value="Submit" class="button1 default-submit-action" />
+                <input type="submit" tabindex="10" name="submit" id="submit" value="{{{i18n site_data "form_submit"}}}" class="button1 default-submit-action" />
             </fieldset>
 
         </div>

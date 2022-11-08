@@ -10,16 +10,16 @@
 </div>
 
 <div class="action-bar bar-top">
-    <a href="./post_editor?f={{community.community_view.community.id}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
+    <a href="./post_editor?f={{community.community_view.community.id}}" class="button"> <span>{{{i18n site_data "new_topic"}}}</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
     {{#if site_data.site.my_user}}
         {{#if community.community_view.subscribed}}
-        <a href="/view_forum?f={{community.community_view.community.id}}&action=unsubscribe" class="button" title="Unsubscribe from forum">
-            <span>Unsubscribe</span> <i class="icon fa-minus fa-fw" aria-hidden="true"></i>
+        <a href="/view_forum?f={{community.community_view.community.id}}&action=unsubscribe" class="button">
+            <span>{{{i18n site_data "forum_subscribe"}}}</span> <i class="icon fa-minus fa-fw" aria-hidden="true"></i>
         </a>
         {{else}}
-        <a href="/view_forum?f={{community.community_view.community.id}}&action=subscribe" class="button" title="Subscribe to forum">
-            <span>Subscribe</span> <i class="icon fa-plus fa-fw" aria-hidden="true"></i>
+        <a href="/view_forum?f={{community.community_view.community.id}}&action=subscribe" class="button">
+            <span>{{{i18n site_data "forum_unsubscribe"}}}</span> <i class="icon fa-plus fa-fw" aria-hidden="true"></i>
         </a>
         {{/if}}
     {{/if}}
@@ -32,9 +32,9 @@
         <ul class="topiclist">
             <li class="header">
                 <dl class="row-item">
-                    <dt><div class="list-inner">Topics</div></dt>
-                    <dd class="posts">Replies</dd>
-                    <dd class="lastpost"><span>Last post</span></dd>
+                    <dt><div class="list-inner">{{{i18n site_data "header_topics_count"}}}</div></dt>
+                    <dd class="posts">{{{i18n site_data "header_replies_count"}}}</dd>
+                    <dd class="lastpost"><span>{{{i18n site_data "header_last_reply"}}}</span></dd>
                 </dl>
             </li>
         </ul>
@@ -52,13 +52,13 @@
                             </div>
                         </div>
                     </dt>
-                    <dd class="posts">{{this.counts.comments}}<dfn>Replies</dfn></dd>
+                    <dd class="posts">{{this.counts.comments}}<dfn>{{{i18n ../site_data "header_replies_count"}}}</dfn></dd>
                     <dd class="lastpost">
                         {{#if (len ../last_replies)}}
                         {{#with (lookup ../last_replies @index)}}
                         <span>
-                            <dfn>Last post </dfn>by <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
-                            <a href="/view_topic?t={{../this.post.id}}#p{{this.reply_id}}" title="Go to last post"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
+                            {{{i18n ../site_data "last_post_by"}}} <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
+                            <a href="/view_topic?t={{../this.post.id}}#p{{this.reply_id}}" title="{{{i18n site_data "view_latest_comment"}}}"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
                             <time datetime="{{timestamp_machine this.time}}">{{timestamp_human this.time}}</time>
                         </span>
                         {{/with}}
@@ -72,7 +72,7 @@
 </div>
 
 <div class="action-bar bar-bottom">
-    <a href="./post_editor?f={{community.community_view.community.id}}" class="button" title="Post a new topic"> <span>New Topic</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
+    <a href="./post_editor?f={{community.community_view.community.id}}" class="button"> <span>{{{i18n site_data "new_topic"}}}</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
     {{> components/pagination }}
 </div>

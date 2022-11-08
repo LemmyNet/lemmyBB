@@ -10,18 +10,18 @@
                     <form id="ucp" method="post" action="/edit_profile" enctype="multipart/form-data">
                         <div class="panel">
                             <div class="inner">
-                                <h3>Edit profile <span class="small">[ <a href="/view_profile?u={{site_data.site.my_user.local_user_view.person.id}}" title="View profile">View profile</a> ]</span></h3>
-                                <p>Please note that this information may be viewable to other members. Be careful when including any personal details.</p>
+                                <h3>{{{i18n site_data "edit_profile"}}} <span class="small">[ <a href="/view_profile?u={{site_data.site.my_user.local_user_view.person.id}}">{{{i18n site_data "view_profile"}}}</a> ]</span></h3>
+                                <p>{{{i18n site_data "edit_profile_info"}}}</p>
 
                                 <fieldset>
                                     <dl>
-                                        <dt><label for="displayname">Displayname:</label>
+                                        <dt><label for="displayname">{{{i18n site_data "displayname"}}}</label>
                                         </dt>
                                         <dd><input type="text" class="inputbox autowidth" name="displayname" id="displayname" size="40" maxlength="255" value="{{site_data.site.my_user.local_user_view.person.display_name}}" autocomplete="off">
                                         </dd>
                                     </dl>
                                     <dl>
-                                        <dt><label for="language">Language:</label>
+                                        <dt><label for="language">{{{i18n site_data "language"}}}</label>
                                         </dt>
                                         <dd>
                                             <select class="inputbox autowidth" name="language" id="language">
@@ -33,7 +33,7 @@
                                         </dd>
                                     </dl>
                                     <dl>
-                                        <dt><label for="signature">Signature:</label>
+                                        <dt><label for="signature">{{{i18n site_data "signature"}}}</label>
                                         </dt>
                                         <dd>{{> components/editor message=site_data.site.my_user.local_user_view.person.bio editor_action="" editor_title=""}}
                                         </dd>
@@ -45,19 +45,19 @@
 
                         <div class="panel">
                             <div class="inner">
-                                <h3>Select your avatar</h3>
+                                <h3>{{{i18n site_data "select_avatar"}}}</h3>
                                 <fieldset>
                                     <dl>
-                                        <dt><label>Current image:</label>
+                                        <dt><label>{{{i18n site_data "current_image"}}}</label>
                                         {{#if site_data.site.my_user.local_user_view.person.avatar}}
                                             <dd><img src="{{site_data.site.my_user.local_user_view.person.avatar}}" alt=""></dd>
                                         {{else}}
                                             <dd><img src="/assets/styles/prosilver/images/no_avatar.gif" alt=""></dd>
                                         {{/if}}
-                                        <dd><label for="avatar_delete"><input type="checkbox" name="avatar_delete" id="avatar_delete"> Delete image</label></dd>
+                                        <dd><label for="avatar_delete"><input type="checkbox" name="avatar_delete" id="avatar_delete"> {{{i18n site_data "delete_image"}}}</label></dd>
                                     </dl>
                                     <dl>
-                                        <dt><label for="avatar_upload_file">Upload from your machine:</label></dt>
+                                        <dt><label for="avatar_upload_file">{{{i18n site_data "upload_image"}}}</label></dt>
                                         <dd><input type="file" name="avatar_upload_file" id="avatar_upload_file" class="inputbox autowidth" accept=".gif,.jpg,.jpeg,.png"></dd>
                                     </dl>
                                 </div>
@@ -67,29 +67,29 @@
 
                         <div class="panel">
                             <div class="inner">
-                                <h3>Account settings</h3>
+                                <h3>{{{i18n site_data "account_settings"}}}</h3>
                                 <fieldset>
                                     <dl>
-                                        <dt><label for="email">Email:</label>
+                                        <dt><label for="email">{{{i18n site_data "email_address"}}}</label>
                                         </dt>
                                         <dd><input type="email" class="inputbox autowidth" name="email" id="email" size="40" maxlength="255" value="{{site_data.site.my_user.local_user_view.local_user.email}}" autocomplete="off">
                                         </dd>
                                     </dl>
                                     <dl>
-                                        <dt><label for="new_password">New password:</label><br><span>Must be at least 10 characters long.</span>
+                                        <dt><label for="new_password">{{{i18n site_data "new_password"}}}</label><br><span>{{{i18n site_data "password_length_hint"}}}</span>
                                         </dt>
                                         <dd><input type="password" class="inputbox autowidth" name="new_password" id="new_password" size="40" maxlength="255" value="" autocomplete="off">
                                         </dd>
                                     </dl>
                                     <dl>
-                                        <dt><label for="confirm_password">Confirm password:</label><br><span>You only need to confirm your password if you changed it above.</span>
+                                        <dt><label for="confirm_password">{{{i18n site_data "confirm_password"}}}</label><br><span>{{{i18n site_data "confirm_password_hint"}}}</span>
                                         </dt>
                                         <dd><input type="password" class="inputbox autowidth" name="confirm_password" id="confirm_password" size="40" maxlength="255" value="" autocomplete="off">
                                         </dd>
                                     </dl>
                                     <dl>
-                                        <dt><label for="cur_password">Current password:</label><br><span>To change your password, you must enter your current password.</span></dt>
-                                        <dd><input type="password" class="inputbox autowidth" name="cur_password" id="cur_password" size="40" maxlength="255" value="" title="Current password" autocomplete="off"></dd>
+                                        <dt><label for="cur_password">{{{i18n site_data "current_password"}}}</label><br><span>{{{i18n site_data "current_password_hint"}}}</span></dt>
+                                        <dd><input type="password" class="inputbox autowidth" name="cur_password" id="cur_password" size="40" maxlength="255" value="" autocomplete="off"></dd>
                                     </dl>
                                 </fieldset>
 
@@ -97,7 +97,7 @@
                         </div>
 
                         <fieldset class="submit-buttons">
-                            <input type="submit" name="submit" value="Submit" class="button1">
+                            <input type="submit" name="submit" value="{{{i18n site_data "form_submit"}}}" class="button1">
                         </fieldset>
                     </form>
                 </div>

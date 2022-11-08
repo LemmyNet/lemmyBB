@@ -10,6 +10,7 @@ use crate::{
     pagination::{PageLimit, Pagination, PAGE_ITEMS},
     routes::ErrorPage,
     site_fairing::SiteData,
+    template_helpers::i18n_,
 };
 use anyhow::Error;
 use futures::future::join_all;
@@ -90,6 +91,6 @@ pub async fn do_report(
     } else {
         unreachable!()
     };
-    let message = "Report created";
+    let message = i18n_(&site_data, "report_created");
     Ok(Template::render("message", context! { site_data, message }))
 }
