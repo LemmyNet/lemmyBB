@@ -4,6 +4,7 @@ use crate::{
         post::get_post,
     },
     error::ErrorPage,
+    pagination::PAGE_ITEMS,
     rocket_uri_macro_login,
     routes::post::rocket_uri_macro_view_topic,
     site_fairing::SiteData,
@@ -49,7 +50,7 @@ async fn render_editor(
     reply: Option<i32>,
     site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
-    let post = get_post(post_id, site_data.auth.clone()).await?;
+    let mut post = get_post(post_id, site_data.auth.clone()).await?;
     let mut editor_action = format!("/comment?t={}", post.post_view.post.id.0);
     if let Some(edit_comment_id) = edit_comment_id {
         editor_action = format!("{}&edit={}", editor_action, edit_comment_id);
@@ -58,9 +59,19 @@ async fn render_editor(
         editor_action = format!("{}&reply={}", editor_action, reply);
     }
     let message = message.unwrap_or_default();
+
+    // for topic review
+    let all_comments = post.comments.clone();
+    post.comments = post
+        .comments
+        .into_iter()
+        .rev()
+        .take(PAGE_ITEMS as usize)
+        .collect();
+
     Ok(Template::render(
         "comment_editor",
-        context!(site_data, post, message, editor_action),
+        context!(site_data, post, message, editor_action, all_comments),
     ))
 }
 
