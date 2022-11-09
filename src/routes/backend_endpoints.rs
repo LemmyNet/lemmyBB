@@ -68,7 +68,7 @@ pub async fn apub_comment(t: i32, accept: AcceptHeader, cookies: &CookieJar<'_>)
     // TODO: figure out actual page
     Ok(Either::Left(Redirect::to(format!(
         "/view_topic?t={}&page=1#p{}",
-        t, comment.comment_view.comment.id
+        comment.comment_view.post.id, t
     ))))
 }
 
