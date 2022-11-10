@@ -41,7 +41,13 @@ impl Fairing for SiteFairing {
     async fn on_request(&self, req: &mut Request<'_>, _data: &mut Data<'_>) {
         if !req.uri().path().starts_with("/assets") {
             let _: &Option<SiteData> = req
-                .local_cache_async(async { get_site_data(req).await.ok() })
+                .local_cache_async(async {
+                    let site_data = get_site_data(req).await;
+                    if let Err(e) = &site_data {
+                        warn!("{}", e);
+                    }
+                    site_data.ok()
+                })
                 .await;
         }
     }

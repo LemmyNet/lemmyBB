@@ -43,17 +43,16 @@
                         <dd class="posts">{{this.0.counts.comments}} <dfn>Posts</dfn></dd>
                         <dd class="lastpost">
                             {{#if this.1}}
-                                {{#with this.1}}
-                                    <span>
-                            <dfn>{{{i18n ../site_data "header_last_reply"}}}</dfn>
-                            <a href="/view_topic?t={{this.post_id}}#p{{this.reply_id}}" title="{{this.title}}" class="lastsubject">{{this.title}}</a> <br>
-                            by <a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a>
-                                        <a href="/view_topic?t={{this.post_id}}#p{{this.reply_id}}">
-                            <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">{{{i18n ../site_data "view_latest_reply"}}}</span>
-                                        </a>
-                                        <br><time datetime="{{timestamp_machine this.time}}">{{timestamp_human this.time}}</time>
-                        </span>
-                                {{/with}}
+                            <span>
+                                <dfn>{{{i18n ../../site_data "header_last_reply"}}}</dfn>
+                                <a href="/view_topic?t={{this.1.post_id}}#p{{this.1.reply_id}}" title="{{this.1.title}}" class="lastsubject">{{this.1.title}}</a> <br>
+                                by <a href="/view_profile?u={{this.1.creator.id}}" class="username">{{{user_actor_id this.1.creator}}}</a>
+                                            <a href="/view_topic?t={{this.1.post_id}}#p{{this.1.reply_id}}">
+                                    <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">{{{i18n ../../site_data "view_latest_reply"}}}</span>
+                                </a>
+                                <br>
+                                <time datetime="{{timestamp_machine this.1.time}}">{{timestamp_human this.1.time}}</time>
+                            </span>
                             {{/if}}
                         </dd>
                     </dl>
