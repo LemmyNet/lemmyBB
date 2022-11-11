@@ -57,8 +57,8 @@
                         {{#if (len ../last_replies)}}
                         {{#with (lookup ../last_replies @index)}}
                         <span>
-                            {{{i18n ../site_data "last_post_by"}}} <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
-                            <a href="/view_topic?t={{../this.post.id}}#p{{this.reply_id}}" title="{{{i18n site_data "view_latest_comment"}}}"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
+                            {{{i18n ../../site_data "last_post_by"}}} <a href="/view_profile?u={{this.creator.id}}" class="username">{{this.creator.name}}</a>
+                            <a href="/view_topic?t={{../this.post.id}}#p{{this.reply_id}}" title="{{{i18n ../../site_data "view_latest_reply"}}}"> <i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only"></span> </a> <br />
                             <time datetime="{{timestamp_machine this.time}}">{{timestamp_human this.time}}</time>
                         </span>
                         {{/with}}
