@@ -11,7 +11,10 @@ git pull http://weblate.join-lemmy.org/git/lemmy/lemmybb/ main
 cd ..
 git add lemmybb-translations
 
-git add Cargo.toml
+git submodule update --recursive --remote -- lemmy-translations
+git add lemmy-translations
+
+git add Cargo.toml Cargo.lock
 git commit -m "Update to $new_tag"
 git tag "$new_tag"
 git push origin main --tags
