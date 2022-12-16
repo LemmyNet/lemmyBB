@@ -1,7 +1,7 @@
 use crate::site_fairing::SiteData;
 
 pub fn base_url(site_data: &SiteData) -> String {
-    let site_actor = &site_data.site.site_view.as_ref().unwrap().site.actor_id;
+    let site_actor = &site_data.site.site_view.site.actor_id;
     let origin = site_actor.scheme();
     let domain = site_actor.domain().unwrap();
     format!("{}://{}", origin, domain)

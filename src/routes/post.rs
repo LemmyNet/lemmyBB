@@ -1,5 +1,6 @@
 use crate::{
     api::{
+        comment::list_comments,
         community::get_community,
         post::{create_post, edit_post, get_post},
         NameOrId,
@@ -11,6 +12,7 @@ use crate::{
     site_fairing::SiteData,
     utils::replace_smilies,
 };
+use lemmy_db_views::structs::CommentView;
 use reqwest::header::HeaderName;
 use rocket::{form::Form, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
@@ -22,15 +24,15 @@ pub async fn view_topic(
     page: Option<i32>,
     site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
-    let mut post = get_post(t, site_data.auth.clone()).await?;
+    let post = get_post(t, site_data.auth.clone()).await?;
 
-    let all_comments = post.comments.clone();
-    post.comments = post
-        .comments
-        .into_iter()
+    let all_comments = list_comments(post.post_view.post.id, site_data.auth.clone()).await?;
+    let page_comments: Vec<CommentView> = all_comments
+        .iter()
         // select items for current page
         .skip(((page.unwrap_or(1) - 1) * PAGE_ITEMS) as usize)
         .take(PAGE_ITEMS as usize)
+        .cloned()
         .collect();
 
     // determine if post.url should be rendered as <img> or <a href>
@@ -44,7 +46,7 @@ pub async fn view_topic(
     let limit = PageLimit::Known((all_comments.len() as f32 / PAGE_ITEMS as f32).ceil() as i32);
     let pagination = Pagination::new(page.unwrap_or(1), limit, &format!("/viewtopic?t={}&", t));
 
-    let ctx = context! { site_data, post, is_image_url, all_comments, pagination };
+    let ctx = context! { site_data, post, is_image_url, page_comments, all_comments, pagination };
     Ok(Template::render("view_topic", ctx))
 }
 

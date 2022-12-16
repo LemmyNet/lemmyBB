@@ -1,7 +1,7 @@
 use crate::api::{get, post};
 use anyhow::Error;
 use lemmy_api_common::{
-    person::{
+    private_message::{
         CreatePrivateMessage,
         GetPrivateMessages,
         MarkPrivateMessageAsRead,

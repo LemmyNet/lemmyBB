@@ -27,7 +27,7 @@
                                             <select class="inputbox autowidth" name="language" id="language">
                                                 {{#each all_languages}}
                                                     {{log ../site_data.site.my_user.local_user_view.local_user.lang}}
-                                                    <option value="{{this.0}}" {{#if (eq this.0 ../site_data.site.my_user.local_user_view.local_user.lang)}}selected="selected"{{/if}}>{{this.1}}</option>
+                                                    <option value="{{this.0}}" {{#if (eq this.0 ../site_data.site.my_user.local_user_view.local_user.interface_language)}}selected="selected"{{/if}}>{{this.1}}</option>
                                                 {{/each}}
                                             </select>
                                         </dd>

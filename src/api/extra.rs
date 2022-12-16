@@ -1,6 +1,6 @@
 use crate::{
     api::{
-        comment::list_comments,
+        comment::{list_comments, list_community_comments},
         post::{get_post, list_posts},
         user::{get_person, list_mentions, list_replies},
         NameOrId,
@@ -49,9 +49,9 @@ pub async fn get_last_reply_in_thread(
         })
     } else {
         let post = get_post(post.post.id.0, auth.clone()).await?;
-        let comments: Vec<&CommentView> = post
-            .comments
-            .iter()
+        let comments: Vec<CommentView> = list_comments(post.post_view.post.id, auth.clone())
+            .await?
+            .into_iter()
             .filter(|c| !c.comment.deleted && !c.comment.removed)
             .collect();
         let creator_id = comments.last().unwrap().comment.creator_id;
@@ -75,7 +75,7 @@ pub async fn get_last_reply_in_community(
         return Ok(None);
     }
     let (comment, post) = join(
-        list_comments(community_id, auth.clone()),
+        list_community_comments(community_id, auth.clone()),
         list_posts(community_id.0, 1, 1, auth.clone()),
     )
     .await;

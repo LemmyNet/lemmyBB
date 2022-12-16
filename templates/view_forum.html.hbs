@@ -13,13 +13,13 @@
     <a href="./post_editor?f={{community.community_view.community.id}}" class="button"> <span>{{{i18n site_data "new_topic"}}}</span> <i class="icon fa-pencil fa-fw" aria-hidden="true"></i> </a>
 
     {{#if site_data.site.my_user}}
-        {{#if community.community_view.subscribed}}
+        {{#if (eq community.community_view.subscribed "Subscribed")}}
         <a href="/view_forum?f={{community.community_view.community.id}}&action=unsubscribe" class="button">
-            <span>{{{i18n site_data "forum_subscribe"}}}</span> <i class="icon fa-minus fa-fw" aria-hidden="true"></i>
+            <span>{{{i18n site_data "forum_unsubscribe"}}}</span> <i class="icon fa-minus fa-fw" aria-hidden="true"></i>
         </a>
         {{else}}
         <a href="/view_forum?f={{community.community_view.community.id}}&action=subscribe" class="button">
-            <span>{{{i18n site_data "forum_unsubscribe"}}}</span> <i class="icon fa-plus fa-fw" aria-hidden="true"></i>
+            <span>{{{i18n site_data "forum_subscribe"}}}</span> <i class="icon fa-plus fa-fw" aria-hidden="true"></i>
         </a>
         {{/if}}
     {{/if}}

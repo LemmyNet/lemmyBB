@@ -16,7 +16,6 @@ use lemmy_api_common::{
 };
 use lemmy_db_schema::{
     newtypes::{CommunityId, PostId},
-    ListingType,
     SortType,
 };
 
@@ -28,7 +27,6 @@ pub async fn list_posts(
 ) -> Result<GetPostsResponse, Error> {
     let params = GetPosts {
         community_id: Some(CommunityId(community_id)),
-        type_: Some(ListingType::Community),
         sort: Some(SortType::NewComments),
         limit: Some(limit.into()),
         page: Some(page.into()),
@@ -40,21 +38,11 @@ pub async fn list_posts(
 
 pub async fn get_post(id: i32, auth: Option<Sensitive<String>>) -> Result<GetPostResponse, Error> {
     let params = GetPost {
-        id: PostId(id),
+        id: Some(PostId(id)),
+        comment_id: None,
         auth,
     };
-    let mut post: GetPostResponse = get("/post", &params).await?;
-
-    // simply ignore deleted/removed comments
-    post.comments = post
-        .comments
-        .into_iter()
-        .filter(|c| !c.comment.deleted && !c.comment.removed)
-        .collect();
-    // show oldest comments first
-    post.comments.sort_unstable_by_key(|a| a.comment.published);
-
-    Ok(post)
+    get("/post", &params).await
 }
 
 pub async fn create_post(

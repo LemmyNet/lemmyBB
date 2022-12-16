@@ -109,7 +109,7 @@ async fn get_site_data(request: &Request<'_>) -> Result<SiteData, Error> {
         .to_string();
     let lang = match &site.my_user {
         Some(u) => {
-            let user_lang = u.local_user_view.local_user.lang.clone();
+            let user_lang = u.local_user_view.local_user.interface_language.clone();
             match user_lang == "browser" {
                 true => browser_lang,
                 false => user_lang,

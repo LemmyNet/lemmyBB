@@ -15,17 +15,40 @@ use lemmy_api_common::{
 };
 use lemmy_db_schema::{
     newtypes::{CommentId, CommunityId, PostId},
-    ListingType,
-    SortType,
+    CommentSortType,
 };
+use lemmy_db_views::structs::CommentView;
 
 pub async fn list_comments(
+    post_id: PostId,
+    auth: Option<Sensitive<String>>,
+) -> Result<Vec<CommentView>, Error> {
+    let params = GetComments {
+        sort: Some(CommentSortType::New),
+        limit: Some(1),
+        post_id: Some(post_id),
+        auth,
+        ..Default::default()
+    };
+    let mut comments = get::<GetCommentsResponse, GetComments>("/comment/list", &params)
+        .await?
+        .comments;
+    // simply ignore deleted/removed comments
+    comments = comments
+        .into_iter()
+        .filter(|c| !c.comment.deleted && !c.comment.removed)
+        .collect();
+    // show oldest comments first
+    comments.sort_unstable_by_key(|a| a.comment.published);
+    Ok(comments)
+}
+
+pub(in crate::api) async fn list_community_comments(
     community_id: CommunityId,
     auth: Option<Sensitive<String>>,
 ) -> Result<GetCommentsResponse, Error> {
     let params = GetComments {
-        sort: Some(SortType::NewComments),
-        type_: Some(ListingType::Community),
+        sort: Some(CommentSortType::New),
         limit: Some(1),
         community_id: Some(community_id),
         auth,
@@ -57,7 +80,7 @@ pub async fn edit_comment(
 ) -> Result<CommentResponse, Error> {
     let params = EditComment {
         comment_id: CommentId(comment_id),
-        content,
+        content: Some(content),
         auth,
         ..Default::default()
     };

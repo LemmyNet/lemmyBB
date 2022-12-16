@@ -15,10 +15,10 @@ debug = 0
 [dependencies]
 log = "0.4.17"
 env_logger = { version = "0.9.1", features = ["termcolor", "humantime", "atty"], default-features = false }
-lemmy_api_common = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.16.7" }
-lemmy_db_schema = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.16.7" }
-lemmy_db_views = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.16.7" }
-lemmy_db_views_actor = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.16.7" }
+lemmy_api_common = { git = "https://github.com/LemmyNet/lemmy.git" }
+lemmy_db_schema = { git = "https://github.com/LemmyNet/lemmy.git" }
+lemmy_db_views = { git = "https://github.com/LemmyNet/lemmy.git" }
+lemmy_db_views_actor = { git = "https://github.com/LemmyNet/lemmy.git" }
 once_cell = "1.15.0"
 anyhow = "1.0.66"
 rocket = { version = "0.5.0-rc.2", default-features = false }

@@ -10,7 +10,7 @@ use std::{env, path::Path};
 
 #[ctor::ctor]
 fn init() {
-    env::set_var("LEMMYBB_BACKEND", "https://lemmy.ml");
+    env::set_var("LEMMYBB_BACKEND", "https://ds9.lemmy.ml");
     env_logger::builder().filter_level(LevelFilter::Warn).init();
 }
 
@@ -46,13 +46,13 @@ fn setup() {
 #[test]
 #[serial]
 fn view_forum() {
-    test_with_uri(uri!("/view_forum?f=8"))
+    test_with_uri(uri!("/view_forum?f=2"))
 }
 
 #[test]
 #[serial]
 fn view_topic() {
-    test_with_uri(uri!(view_topic(t = 360976, page = Some(1))))
+    test_with_uri(uri!(view_topic(t = 10980, page = Some(1))))
 }
 
 #[test]
@@ -76,7 +76,7 @@ fn search_results() {
 #[test]
 #[serial]
 fn view_profile() {
-    test_with_uri(uri!(view_profile(u = 8169)))
+    test_with_uri(uri!(view_profile(u = 2)))
 }
 
 #[test]

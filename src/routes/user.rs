@@ -155,7 +155,7 @@ pub async fn do_edit_profile(
         display_name: empty_to_opt(form.displayname.clone()),
         email: empty_to_opt(form.email.clone()).map(Sensitive::new),
         bio: empty_to_opt(form.message.clone()),
-        lang: empty_to_opt(form.language.clone()),
+        interface_language: empty_to_opt(form.language.clone()),
         auth: auth.clone(),
         ..Default::default()
     };

@@ -10,11 +10,11 @@
 </h3>
 
 <div id="topicreview" class="topicreview">
-    {{#each post.comments}}
+    {{#each page_comments}}
         {{> components/comment site_data=../site_data hide_author=true }}
     {{/each}}
-    {{log (len post.comments)}}
-    {{#unless eq (len post.comments) 20}}
+    {{log (len page_comments)}}
+    {{#unless eq (len page_comments) 20}}
         {{> components/post hide_author=true }}
     {{/unless}}
 </div>

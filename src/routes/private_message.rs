@@ -15,7 +15,7 @@ use crate::{
 use chrono::NaiveDateTime;
 use futures::future::join_all;
 use itertools::Itertools;
-use lemmy_api_common::person::PrivateMessageResponse;
+use lemmy_api_common::private_message::PrivateMessageResponse;
 use lemmy_db_schema::{newtypes::PersonId, source::person::PersonSafe};
 use lemmy_db_views::structs::PrivateMessageView;
 use rocket::{form::Form, response::Redirect, Either};

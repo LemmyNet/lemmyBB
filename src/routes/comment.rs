@@ -1,6 +1,6 @@
 use crate::{
     api::{
-        comment::{create_comment, edit_comment, get_comment},
+        comment::{create_comment, edit_comment, get_comment, list_comments},
         post::get_post,
     },
     error::ErrorPage,
@@ -10,6 +10,7 @@ use crate::{
     site_fairing::SiteData,
     utils::replace_smilies,
 };
+use lemmy_db_views::structs::CommentView;
 use rocket::{form::Form, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 
@@ -50,7 +51,7 @@ async fn render_editor(
     reply: Option<i32>,
     site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
-    let mut post = get_post(post_id, site_data.auth.clone()).await?;
+    let post = get_post(post_id, site_data.auth.clone()).await?;
     let mut editor_action = format!("/comment?t={}", post.post_view.post.id.0);
     if let Some(edit_comment_id) = edit_comment_id {
         editor_action = format!("{}&edit={}", editor_action, edit_comment_id);
@@ -61,17 +62,24 @@ async fn render_editor(
     let message = message.unwrap_or_default();
 
     // for topic review
-    let all_comments = post.comments.clone();
-    post.comments = post
-        .comments
-        .into_iter()
+    let all_comments = list_comments(post.post_view.post.id, site_data.auth.clone()).await?;
+    let page_comments: Vec<CommentView> = all_comments
+        .iter()
         .rev()
         .take(PAGE_ITEMS as usize)
+        .cloned()
         .collect();
 
     Ok(Template::render(
         "comment_editor",
-        context!(site_data, post, message, editor_action, all_comments),
+        context!(
+            site_data,
+            post,
+            page_comments,
+            message,
+            editor_action,
+            all_comments
+        ),
     ))
 }
 

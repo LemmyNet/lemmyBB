@@ -27,7 +27,7 @@ pub async fn index(
     accept: AcceptHeader,
 ) -> Result<Either<Either<Redirect, Template>, BackendResponse>, ErrorPage> {
     use Either::*;
-    if site_data.site.site_view.is_none() {
+    if !site_data.site.site_view.local_site.site_setup {
         // need to setup site
         return Ok(Left(Left(Redirect::to(uri!(setup)))));
     }
@@ -121,8 +121,9 @@ pub async fn legal(site_data: SiteData) -> Result<Template, ErrorPage> {
     let message = site_data
         .site
         .site_view
-        .as_ref()
-        .map(|s| s.site.legal_information.clone());
+        .local_site
+        .legal_information
+        .clone();
     let ctx = context! { message, site_data };
     Ok(Template::render("message", ctx))
 }
