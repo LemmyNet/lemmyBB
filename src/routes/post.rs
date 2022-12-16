@@ -103,9 +103,9 @@ async fn render_editor(
 
 #[derive(FromForm)]
 pub struct PostForm {
-    subject: String,
-    message: String,
-    preview: Option<String>,
+    pub(crate) subject: String,
+    pub(crate) message: String,
+    pub(crate) preview: Option<String>,
 }
 
 #[post("/post?<f>&<edit>", data = "<form>")]

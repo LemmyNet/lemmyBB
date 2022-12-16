@@ -1,4 +1,4 @@
-FROM rust:1.65-slim-bullseye AS chef
+FROM rust:1.66-slim-bullseye AS chef
 WORKDIR app
 RUN cargo install cargo-chef --locked
 

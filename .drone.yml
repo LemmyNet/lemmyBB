@@ -26,13 +26,13 @@ steps:
       - /root/.cargo/bin/cargo fmt -- --check
 
   - name: cargo clippy
-    image: rust:1.62-buster
+    image: rust:1.66-buster
     commands:
       - rustup component add clippy
       - cargo clippy --workspace --tests --all-targets --all-features -- -D warnings -D deprecated -D clippy::perf -D clippy::complexity -D clippy::dbg_macro
 
   - name: cargo test
-    image: rust:1.62-buster
+    image: rust:1.66-buster
     commands:
       - cargo test --workspace --no-fail-fast
 

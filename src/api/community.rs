@@ -6,6 +6,8 @@ use anyhow::Error;
 use lemmy_api_common::{
     community::{
         CommunityResponse,
+        CreateCommunity,
+        DeleteCommunity,
         FollowCommunity,
         GetCommunity,
         GetCommunityResponse,
@@ -57,4 +59,31 @@ pub async fn follow_community(
         auth,
     };
     post("/community/follow", &params).await
+}
+
+#[allow(dead_code)]
+pub async fn create_community(
+    name: String,
+    auth: Sensitive<String>,
+) -> Result<CommunityResponse, Error> {
+    let params = CreateCommunity {
+        name: name.clone(),
+        title: name,
+        auth,
+        ..Default::default()
+    };
+    post("/community", &params).await
+}
+
+#[allow(dead_code)]
+pub async fn delete_community(
+    community_id: CommunityId,
+    auth: Sensitive<String>,
+) -> Result<CommunityResponse, Error> {
+    let params = DeleteCommunity {
+        community_id,
+        auth,
+        ..Default::default()
+    };
+    post("/community/delete", &params).await
 }

@@ -16,11 +16,13 @@ use lemmy_api_common::{
 pub async fn create_site(
     name: String,
     description: Option<String>,
+    require_application: bool,
     auth: Sensitive<String>,
 ) -> Result<SiteResponse, Error> {
     let params = CreateSite {
         name,
         description,
+        require_application: Some(require_application),
         auth,
         ..Default::default()
     };
