@@ -1,5 +1,9 @@
 use crate::{
-    api::{categories::CATEGORIES_FILE, community::create_community, site::create_site},
+    api::{
+        categories::CATEGORIES_FILE,
+        community::{create_community, delete_community},
+        site::create_site,
+    },
     init_rocket,
     routes::{community::*, post::*, site::*, user::*},
     site_fairing::test_site_data,
@@ -12,7 +16,6 @@ use rocket::{form::Form, local::asynchronous};
 use serial_test::serial;
 use std::{env, future::Future, path::Path, time::Duration};
 use tokio::{
-    runtime::Runtime,
     task::{spawn_local, LocalSet},
     time::sleep,
 };
@@ -31,28 +34,25 @@ fn random_string() -> String {
         .collect()
 }
 
-fn run_test<Fut: Future<Output = ()>>(
+async fn run_test<Fut: Future<Output = ()>>(
     test: impl Fn(asynchronous::Client, Sensitive<String>) -> Fut,
 ) {
-    let rt = Runtime::new().unwrap();
-    rt.block_on(async {
-        let local = LocalSet::new();
-        local
-            .run_until(async move {
-                let backend = spawn_local(lemmy_server::main2());
-                let rocket = init_rocket().unwrap();
-                let client = asynchronous::Client::tracked(rocket).await.unwrap();
+    let local = LocalSet::new();
+    local
+        .run_until(async move {
+            let backend = spawn_local(lemmy_server::main2());
+            let rocket = init_rocket().unwrap();
+            let client = asynchronous::Client::tracked(rocket).await.unwrap();
 
-                // wait for lemmy backend to start and get auth token
-                let auth = init_backend().await;
+            // wait for lemmy backend to start and get auth token
+            let auth = init_backend().await;
 
-                test(client, auth).await;
+            test(client, auth).await;
 
-                backend.abort();
-                let _ = backend.await;
-            })
-            .await;
-    });
+            backend.abort();
+            let _ = backend.await;
+        })
+        .await;
 }
 
 async fn wait_backend_start() -> Option<GetSiteResponse> {
@@ -98,9 +98,9 @@ async fn init_backend() -> Sensitive<String> {
     auth
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn index() {
+async fn index() {
     if !Path::new(CATEGORIES_FILE).exists() {
         // write empty categories file so there is no redirect returned (which would have wrong status code)
         std::fs::write("lemmybb_categories.hjson", "[]").unwrap();
@@ -108,30 +108,33 @@ fn index() {
     run_test(|client, _auth| async move {
         let res = client.get(uri!("/")).dispatch().await;
         assert_eq!(200, res.status().code);
-    });
+    })
+    .await;
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn community_list() {
+async fn community_list() {
     run_test(|client, _auth| async move {
         let res = client.get(uri!("/community_list")).dispatch().await;
         assert_eq!(200, res.status().code);
-    });
+    })
+    .await;
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn setup() {
+async fn setup() {
     run_test(|client, _auth| async move {
         let res = client.get(uri!(setup)).dispatch().await;
         assert_eq!(200, res.status().code);
-    });
+    })
+    .await;
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn view_forum() {
+async fn view_forum() {
     run_test(|client, auth| async move {
         let created = create_community("my_community".to_string(), auth.clone())
             .await
@@ -142,14 +145,16 @@ fn view_forum() {
             .dispatch()
             .await;
         assert_eq!(200, res.status().code);
-        // TODO: fails with "connection closed before message completed"
-        //delete_community(created.community_view.community.id, auth).await.unwrap();
-    });
+        delete_community(created.community_view.community.id, auth.clone())
+            .await
+            .unwrap();
+    })
+    .await;
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn view_topic() {
+async fn view_topic() {
     run_test(|_client, auth| async move {
         let community = create_community("my_community_2".to_string(), auth.clone())
             .await
@@ -165,55 +170,59 @@ fn view_topic() {
         let post = do_post(community.id.0, None, Form::from(form), site_data)
             .await
             .unwrap();
-        assert!(post.left().is_some());
+        assert!(post.right().is_some());
 
-        // TODO: fails with "connection closed before message completed"
-        //delete_community(community.id, auth).await.unwrap();
-    });
+        delete_community(community.id, auth).await.unwrap();
+    })
+    .await;
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn login() {
+async fn login() {
     run_test(|client, _auth| async move {
         let res = client.get(uri!(login)).dispatch().await;
         assert_eq!(200, res.status().code);
-    });
+    })
+    .await;
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn register() {
+async fn register() {
     run_test(|client, _auth| async move {
         let res = client.get(uri!(register)).dispatch().await;
         assert_eq!(200, res.status().code);
-    });
+    })
+    .await;
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn search_results() {
+async fn search_results() {
     run_test(|client, _auth| async move {
         let res = client
             .get(uri!(search(keywords = "my search")))
             .dispatch()
             .await;
         assert_eq!(200, res.status().code);
-    });
+    })
+    .await;
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn view_profile() {
+async fn view_profile() {
     run_test(|client, _auth| async move {
         let res = client.get(uri!(view_profile(u = 2))).dispatch().await;
         assert_eq!(200, res.status().code);
-    });
+    })
+    .await;
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn image() {
+async fn image() {
     run_test(|client, _auth| async move {
         // TODO: need to upload image before getting it
         let res = client
@@ -224,14 +233,16 @@ fn image() {
             .await;
         dbg!(&res);
         assert_eq!(200, res.status().code);
-    });
+    })
+    .await;
 }
 
-#[test]
+#[actix_rt::test]
 #[serial]
-fn report() {
+async fn report() {
     run_test(|client, _auth| async move {
         let res = client.get(uri!("/report?thread=2")).dispatch().await;
         assert_eq!(200, res.status().code);
-    });
+    })
+    .await;
 }

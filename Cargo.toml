@@ -8,10 +8,6 @@ strip = "symbols"
 debug = 0
 lto = "thin"
 
-[profile.dev]
-strip = "symbols"
-debug = 0
-
 [dependencies]
 log = "0.4.17"
 env_logger = { version = "0.9.1", features = ["termcolor", "humantime", "atty"], default-features = false }
@@ -40,3 +36,4 @@ tokio = "1.23.0"
 serial_test = "0.9.0"
 ctor = "0.1.26"
 lemmy_server = { git = "https://github.com/LemmyNet/lemmy.git", branch = "embed-lemmy" }
+actix-rt = "2.7.0"

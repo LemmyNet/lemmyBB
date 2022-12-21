@@ -2241,7 +2241,7 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 [[package]]
 name = "lemmy_api"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "actix-web",
  "anyhow",
@@ -2266,7 +2266,7 @@ dependencies = [
 [[package]]
 name = "lemmy_api_common"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "actix-web",
  "actix-ws",
@@ -2301,7 +2301,7 @@ dependencies = [
 [[package]]
 name = "lemmy_api_crud"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "activitypub_federation",
  "actix-web",
@@ -2322,7 +2322,7 @@ dependencies = [
 [[package]]
 name = "lemmy_apub"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "activitypub_federation",
  "activitystreams-kinds",
@@ -2360,6 +2360,7 @@ dependencies = [
 name = "lemmy_bb"
 version = "0.1.3"
 dependencies = [
+ "actix-rt",
  "anyhow",
  "chrono",
  "comrak",
@@ -2390,7 +2391,7 @@ dependencies = [
 [[package]]
 name = "lemmy_db_schema"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "activitypub_federation",
  "async-trait",
@@ -2418,7 +2419,7 @@ dependencies = [
 [[package]]
 name = "lemmy_db_views"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "diesel",
  "diesel-async",
@@ -2433,7 +2434,7 @@ dependencies = [
 [[package]]
 name = "lemmy_db_views_actor"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "diesel",
  "diesel-async",
@@ -2445,7 +2446,7 @@ dependencies = [
 [[package]]
 name = "lemmy_db_views_moderator"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "diesel",
  "diesel-async",
@@ -2456,7 +2457,7 @@ dependencies = [
 [[package]]
 name = "lemmy_routes"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "actix-web",
  "anyhow",
@@ -2482,7 +2483,7 @@ dependencies = [
 [[package]]
 name = "lemmy_server"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "activitypub_federation",
  "actix-rt",
@@ -2521,7 +2522,7 @@ dependencies = [
 [[package]]
 name = "lemmy_utils"
 version = "0.16.5"
-source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#669b9f04bc99b8a184402e52d3636d20300d5e19"
+source = "git+https://github.com/LemmyNet/lemmy.git?branch=embed-lemmy#2e150c64615747233762919019bfaab2ac9fc373"
 dependencies = [
  "actix-web",
  "anyhow",
