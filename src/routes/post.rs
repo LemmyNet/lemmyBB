@@ -44,7 +44,7 @@ pub async fn view_topic(
         is_image_url = content_type.to_str()?.starts_with("image/");
     }
     let limit = PageLimit::Known((all_comments.len() as f32 / PAGE_ITEMS as f32).ceil() as i32);
-    let pagination = Pagination::new(page.unwrap_or(1), limit, &format!("/viewtopic?t={}&", t));
+    let pagination = Pagination::new(page.unwrap_or(1), limit, format!("/viewtopic?t={}&", t));
 
     let ctx = context! { site_data, post, is_image_url, page_comments, all_comments, pagination };
     Ok(Template::render("view_topic", ctx))

@@ -231,7 +231,6 @@ async fn image() {
             ))
             .dispatch()
             .await;
-        dbg!(&res);
         assert_eq!(200, res.status().code);
     })
     .await;

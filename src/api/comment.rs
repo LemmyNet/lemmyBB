@@ -34,10 +34,7 @@ pub async fn list_comments(
         .await?
         .comments;
     // simply ignore deleted/removed comments
-    comments = comments
-        .into_iter()
-        .filter(|c| !c.comment.deleted && !c.comment.removed)
-        .collect();
+    comments.retain(|c| !c.comment.deleted && !c.comment.removed);
     // show oldest comments first
     comments.sort_unstable_by_key(|a| a.comment.published);
     Ok(comments)
