@@ -40,7 +40,7 @@ async fn run_test<Fut: Future<Output = ()>>(
     let local = LocalSet::new();
     local
         .run_until(async move {
-            let backend = spawn_local(lemmy_server::main2());
+            let backend = spawn_local(lemmy_server::start_lemmy_server());
             let rocket = init_rocket().unwrap();
             let client = asynchronous::Client::tracked(rocket).await.unwrap();
 
