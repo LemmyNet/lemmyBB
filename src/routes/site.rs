@@ -111,7 +111,13 @@ pub async fn do_setup(
     let jwt = register(register_form).await?.jwt.unwrap();
     cookies.add(build_jwt_cookie(jwt.clone()));
 
-    create_site(form.site_name.clone(), form.site_description.clone(), jwt).await?;
+    create_site(
+        form.site_name.clone(),
+        form.site_description.clone(),
+        true,
+        jwt,
+    )
+    .await?;
 
     Ok(Redirect::to(uri!("/")))
 }

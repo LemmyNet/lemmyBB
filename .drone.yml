@@ -26,13 +26,18 @@ steps:
       - /root/.cargo/bin/cargo fmt -- --check
 
   - name: cargo clippy
-    image: rust:1.62-buster
+    image: rust:1.66-buster
+    environment:
+      CARGO_HOME: .cargo
     commands:
       - rustup component add clippy
       - cargo clippy --workspace --tests --all-targets --all-features -- -D warnings -D deprecated -D clippy::perf -D clippy::complexity -D clippy::dbg_macro
 
   - name: cargo test
-    image: rust:1.62-buster
+    image: rust:1.66-buster
+    environment:
+      LEMMY_DATABASE_URL: postgres://lemmy:password@database:5432/lemmy
+      CARGO_HOME: .cargo
     commands:
       - cargo test --workspace --no-fail-fast
 
@@ -64,3 +69,10 @@ steps:
     when:
       ref:
         - refs/tags/*
+
+services:
+  - name: database
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: lemmy
+      POSTGRES_PASSWORD: password

@@ -140,3 +140,24 @@ async fn get_site_data(request: &Request<'_>) -> Result<SiteData, Error> {
     }
     Ok(site_data)
 }
+
+#[cfg(test)]
+pub async fn test_site_data(auth: Option<Sensitive<String>>) -> SiteData {
+    let params = GetSite { auth: auth.clone() };
+    let res = CLIENT
+        .get(&gen_request_url("/site"))
+        .query(&params)
+        .send()
+        .await
+        .unwrap();
+    let site: GetSiteResponse = handle_response(res, "/site").await.unwrap();
+    SiteData {
+        site,
+        notifications: vec![],
+        unread_pm_count: 0,
+        current_date_time: "".to_string(),
+        auth,
+        lang: "".to_string(),
+        lemmybb_version: "".to_string(),
+    }
+}

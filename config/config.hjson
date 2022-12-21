@@ -1,0 +1,4 @@
+# necessary for tests
+{
+  hostname: lemmy-alpha
+}
