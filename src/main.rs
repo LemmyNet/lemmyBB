@@ -45,7 +45,18 @@ async fn main() -> Result<(), Error> {
         Env::default().default_filter_or("warn,lemmybb=debug,rocket=info,handlebars=info"),
     )
     .init();
-    let _ = init_rocket()?.launch().await?;
+    let rocket = init_rocket()?.launch();
+    #[cfg(not(feature = "embed-lemmy"))]
+    let _ = rocket.await?;
+    #[cfg(feature = "embed-lemmy")]
+    {
+        let lemmy = send_wrapper::SendWrapper::new(lemmy_server::start_lemmy_server());
+        let (frontend, backend) = tokio::join!(rocket, lemmy);
+        let _ = frontend.unwrap();
+        if let Err(e) = backend {
+            log::error!("{}", e);
+        }
+    }
     Ok(())
 }
 
