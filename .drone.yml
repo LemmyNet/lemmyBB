@@ -30,6 +30,14 @@ steps:
     environment:
       CARGO_HOME: .cargo
     commands:
+      - cargo check
+      - cargo check --features embed-lemmy
+
+  - name: cargo clippy
+    image: rust:1.66-buster
+    environment:
+      CARGO_HOME: .cargo
+    commands:
       - rustup component add clippy
       - cargo clippy --workspace --tests --all-targets --all-features -- -D warnings -D deprecated -D clippy::perf -D clippy::complexity -D clippy::dbg_macro
 
