@@ -25,7 +25,7 @@ steps:
     commands:
       - /root/.cargo/bin/cargo fmt -- --check
 
-  - name: cargo clippy
+  - name: cargo check
     image: rust:1.66-buster
     environment:
       CARGO_HOME: .cargo
