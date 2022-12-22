@@ -66,8 +66,9 @@ Install nginx config and set correct domains. Note that this config by default d
 
 ```
 wget https://raw.githubusercontent.com/LemmyNet/lemmyBB/main/docker/nginx.conf -O /etc/nginx/sites-enabled/lemmybb.conf
+wget https://raw.githubusercontent.com/LemmyNet/lemmy/main/docker/prod/nginx.conf -O /etc/nginx/sites-enabled/lemmyui.conf
 sed -i -e 's/$lemmybb_domain/lemmybb.com/g' /etc/nginx/sites-enabled/lemmybb.conf
-sed -i -e 's/$lemmyui_domain/lemmyui.com/g' /etc/nginx/sites-enabled/lemmybb.conf
+sed -i -e 's/$lemmyui_domain/lemmyui.com/g' /etc/nginx/sites-enabled/lemmyui.conf
 nginx -s reload
 ```
 
@@ -100,6 +101,12 @@ Copy the nginx config into the sites-enabled folder and edit it to fit your setu
 
 ```
 cp docker/nginx.conf /etc/nginx/sites-enabled/lemmybb.conf
+```
+
+replace the variable `lemmybb.com` with your domain for lemmybb
+
+```
+sed -i -e 's/$lemmybb_domain/lemmybb.com/g' /etc/nginx/sites-enabled/lemmybb.conf
 ```
 
 create systemd service file
