@@ -37,8 +37,7 @@ fn random_string() -> String {
 async fn run_test<Fut: Future<Output = ()>>(
     test: impl Fn(asynchronous::Client, Sensitive<String>) -> Fut,
 ) {
-    let local = LocalSet::new();
-    local
+    LocalSet::new()
         .run_until(async move {
             let backend = spawn_local(lemmy_server::start_lemmy_server());
             let rocket = init_rocket().unwrap();

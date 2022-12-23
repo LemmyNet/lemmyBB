@@ -25,6 +25,14 @@ steps:
     commands:
       - /root/.cargo/bin/cargo fmt -- --check
 
+  - name: cargo check
+    image: rust:1.66-buster
+    environment:
+      CARGO_HOME: .cargo
+    commands:
+      - cargo check
+      - cargo check --features embed-lemmy
+
   - name: cargo clippy
     image: rust:1.66-buster
     environment:
