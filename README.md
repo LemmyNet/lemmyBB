@@ -97,13 +97,13 @@ cd lemmyBB
 LEMMYBB_VERSION=$(git describe --tag --always) cargo build --release
 ```
 
-Copy the nginx config into the sites-enabled folder and edit it to fit your setup
+Copy the nginx config into the sites-enabled folder
 
 ```
 cp docker/nginx.conf /etc/nginx/sites-enabled/lemmybb.conf
 ```
 
-replace the variable `lemmybb.com` with your domain for lemmybb
+and edit it to fit your setup by replacing the variable `lemmybb.com` with your domain for lemmybb
 
 ```
 sed -i -e 's/$lemmybb_domain/lemmybb.com/g' /etc/nginx/sites-enabled/lemmybb.conf
@@ -115,17 +115,8 @@ create systemd service file
 nano /etc/systemd/system/lemmy_bb.service
 ```
 
-and insert the following content and adjust them if necessary e.g. if your lemmy instance is running on the same machine nothing needs to be adjusted otherwise change
+and insert the following content
 
-```
-LEMMYBB_BACKEND=http://127.0.0.1:8536
-```
-
-to
-
-```
-LEMMYBB_BACKEND=https://yourdomain
-```
 
 ```
 [Unit]
@@ -144,6 +135,18 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
+```
+
+if your lemmy instance is running on different machine change
+
+```
+LEMMYBB_BACKEND=http://127.0.0.1:8536
+```
+
+to
+
+```
+LEMMYBB_BACKEND=https://yourdomain
 ```
 
 then activate and start the service and check the status
