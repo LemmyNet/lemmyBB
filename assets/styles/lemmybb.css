@@ -1,3 +1,11 @@
+/* truncated latest reply */
+a.lastsubject {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 235px;
+}
+
 /* sidebar info */
 .navbar .inner h1 {
   color: #28313f;

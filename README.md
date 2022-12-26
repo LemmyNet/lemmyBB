@@ -201,18 +201,26 @@ Note, you must subscribe manually to remote communities, so that new activities 
 
 ## Development
 
-Execute the following command, with a Lemmy instance of your choice:
-
+First install dependencies and setup the database.
 ```
+sudo apt install git cargo postgresql libssl-dev pkg-config
+sudo systemctl start postgresql
+sudo -u postgres psql -c "create user lemmy with password 'password' superuser;" -U postgres
+sudo -u postgres psql -c 'create database lemmy with owner lemmy;' -U postgres
+```
+
+Then start LemmyBB with embedded Lemmy instance.
+```bash
 git clone https://github.com/LemmyNet/lemmyBB.git --recursive
 cd lemmyBB
+cargo run --features embed-lemmy
+```
+
+Then open http://127.0.0.1:1244 in your browser.
+
+It can also be useful to use a production instance as backend, for example if you notice a bug on a specific instance but don't know what causes it. To do this, run the following command with an instance of your choice.
+```
 LEMMYBB_BACKEND=https://lemmy.ml cargo run
-```
-
-You can also run a local development instance of Lemmy, either [native](https://join-lemmy.org/docs/en/contributing/local_development.html) or in [Docker](https://join-lemmy.org/docs/en/contributing/docker_development.html), and connect to it with:
-
-```
-LEMMYBB_BACKEND=http://localhost:8536 cargo run
 ```
 
 ## License
