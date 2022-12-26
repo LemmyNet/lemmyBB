@@ -18,10 +18,10 @@ You can help to translate the project via [Weblate](https://weblate.join-lemmy.o
 
 Here is a list of known lemmyBB instances:
 
-| Domain                                                             | Registration | lemmy-ui domain                                                | Notes                   |
-|--------------------------------------------------------------------|--------------|----------------------------------------------------------------|-------------------------|
-| [fedibb.ml](https://fedibb.ml/)                      | open         | | Flagship instance for lemmyBB |
-| [lemmybb.rollenspiel.monster](https://lemmybb.rollenspiel.monster) | open         | [lemmy.rollenspiel.monster](https://lemmy.rollenspiel.monster) | topic role play         |
+| Domain                                                             | Registration | lemmy-ui domain                                                | Notes                         |
+| ------------------------------------------------------------------ | ------------ | -------------------------------------------------------------- | ----------------------------- |
+| [fedibb.ml](https://fedibb.ml/)                                    | open         |                                                                | Flagship instance for lemmyBB |
+| [lemmybb.rollenspiel.monster](https://lemmybb.rollenspiel.monster) | open         | [lemmy.rollenspiel.monster](https://lemmy.rollenspiel.monster) | topic role play               |
 
 Please open a pull request if you know another instance.
 
@@ -29,9 +29,10 @@ Please open a pull request if you know another instance.
 
 ### New installation (docker-compose)
 
-Follow these instructions to setup a new Lemmy installation on your server, with both lemmybb (for users) and lemmy-ui (mainly for moderation features which are not supported in lemmybb yet). 
+Follow these instructions to setup a new Lemmy installation on your server, with both lemmybb (for users) and lemmy-ui (mainly for moderation features which are not supported in lemmybb yet).
 
 Install dependencies and create folders:
+
 ```
 apt install docker-compose docker.io nginx certbot python3-certbot-nginx
 mkdir /srv/lemmybb
@@ -41,32 +42,38 @@ chown 991:991 volumes/pictrs/
 ```
 
 Download config files, edit lemmy.hjson with your actual domain and make other changes if desired:
+
 ```
 wget https://raw.githubusercontent.com/LemmyNet/lemmyBB/main/docker/docker-compose.yml
 wget https://raw.githubusercontent.com/LemmyNet/lemmyBB/main/docker/lemmy.hjson
-nano lemmy.hjson 
+nano lemmy.hjson
 ```
 
-Start docker-compose services 
+Start docker-compose services
+
 ```
 docker-compose up -d
 ```
 
 Request tls certificates (use your actual domains and email)
+
 ```
 certbot certonly --nginx -d lemmybb.com -m contact@lemmybb.com
 certbot certonly --nginx -d lemmyui.com -m contact@lemmyui.com
 ```
 
 Install nginx config and set correct domains. Note that this config by default doesn't allow direct access to the API nor pictrs. This makes it harder for spam bots, but also means that Lemmy clients cant be used. The nginx config includes instructions for putting lemmy-ui behind HTTP Auth, so that only admins can access it.
+
 ```
 wget https://raw.githubusercontent.com/LemmyNet/lemmyBB/main/docker/nginx.conf -O /etc/nginx/sites-enabled/lemmybb.conf
+wget https://raw.githubusercontent.com/LemmyNet/lemmy/main/docker/prod/nginx.conf -O /etc/nginx/sites-enabled/lemmyui.conf
 sed -i -e 's/$lemmybb_domain/lemmybb.com/g' /etc/nginx/sites-enabled/lemmybb.conf
-sed -i -e 's/$lemmyui_domain/lemmyui.com/g' /etc/nginx/sites-enabled/lemmybb.conf
+sed -i -e 's/$lemmyui_domain/lemmyui.com/g' /etc/nginx/sites-enabled/lemmyui.conf
 nginx -s reload
 ```
 
 Add these lines to daily cronjob (sudo crontab -e) to renew tls certificates
+
 ```
 @daily certbot certonly --nginx -d lemmybb.com --deploy-hook 'nginx -s reload'
 @daily certbot certonly --nginx -d lemmyui.com --deploy-hook 'nginx -s reload'
@@ -77,28 +84,49 @@ Add these lines to daily cronjob (sudo crontab -e) to renew tls certificates
 Follow the [Lemmy installation instructions](https://join-lemmy.org/docs/en/administration/administration.html) to install Lemmy backend and lemmy-ui first. You will need one (sub)domain for LemmyBB, and another for lemmy-ui.
 
 Then install lemmyBB itself. First, ssh into your server and prepare by cloning the code repository.
+
 ```
 cd /opt
 git clone https://github.com/LemmyNet/lemmyBB.git --recursive
 ```
 
 Change to the folder and compile Lemmy.
+
 ```
 cd lemmyBB
 LEMMYBB_VERSION=$(git describe --tag --always) cargo build --release
 ```
 
-Copy the nginx config into the sites-enabled folder and edit it
+Copy the nginx config into the sites-enabled folder and edit it to fit your setup
+
 ```
 cp docker/nginx.conf /etc/nginx/sites-enabled/lemmybb.conf
 ```
 
+replace the variable `lemmybb.com` with your domain for lemmybb
+
+```
+sed -i -e 's/$lemmybb_domain/lemmybb.com/g' /etc/nginx/sites-enabled/lemmybb.conf
+```
+
 create systemd service file
+
 ```
 nano /etc/systemd/system/lemmy_bb.service
 ```
 
-and insert the following content and adapt 'LEMMYBB_BACKEND' and 'LEMMYBB_LISTEN_ADDRESS' to your installation
+and insert the following content and adjust them if necessary e.g. if your lemmy instance is running on the same machine nothing needs to be adjusted otherwise change
+
+```
+LEMMYBB_BACKEND=http://127.0.0.1:8536
+```
+
+to
+
+```
+LEMMYBB_BACKEND=https://yourdomain
+```
+
 ```
 [Unit]
 Description=lemmy_bb
@@ -119,12 +147,14 @@ WantedBy=multi-user.target
 ```
 
 then activate and start the service and check the status
+
 ```
 systemctl enable --now lemmy_bb.service
 systemctl status lemmy_bb.service
 ```
 
 Run the following commands to update lemmyBB to the latest development version.
+
 ```
 cd /opt/lemmyBB
 git pull
@@ -137,7 +167,7 @@ systemctl restart lemmy_bb.service
 ### Environment variables
 
 | var                          | default value         | description                                                                                                                |
-|------------------------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | LEMMYBB_BACKEND              | http://localhost:8536 | Protocol, hostname and port where lemmy backend is available                                                               |
 | LEMMYBB_LISTEN_ADDRESS       | 127.0.0.1:1244        | IP and port where lemmyBB listens for requests                                                                             |
 | LEMMYBB_INCREASED_RATE_LIMIT |                       | Set this variable if rate limits of Lemmy backend are increased as in docker/lemmy.hjson. Necessary to render last replies |
@@ -146,6 +176,7 @@ systemctl restart lemmy_bb.service
 ### Frontpage
 
 Create a file `lemmybb_categories.hjson` with content like the following:
+
 ```json
 [
   [
@@ -165,6 +196,7 @@ Create a file `lemmybb_categories.hjson` with content like the following:
   ]
 ]
 ```
+
 Note, you must subscribe manually to remote communities, so that new activities are federated to your instances.
 
 ## Development
