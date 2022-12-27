@@ -103,7 +103,7 @@ Copy the nginx config into the sites-enabled folder
 cp docker/nginx.conf /etc/nginx/sites-enabled/lemmybb.conf
 ```
 
-and edit it to fit your setup by replacing the variable `lemmybb.com` with your domain for lemmybb
+replace the variable `lemmybb.com` with your domain for lemmybb instead of lemmybb.com
 
 ```
 sed -i -e 's/$lemmybb_domain/lemmybb.com/g' /etc/nginx/sites-enabled/lemmybb.conf
@@ -139,15 +139,15 @@ WantedBy=multi-user.target
 
 if your lemmy instance is running on different machine change
 
-```
+`
 LEMMYBB_BACKEND=http://127.0.0.1:8536
-```
+`
 
 to
 
-```
+`
 LEMMYBB_BACKEND=https://yourdomain
-```
+`
 
 then activate and start the service and check the status
 
