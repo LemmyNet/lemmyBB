@@ -21,7 +21,7 @@
 {{/if}}
 
 {{#each post.comments}}
-    {{> components/comment }}
+    {{> components/comment site_data=../site_data all_comments=../all_comments }}
 {{/each}}
 
 <div class="action-bar bar-bottom">
