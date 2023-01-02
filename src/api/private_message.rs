@@ -1,6 +1,7 @@
 use crate::api::{get, post};
 use anyhow::Error;
 use lemmy_api_common::{
+    lemmy_db_schema::newtypes::{PersonId, PrivateMessageId},
     private_message::{
         CreatePrivateMessage,
         GetPrivateMessages,
@@ -10,7 +11,6 @@ use lemmy_api_common::{
     },
     sensitive::Sensitive,
 };
-use lemmy_db_schema::newtypes::{PersonId, PrivateMessageId};
 
 pub(crate) async fn list_private_messages(
     unread_only: bool,

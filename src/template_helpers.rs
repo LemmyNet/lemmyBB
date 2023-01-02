@@ -2,11 +2,13 @@ use crate::{pagination::PAGE_ITEMS, site_fairing::SiteData};
 use chrono::NaiveDateTime;
 use comrak::ComrakOptions;
 use json_gettext::{JSONGetText, JSONGetTextBuilder};
-use lemmy_db_schema::{
-    newtypes::CommentId,
-    source::{community::CommunitySafe, person::PersonSafe},
+use lemmy_api_common::{
+    lemmy_db_schema::{
+        newtypes::CommentId,
+        source::{community::CommunitySafe, person::PersonSafe},
+    },
+    lemmy_db_views::structs::CommentView,
 };
-use lemmy_db_views::structs::CommentView;
 use once_cell::sync::{Lazy, OnceCell};
 use rocket_dyn_templates::handlebars::{
     handlebars_helper,

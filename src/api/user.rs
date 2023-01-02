@@ -4,6 +4,7 @@ use crate::{
 };
 use anyhow::Error;
 use lemmy_api_common::{
+    lemmy_db_schema::newtypes::PersonId,
     person::{
         ChangePassword,
         GetCaptchaResponse,
@@ -21,7 +22,6 @@ use lemmy_api_common::{
     },
     sensitive::Sensitive,
 };
-use lemmy_db_schema::newtypes::PersonId;
 
 pub async fn get_person(
     name_or_id: NameOrId,

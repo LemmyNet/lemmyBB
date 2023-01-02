@@ -12,7 +12,7 @@ use crate::{
     site_fairing::SiteData,
     utils::replace_smilies,
 };
-use lemmy_db_views::structs::CommentView;
+use lemmy_api_common::lemmy_db_views::structs::CommentView;
 use reqwest::header::HeaderName;
 use rocket::{form::Form, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};

@@ -12,14 +12,14 @@ use chrono::NaiveDateTime;
 use futures::future::{join, join_all};
 use lemmy_api_common::{
     comment::GetCommentsResponse,
+    lemmy_db_schema::{
+        newtypes::{CommunityId, PostId},
+        source::person::PersonSafe,
+    },
+    lemmy_db_views::structs::{CommentView, PostView},
     post::GetPostsResponse,
     sensitive::Sensitive,
 };
-use lemmy_db_schema::{
-    newtypes::{CommunityId, PostId},
-    source::person::PersonSafe,
-};
-use lemmy_db_views::structs::{CommentView, PostView};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Debug)]

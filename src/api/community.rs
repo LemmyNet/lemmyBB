@@ -14,9 +14,9 @@ use lemmy_api_common::{
         ListCommunities,
         ListCommunitiesResponse,
     },
+    lemmy_db_schema::{newtypes::CommunityId, ListingType, SortType},
     sensitive::Sensitive,
 };
-use lemmy_db_schema::{newtypes::CommunityId, ListingType, SortType};
 
 pub async fn list_communities(
     listing_type: ListingType,

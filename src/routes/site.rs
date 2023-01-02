@@ -15,8 +15,10 @@ use crate::{
 };
 use anyhow::Error;
 use futures::future::join_all;
-use lemmy_db_schema::ListingType;
-use lemmy_db_views_actor::structs::CommunityView;
+use lemmy_api_common::{
+    lemmy_db_schema::ListingType,
+    lemmy_db_views_actor::structs::CommunityView,
+};
 use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 use std::{collections::HashMap, str::FromStr};

@@ -11,13 +11,13 @@ use lemmy_api_common::{
         GetComments,
         GetCommentsResponse,
     },
+    lemmy_db_schema::{
+        newtypes::{CommentId, CommunityId, PostId},
+        CommentSortType,
+    },
+    lemmy_db_views::structs::CommentView,
     sensitive::Sensitive,
 };
-use lemmy_db_schema::{
-    newtypes::{CommentId, CommunityId, PostId},
-    CommentSortType,
-};
-use lemmy_db_views::structs::CommentView;
 
 pub async fn list_comments(
     post_id: PostId,

@@ -1,6 +1,10 @@
 use crate::api::{get, post, put};
 use anyhow::Error;
 use lemmy_api_common::{
+    lemmy_db_schema::{
+        newtypes::{CommunityId, PostId},
+        SortType,
+    },
     post::{
         CreatePost,
         CreatePostReport,
@@ -13,10 +17,6 @@ use lemmy_api_common::{
         PostResponse,
     },
     sensitive::Sensitive,
-};
-use lemmy_db_schema::{
-    newtypes::{CommunityId, PostId},
-    SortType,
 };
 
 pub async fn list_posts(

@@ -15,9 +15,11 @@ use crate::{
 use chrono::NaiveDateTime;
 use futures::future::join_all;
 use itertools::Itertools;
-use lemmy_api_common::private_message::PrivateMessageResponse;
-use lemmy_db_schema::{newtypes::PersonId, source::person::PersonSafe};
-use lemmy_db_views::structs::PrivateMessageView;
+use lemmy_api_common::{
+    lemmy_db_schema::{newtypes::PersonId, source::person::PersonSafe},
+    lemmy_db_views::structs::PrivateMessageView,
+    private_message::PrivateMessageResponse,
+};
 use rocket::{form::Form, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 use serde::Serialize;
