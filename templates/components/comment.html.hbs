@@ -2,7 +2,10 @@
     <div class="inner">
 
         {{#unless hide_author }}
-            {{> components/post_profile user=this.creator site_data=../site_data }}
+            {{> components/post_profile user=this.creator
+                    site_data=../site_data
+                    moderators=../post.moderators
+                    banned_from_community=this.creator_banned_from_community}}
         {{/unless}}
 
         <div class="postbody">

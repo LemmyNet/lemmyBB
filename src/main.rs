@@ -79,6 +79,7 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("concat", Box::new(concat));
         reg.register_helper("i18n", Box::new(i18n));
         reg.register_helper("raw", Box::new(raw));
+        reg.register_helper("is_mod", Box::new(is_mod));
     });
 
     let listen_address = listen_address();
