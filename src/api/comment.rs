@@ -25,7 +25,6 @@ pub async fn list_comments(
 ) -> Result<Vec<CommentView>, Error> {
     let params = GetComments {
         sort: Some(CommentSortType::New),
-        limit: Some(1),
         post_id: Some(post_id),
         auth,
         ..Default::default()
