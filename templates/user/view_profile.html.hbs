@@ -14,6 +14,16 @@
             <dl class="left-box details profile-details">
                 <dt>{{{i18n site_data "username"}}}</dt>
                 <dd><a href="{{person.person_view.person.actor_id}}">{{{user_actor_id person.person_view.person}}}</a></dd>
+
+                {{#if person.person_view.person.admin}}
+                    <dt>&nbsp;</dt>
+                    <dd class="administrator-badge">Administrator</dd>
+                {{/if}}
+
+                {{#if person.person_view.person.banned}}
+                    <dt>&nbsp;</dt>
+                    <dd class="banned-badge">Banned</dd>
+                {{/if}}
             </dl>
 
         </div>

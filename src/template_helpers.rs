@@ -101,7 +101,7 @@ handlebars_helper!(raw: |s: String| {
 });
 
 handlebars_helper!(is_mod: |user: PersonSafe, moderators: Vec<CommunityModeratorView>| {
-    moderators.iter().find(|m| m.moderator.id == user.id).is_some()
+    moderators.iter().any(|m| m.moderator.id == user.id)
 });
 
 pub fn concat(
