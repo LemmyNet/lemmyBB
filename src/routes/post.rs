@@ -10,7 +10,7 @@ use crate::{
     rocket_uri_macro_login,
     routes::CLIENT,
     site_fairing::SiteData,
-    utils::replace_smilies,
+    utils::{replace_smilies, Context},
 };
 use lemmy_api_common::lemmy_db_views::structs::CommentView;
 use reqwest::header::HeaderName;
@@ -46,7 +46,11 @@ pub async fn view_topic(
     let limit = PageLimit::Known((all_comments.len() as f32 / PAGE_ITEMS as f32).ceil() as i32);
     let pagination = Pagination::new(page.unwrap_or(1), limit, format!("/viewtopic?t={}&", t));
 
-    let ctx = context! { site_data, post, is_image_url, page_comments, all_comments, pagination };
+    let ctx = Context::builder()
+        .title(post.post_view.post.name.clone())
+        .site_data(site_data)
+        .other(context! { post, is_image_url, page_comments, all_comments, pagination })
+        .build();
     Ok(Template::render("view_topic", ctx))
 }
 
@@ -95,10 +99,12 @@ async fn render_editor(
         .as_ref()
         .map(|s| s.1.clone())
         .unwrap_or_default();
-    Ok(Template::render(
-        "thread_editor",
-        context!(site_data, community, editor_action, subject, message),
-    ))
+    let ctx = Context::builder()
+        .title("Post a new topic")
+        .site_data(site_data)
+        .other(context! { community, editor_action, subject, message })
+        .build();
+    Ok(Template::render("thread_editor", ctx))
 }
 
 #[derive(FromForm)]

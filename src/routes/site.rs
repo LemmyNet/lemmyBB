@@ -11,6 +11,7 @@ use crate::{
     pagination::{PageLimit, Pagination},
     routes::{backend_endpoints::AcceptHeader, build_jwt_cookie, user::RegisterForm, ErrorPage},
     site_fairing::SiteData,
+    utils::{main_site_title, Context},
     BackendResponse,
 };
 use anyhow::Error;
@@ -42,7 +43,11 @@ pub async fn index(
 
     match get_categories(site_data.auth.clone()).await {
         Ok(categories) => {
-            let ctx = context! { site_data, categories };
+            let ctx = Context::builder()
+                .title(main_site_title(&site_data.site))
+                .site_data(site_data)
+                .other(context! { categories })
+                .build();
             Ok(Left(Right(Template::render("site/index", ctx))))
         }
         Err(e) => {
@@ -77,13 +82,21 @@ pub async fn community_list(
 
     let limit = PageLimit::Unknown(communities.len());
     let pagination = Pagination::new(page.unwrap_or(1), limit, "/community_list??");
-    let ctx = context! { site_data, communities, last_replies, pagination };
+    let ctx = Context::builder()
+        .title(main_site_title(&site_data.site))
+        .site_data(site_data)
+        .other(context! { communities, last_replies, pagination })
+        .build();
     Ok(Either::Right(Template::render("site/community_list", ctx)))
 }
 
 #[get("/setup")]
 pub async fn setup(site_data: SiteData) -> Result<Template, ErrorPage> {
-    let ctx = context! { site_data };
+    let ctx = Context::builder()
+        .title("Setup")
+        .site_data(site_data)
+        .other(())
+        .build();
     Ok(Template::render("site/setup", ctx))
 }
 
@@ -132,7 +145,11 @@ pub async fn legal(site_data: SiteData) -> Result<Template, ErrorPage> {
         .local_site
         .legal_information
         .clone();
-    let ctx = context! { message, site_data };
+    let ctx = Context::builder()
+        .title(format!("Legal - {}", site_data.site.site_view.site.name))
+        .site_data(site_data)
+        .other(context! { message })
+        .build();
     Ok(Template::render("message", ctx))
 }
 
@@ -143,6 +160,13 @@ pub async fn search(keywords: String, site_data: SiteData) -> Result<Template, E
         + search_results.communities.len()
         + search_results.posts.len()
         + search_results.comments.len();
-    let ctx = context! { site_data, keywords, search_results, search_results_count };
+    let ctx = Context::builder()
+        .title(format!(
+            "Search {} - {}",
+            keywords, site_data.site.site_view.site.name
+        ))
+        .site_data(site_data)
+        .other(context! { keywords, search_results, search_results_count })
+        .build();
     Ok(Template::render("site/search", ctx))
 }

@@ -8,7 +8,7 @@ use crate::{
     rocket_uri_macro_login,
     routes::post::rocket_uri_macro_view_topic,
     site_fairing::SiteData,
-    utils::replace_smilies,
+    utils::{replace_smilies, Context},
 };
 use lemmy_api_common::lemmy_db_views::structs::CommentView;
 use rocket::{form::Form, response::Redirect, Either};
@@ -70,17 +70,15 @@ async fn render_editor(
         .cloned()
         .collect();
 
-    Ok(Template::render(
-        "comment_editor",
-        context!(
-            site_data,
-            post,
-            page_comments,
-            message,
-            editor_action,
-            all_comments
-        ),
-    ))
+    let ctx = Context::builder()
+        .title(format!(
+            "Post a reply - {}",
+            site_data.site.site_view.site.name
+        ))
+        .site_data(site_data)
+        .other(context! { post, page_comments, message, editor_action, all_comments })
+        .build();
+    Ok(Template::render("comment_editor", ctx))
 }
 
 #[derive(FromForm)]

@@ -10,7 +10,7 @@ use crate::{
     },
     error::ErrorPage,
     site_fairing::SiteData,
-    utils::replace_smilies,
+    utils::{replace_smilies, Context},
 };
 use chrono::NaiveDateTime;
 use futures::future::join_all;
@@ -92,7 +92,11 @@ pub async fn private_messages_list(site_data: SiteData) -> Result<Template, Erro
         // newest messages first
         .sorted_by_key(|pmt| -pmt.last_message.timestamp())
         .collect();
-    let ctx = context!(site_data, private_message_threads);
+    let ctx = Context::builder()
+        .title("View messages")
+        .site_data(site_data)
+        .other(context!(private_message_threads))
+        .build();
     Ok(Template::render("private_message/overview", ctx))
 }
 
@@ -131,18 +135,33 @@ pub async fn private_messages_thread(u: i32, site_data: SiteData) -> Result<Temp
     .into_iter()
     .collect::<Result<Vec<PrivateMessageResponse>, anyhow::Error>>()?;
 
-    let ctx = context!(site_data, private_messages, other_user_id);
+    let ctx = Context::builder()
+        .title("Private messages thread")
+        .site_data(site_data)
+        .other(context!(private_messages, other_user_id))
+        .build();
     Ok(Template::render("private_message/thread", ctx))
 }
 
-// TODO: need to be able to select recipient
 #[get("/private_messages_editor?<u>")]
 pub async fn private_message_editor(u: i32, site_data: SiteData) -> Result<Template, ErrorPage> {
+    render_editor(u, None, site_data).await
+}
+
+pub async fn render_editor(
+    u: i32,
+    message: Option<String>,
+    site_data: SiteData,
+) -> Result<Template, ErrorPage> {
     let recipient = get_person(NameOrId::Id(u), site_data.auth.clone())
         .await?
         .person_view
         .person;
-    let ctx = context!(site_data, recipient);
+    let ctx = Context::builder()
+        .title("Compose private message")
+        .site_data(site_data)
+        .other(context!(recipient, message))
+        .build();
     Ok(Template::render("private_message/editor", ctx))
 }
 
@@ -161,18 +180,12 @@ pub async fn do_send_private_message(
     let message = replace_smilies(&form.message, &site_data);
 
     if form.preview.is_some() {
-        let recipient = get_person(NameOrId::Id(u), site_data.auth.clone())
-            .await?
-            .person_view
-            .person;
-        let ctx = context!(site_data, message, recipient);
-        return Ok(Either::Left(Template::render(
-            "private_message/editor",
-            ctx,
-        )));
+        return Ok(Either::Left(
+            render_editor(u, Some(message), site_data).await?,
+        ));
     }
 
-    create_private_message(form.message.clone(), PersonId(u), site_data.auth.unwrap()).await?;
+    create_private_message(message, PersonId(u), site_data.auth.unwrap()).await?;
     Ok(Either::Right(Redirect::to(uri!(private_messages_thread(
         u
     )))))

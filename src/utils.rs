@@ -1,4 +1,7 @@
 use crate::site_fairing::SiteData;
+use lemmy_api_common::site::GetSiteResponse;
+use serde::Serialize;
+use typed_builder::TypedBuilder;
 
 pub fn base_url(site_data: &SiteData) -> String {
     let site_actor = &site_data.site.site_view.site.actor_id;
@@ -44,5 +47,22 @@ pub fn empty_to_opt(value: String) -> Option<String> {
         None
     } else {
         Some(value)
+    }
+}
+
+#[derive(TypedBuilder, Serialize)]
+pub struct Context<T: Into<String>, R: Serialize> {
+    title: T,
+    site_data: SiteData,
+    #[serde(flatten)]
+    other: R,
+}
+
+pub fn main_site_title(site: &GetSiteResponse) -> String {
+    let site = &site.site_view.site;
+    if let Some(description) = &site.description {
+        format!("{} - {}", site.name, description)
+    } else {
+        site.name.clone()
     }
 }

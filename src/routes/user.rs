@@ -8,7 +8,7 @@ use crate::{
     routes::{auth, build_jwt_cookie, ErrorPage},
     site_fairing::SiteData,
     template_helpers::i18n_,
-    utils::empty_to_opt,
+    utils::{empty_to_opt, main_site_title, Context},
     ALL_LANGUAGES,
 };
 use lemmy_api_common::{
@@ -26,7 +26,12 @@ use rocket_dyn_templates::{context, Template};
 
 #[get("/login")]
 pub async fn login(site_data: SiteData) -> Result<Template, ErrorPage> {
-    Ok(Template::render("user/login", context!(site_data)))
+    let ctx = Context::builder()
+        .title(format!("Login - {}", site_data.site.site_view.site.name))
+        .site_data(site_data)
+        .other(())
+        .build();
+    Ok(Template::render("user/login", ctx))
 }
 
 #[derive(FromForm)]
@@ -51,10 +56,12 @@ pub async fn do_login(
 #[get("/register")]
 pub async fn register(site_data: SiteData) -> Result<Template, ErrorPage> {
     let captcha = get_captcha().await?;
-    Ok(Template::render(
-        "user/register",
-        context!(site_data, captcha),
-    ))
+    let ctx = Context::builder()
+        .title(format!("Register - {}", site_data.site.site_view.site.name))
+        .site_data(site_data)
+        .other(context! { captcha })
+        .build();
+    Ok(Template::render("user/register", ctx))
 }
 
 #[derive(FromForm, Default)]
@@ -98,7 +105,11 @@ pub async fn do_register(
         i18n_(&site_data, "registration_admin_approval")
     };
 
-    let ctx = context!(site_data, message);
+    let ctx = Context::builder()
+        .title(main_site_title(&site_data.site))
+        .site_data(site_data)
+        .other(context! { message })
+        .build();
     Ok(Either::Left(Template::render("message", ctx)))
 }
 
@@ -118,7 +129,16 @@ pub async fn mark_all_notifications_read(cookies: &CookieJar<'_>) -> Result<Redi
 #[get("/view_profile?<u>")]
 pub async fn view_profile(u: i32, site_data: SiteData) -> Result<Template, ErrorPage> {
     let person = get_person(NameOrId::Id(u), site_data.auth.clone()).await?;
-    let ctx = context!(site_data, person);
+    let display_name = person.person_view.person.display_name.clone();
+    let name = person.person_view.person.name.clone();
+    let ctx = Context::builder()
+        .title(format!(
+            "Viewing profile - {}",
+            display_name.unwrap_or(name)
+        ))
+        .site_data(site_data)
+        .other(context! { person })
+        .build();
     Ok(Template::render("user/view_profile", ctx))
 }
 
@@ -141,7 +161,11 @@ pub async fn edit_profile(site_data: SiteData) -> Result<Template, ErrorPage> {
     let mut all_languages = ALL_LANGUAGES.to_vec();
     let l = i18n_(&site_data, "browser_default_language");
     all_languages.push(("browser", &l));
-    let ctx = context!(site_data, all_languages);
+    let ctx = Context::builder()
+        .title("Edit profile")
+        .site_data(site_data)
+        .other(context! { all_languages })
+        .build();
     Ok(Template::render("user/edit_profile", ctx))
 }
 
@@ -181,6 +205,10 @@ pub async fn do_edit_profile(
         change_password(params).await?;
     }
     let message = i18n_(&site_data, "settings_updated");
-    let ctx = context!(site_data, message);
+    let ctx = Context::builder()
+        .title(message.clone())
+        .site_data(site_data)
+        .other(context! { message })
+        .build();
     Ok(Template::render("message", ctx))
 }
