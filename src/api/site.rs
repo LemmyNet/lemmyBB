@@ -2,6 +2,7 @@ use crate::api::{get, post};
 use anyhow::Error;
 use futures::future::join;
 use lemmy_api_common::{
+    lemmy_db_schema::source::local_site::RegistrationMode,
     sensitive::Sensitive,
     site::{
         CreateSite,
@@ -16,13 +17,13 @@ use lemmy_api_common::{
 pub async fn create_site(
     name: String,
     description: Option<String>,
-    require_application: bool,
+    registration_mode: RegistrationMode,
     auth: Sensitive<String>,
 ) -> Result<SiteResponse, Error> {
     let params = CreateSite {
         name,
         description,
-        require_application: Some(require_application),
+        registration_mode: Some(registration_mode),
         auth,
         ..Default::default()
     };
