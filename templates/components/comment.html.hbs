@@ -39,7 +39,7 @@
                 <a href="{{this.comment.ap_id}}"><img src="/assets/images/icons/fedilink.svg" width="16px" height="16px"></a>
                 {{#if this.comment.parent_id}}
                     <span style="float: right; margin-right: 100px">
-                        {{{i18n ../site_data "responding_to"}}} <a href="/view_topic?t={{this.post.id}}&page={{comment_page this.comment.parent_id ../all_comments}}#p{{this.comment.parent_id}}">#{{this.comment.parent_id}}</a>
+                        {{{i18n ../site_data "responding_to"}}} <a href="/view_topic?t={{this.post.id}}&page={{comment_page this.comment.parent_id all_comments}}#p{{this.comment.parent_id}}">#{{this.comment.parent_id}}</a>
                     </span>
                 {{/if}}
             </p>

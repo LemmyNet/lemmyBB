@@ -1,6 +1,6 @@
 [package]
 name = "lemmy_bb"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 
 [profile.release]
@@ -18,8 +18,8 @@ embed-lemmy = ["lemmy_server", "send_wrapper"]
 [dependencies]
 log = "0.4.17"
 env_logger = { version = "0.9.1", features = ["termcolor", "humantime", "atty"], default-features = false }
-lemmy_api_common = { git = "https://github.com/LemmyNet/lemmy.git" }
-lemmy_server = { git = "https://github.com/LemmyNet/lemmy.git", optional = true }
+lemmy_api_common = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.17.0-rc.1" }
+lemmy_server = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.17.0-rc.1", optional = true }
 once_cell = "1.15.0"
 anyhow = "1.0.66"
 rocket = { version = "0.5.0-rc.2", default-features = false }
@@ -41,5 +41,5 @@ send_wrapper = { version = "0.6.0", features = ["futures"], optional = true }
 [dev-dependencies]
 serial_test = "0.9.0"
 ctor = "0.1.26"
-lemmy_server = { git = "https://github.com/LemmyNet/lemmy.git" }
+lemmy_server = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.17.0-rc.1" }
 actix-rt = "2.7.0"

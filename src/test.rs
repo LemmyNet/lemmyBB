@@ -8,7 +8,11 @@ use crate::{
     routes::{community::*, post::*, site::*, user::*},
     site_fairing::test_site_data,
 };
-use lemmy_api_common::{sensitive::Sensitive, site::GetSiteResponse};
+use lemmy_api_common::{
+    lemmy_db_schema::source::local_site::RegistrationMode,
+    sensitive::Sensitive,
+    site::GetSiteResponse,
+};
 use log::LevelFilter;
 use rand::{distributions::Alphanumeric, Rng};
 use reqwest::StatusCode;
@@ -88,7 +92,7 @@ async fn init_backend() -> Sensitive<String> {
         create_site(
             "test".to_string(),
             Some("test".to_string()),
-            false,
+            RegistrationMode::Open,
             auth.clone(),
         )
         .await

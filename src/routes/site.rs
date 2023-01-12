@@ -16,7 +16,7 @@ use crate::{
 use anyhow::Error;
 use futures::future::join_all;
 use lemmy_api_common::{
-    lemmy_db_schema::ListingType,
+    lemmy_db_schema::{source::local_site::RegistrationMode, ListingType},
     lemmy_db_views_actor::structs::CommunityView,
 };
 use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
@@ -116,7 +116,7 @@ pub async fn do_setup(
     create_site(
         form.site_name.clone(),
         form.site_description.clone(),
-        true,
+        RegistrationMode::RequireApplication,
         jwt,
     )
     .await?;
