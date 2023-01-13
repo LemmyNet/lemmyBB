@@ -4,13 +4,14 @@
         {{#unless hide_author }}
             {{> components/post_profile user=this.creator
                     site_data=../site_data
-                    moderators=../post.moderators
+                    moderators=post.moderators
                     banned_from_community=this.creator_banned_from_community}}
         {{/unless}}
 
         <div class="postbody">
             <h3>
-                <a href="/view_topic?p={{this.post.id}}#p1">{{this.post.name}}</a>
+                {{log post post.post_view.post.id}}
+                <a href="/view_topic?p={{post.post_view.post.id}}#p1">{{post.post_view.post.name}}</a>
             </h3>
             {{#if ../site_data.site.my_user.local_user_view.person.id}}
                 <ul class="post-buttons">
@@ -27,14 +28,14 @@
                         </a>
                     </li>
                     <li>
-                        <a href="comment_editor?t={{this.post.id}}&reply={{this.comment.id}}" class="button button-icon-only">
+                        <a href="comment_editor?t={{post.post_view.post.id}}&reply={{this.comment.id}}" class="button button-icon-only">
                         <i class="icon fa-reply fa-fw" aria-hidden="true"></i><span class="sr-only">{{{i18n ../site_data "action_reply"}}}</span>
                         </a>
                     </li>
                 </ul>
             {{/if}}
             <p class="author">
-                <a class="unread" href="/view_topic?t={{this.post.id}}{{#if ../pagination}}&page={{../pagination.current_page}}{{/if}}#p{{this.comment.id}}">
+                <a class="unread" href="/view_topic?t={{post.post_view.post.id}}{{#if ../pagination}}&page={{../pagination.current_page}}{{/if}}#p{{this.comment.id}}">
                 <i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
                 </a>
                 <span class="responsive-hide">by <strong><a href="/view_profile?u={{this.creator.id}}" class="username">{{{user_actor_id this.creator}}}</a></strong> &raquo; </span>

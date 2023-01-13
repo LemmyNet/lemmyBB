@@ -41,16 +41,16 @@ a.lastsubject {
 }
 
 .administrator-badge {
-  color: #ef5350 !important;
+  color: #ef5350;
   font-weight: bold;
 }
 
 .moderator-badge {
-  color: #00a600 !important;
+  color: #00a600;
   font-weight: bold;
 }
 
 .banned-badge {
-  color: #ff0000 !important;
+  color: #ff0000;
   font-weight: bold;
 }
