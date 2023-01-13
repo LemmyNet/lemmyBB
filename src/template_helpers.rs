@@ -8,6 +8,7 @@ use lemmy_api_common::{
         source::{community::CommunitySafe, person::PersonSafe},
     },
     lemmy_db_views::structs::CommentView,
+    lemmy_db_views_actor::structs::CommunityModeratorView,
 };
 use once_cell::sync::{Lazy, OnceCell};
 use rocket_dyn_templates::handlebars::{
@@ -97,6 +98,10 @@ handlebars_helper!(user_actor_id: |p: PersonSafe| {
 // workaround avoids that.
 handlebars_helper!(raw: |s: String| {
     s
+});
+
+handlebars_helper!(is_mod: |user: PersonSafe, moderators: Vec<CommunityModeratorView>| {
+    moderators.iter().any(|m| m.moderator.id == user.id)
 });
 
 pub fn concat(

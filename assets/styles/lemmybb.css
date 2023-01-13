@@ -39,3 +39,18 @@ a.lastsubject {
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
 }
+
+.administrator-badge {
+  color: #ef5350;
+  font-weight: bold;
+}
+
+.moderator-badge {
+  color: #00a600;
+  font-weight: bold;
+}
+
+.banned-badge {
+  color: #ff0000;
+  font-weight: bold;
+}
