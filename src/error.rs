@@ -1,4 +1,4 @@
-use crate::site_fairing::SiteData;
+use crate::{site_fairing::SiteData, utils::Context};
 use json_gettext::{JSONGetText, JSONGetTextBuilder};
 use once_cell::sync::OnceCell;
 use rocket::{http::Status, response::Responder, Request};
@@ -17,9 +17,17 @@ impl<'r> Responder<'r, 'static> for ErrorPage {
         let template = match site {
             Some(site_data) => {
                 let message = localize_error_message(error, &site_data.lang);
-                Template::render("message", context! { message, site_data})
+                let ctx = Context::builder()
+                    .title(message)
+                    .site_data(site_data.clone())
+                    .other(())
+                    .build();
+                Template::render("message", ctx)
             }
-            None => Template::render("error", context! { error }),
+            None => {
+                let title = error.clone();
+                Template::render("error", context! { title, error })
+            }
         };
         let mut res = template.respond_to(request)?;
         res.set_status(Status::InternalServerError);
