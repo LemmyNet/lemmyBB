@@ -14,12 +14,13 @@ debug = 0
 
 [features]
 embed-lemmy = ["lemmy_server", "send_wrapper"]
+embed-pictrs = ["embed-lemmy", "lemmy_server/embed-pictrs"]
 
 [dependencies]
 log = "0.4.17"
 env_logger = { version = "0.9.1", features = ["termcolor", "humantime", "atty"], default-features = false }
-lemmy_api_common = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.17.0-rc.1" }
-lemmy_server = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.17.0-rc.1", optional = true }
+lemmy_api_common = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.17.0-rc.3" }
+lemmy_server = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.17.0-rc.3", optional = true }
 once_cell = "1.15.0"
 anyhow = "1.0.66"
 rocket = { version = "0.5.0-rc.2", default-features = false }
@@ -42,5 +43,5 @@ typed-builder = "0.11.0"
 [dev-dependencies]
 serial_test = "0.9.0"
 ctor = "0.1.26"
-lemmy_server = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.17.0-rc.1" }
+lemmy_server = { git = "https://github.com/LemmyNet/lemmy.git", tag = "0.17.0-rc.3" }
 actix-rt = "2.7.0"
