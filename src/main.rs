@@ -136,7 +136,8 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 node_info,
                 api_site,
                 remove_item,
-                do_remove_item
+                do_remove_item,
+                mod_log
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))

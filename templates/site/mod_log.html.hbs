@@ -1,0 +1,20 @@
+{{> components/header }}
+
+<table id="mod_log">
+{{# each entries }}
+
+    {{log this}}
+    <tr>
+        <td>{{timestamp_human this.when}}</td>
+        <td>
+            <span>{{{this.message}}}</span>
+            {{#if this.reason}}
+            <span><p>Reason: {{this.reason}}</p></span>
+            {{/if}}
+        </td>
+    </tr>
+
+{{/each}}
+</table>
+
+{{> components/footer }}
