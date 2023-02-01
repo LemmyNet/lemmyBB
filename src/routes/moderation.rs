@@ -9,7 +9,7 @@ use crate::{
     utils::Context,
 };
 use anyhow::anyhow;
-use lemmy_api_common::lemmy_db_schema::newtypes::DbUrl;
+
 use rocket::{form::Form, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 
@@ -61,7 +61,7 @@ pub async fn do_remove_item<'r>(
         }
         _ => return Err(anyhow!("One of params t and r needs to be set").into()),
     };
-    if !form.cancel.is_none() {
+    if form.cancel.is_some() {
         // cancelled, redirect back
         return Ok(Either::Right(Redirect::to(link_url.to_string())));
     }

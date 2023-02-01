@@ -118,7 +118,7 @@ pub fn concat(
     let a = h.param(0).map(|v| v.render()).unwrap();
     let b = h.param(1).map(|v| v.value().to_string()).unwrap();
 
-    out.write(&format!("{}{}", a, b))?;
+    out.write(&format!("{a}{b}"))?;
 
     Ok(())
 }

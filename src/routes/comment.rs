@@ -54,10 +54,10 @@ async fn render_editor(
     let post = get_post(post_id, site_data.auth.clone()).await?;
     let mut editor_action = format!("/comment?t={}", post.post_view.post.id.0);
     if let Some(edit_comment_id) = edit_comment_id {
-        editor_action = format!("{}&edit={}", editor_action, edit_comment_id);
+        editor_action = format!("{editor_action}&edit={edit_comment_id}");
     }
     if let Some(reply) = reply {
-        editor_action = format!("{}&reply={}", editor_action, reply);
+        editor_action = format!("{editor_action}&reply={reply}");
     }
     let message = message.unwrap_or_default();
 
