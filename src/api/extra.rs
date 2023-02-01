@@ -32,7 +32,7 @@ pub struct PostOrComment {
 }
 
 fn generate_comment_title(post_title: &str) -> String {
-    format!("Re: {}", post_title)
+    format!("Re: {post_title}")
 }
 
 pub async fn get_last_reply_in_thread(

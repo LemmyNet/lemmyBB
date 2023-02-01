@@ -50,7 +50,7 @@ pub async fn view_forum(
     };
 
     let limit = PageLimit::Unknown(posts.len());
-    let pagination = Pagination::new(page, limit, format!("/viewforum?f={}&", f));
+    let pagination = Pagination::new(page, limit, format!("/viewforum?f={f}&"));
     let ctx = Context::builder()
         .title(format!(
             "{} - {}",
@@ -69,9 +69,9 @@ pub async fn report(
     site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
     let action = if let Some(thread) = thread {
-        format!("/report?thread={}", thread)
+        format!("/report?thread={thread}")
     } else if let Some(reply) = reply {
-        format!("/report?reply={}", reply)
+        format!("/report?reply={reply}")
     } else {
         unreachable!()
     };

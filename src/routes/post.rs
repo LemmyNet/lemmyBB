@@ -44,7 +44,7 @@ pub async fn view_topic(
         is_image_url = content_type.to_str()?.starts_with("image/");
     }
     let limit = PageLimit::Known((all_comments.len() as f32 / PAGE_ITEMS as f32).ceil() as i32);
-    let pagination = Pagination::new(page.unwrap_or(1), limit, format!("/viewtopic?t={}&", t));
+    let pagination = Pagination::new(page.unwrap_or(1), limit, format!("/viewtopic?t={t}&"));
 
     let ctx = Context::builder()
         .title(post.post_view.post.name.clone())
@@ -89,7 +89,7 @@ async fn render_editor(
     let community = get_community(NameOrId::Id(community_id), site_data.auth.clone()).await?;
     let mut editor_action = format!("/post?f={}", community.community_view.community.id.0);
     if let Some(edit_post_id) = edit_post_id {
-        editor_action = format!("{}&edit={}", editor_action, edit_post_id);
+        editor_action = format!("{editor_action}&edit={edit_post_id}");
     }
     let subject = subject_and_message
         .as_ref()
