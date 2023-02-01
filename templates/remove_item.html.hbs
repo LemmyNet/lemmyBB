@@ -1,0 +1,45 @@
+{{> components/header }}
+
+<form id="confirm" action="/do_remove_item" method="post">
+    <div class="panel">
+        <div class="inner">
+
+            <h2 class="message-title">Delete post</h2>
+
+            <p>Are you sure you want to delete this post?</p>
+
+            <fieldset class="fields1">
+                {{!--
+                <dl>
+                    <dt><label for="delete_permanent">Delete permanently:</label></dt>
+                    <dd>
+                        <label for="delete_permanent">
+                            <input id="delete_permanent" name="delete_permanent" type="checkbox" value="1">
+                        </label>
+                    </dd>
+                </dl>
+                --}}
+
+
+                <dl>
+                    <dt><label for="delete_reason">Reason for deletion:</label><br><span>The specified reason for deletion will be publicly visible.</span></dt>
+                    <dd><input type="text" name="delete_reason" id="delete_reason" value="" class="inputbox autowidth" maxlength="120" size="45"></dd>
+                </dl>
+            </fieldset>
+
+            <fieldset class="submit-buttons">
+                <input type="submit" name="confirm" value="Yes" class="button1">&nbsp;
+                <input type="submit" name="cancel" value="No" class="button2">
+                {{#if t}}
+                    <input type="hidden" name="t" value="{{t}}">
+                {{/if}}
+                {{#if r}}
+                    <input type="hidden" name="r" value="{{r}}" >
+                {{/if}}
+            </fieldset>
+
+        </div>
+    </div>
+</form>
+
+{{> components/footer }}

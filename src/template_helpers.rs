@@ -104,6 +104,10 @@ handlebars_helper!(is_mod: |user: PersonSafe, moderators: Vec<CommunityModerator
     moderators.iter().any(|m| m.moderator.id == user.id)
 });
 
+handlebars_helper!(is_mod_or_admin: |user: PersonSafe, moderators: Vec<CommunityModeratorView>| {
+    user.admin || moderators.iter().any(|m| m.moderator.id == user.id)
+});
+
 pub fn concat(
     h: &Helper,
     _: &Handlebars,

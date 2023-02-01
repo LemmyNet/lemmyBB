@@ -21,6 +21,7 @@ use crate::{
         backend_endpoints::*,
         comment::*,
         community::*,
+        moderation::*,
         post::*,
         private_message::*,
         site::*,
@@ -80,6 +81,7 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
         reg.register_helper("i18n", Box::new(i18n));
         reg.register_helper("raw", Box::new(raw));
         reg.register_helper("is_mod", Box::new(is_mod));
+        reg.register_helper("is_mod_or_admin", Box::new(is_mod_or_admin));
     });
 
     let listen_address = listen_address();
@@ -132,7 +134,9 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 feeds,
                 well_known,
                 node_info,
-                api_site
+                api_site,
+                remove_item,
+                do_remove_item
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))

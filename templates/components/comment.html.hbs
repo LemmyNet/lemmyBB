@@ -22,6 +22,13 @@
                             </a>
                         </li>
                     {{/if}}
+                    {{#if (is_mod_or_admin site_data.site.my_user.local_user_view.person post.moderators)}}
+                        <li>
+                            <a href="/remove_item?r={{this.comment.id}}" title="Remove" class="button button-icon-only">
+                                <i class="icon fa-times fa-fw" aria-hidden="true"></i><span class="sr-only">Remove</span>
+                            </a>
+                        </li>
+                    {{/if}}
                     <li>
                         <a href="/report?reply={{this.comment.id}}" class="button button-icon-only">
                         <i class="icon fa-exclamation fa-fw" aria-hidden="true"></i><span class="sr-only">{{{i18n ../site_data "action_report"}}}</span>
