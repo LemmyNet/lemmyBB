@@ -54,3 +54,17 @@ a.lastsubject {
   color: #ff0000;
   font-weight: bold;
 }
+
+#mod_log {
+  width: 95%;
+  margin: 0 auto;
+}
+
+#mod_log th,
+td {
+  border-bottom: 1px solid;
+}
+
+#mod_log p {
+  margin-bottom: 0.5em;
+}

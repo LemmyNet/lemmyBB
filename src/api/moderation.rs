@@ -1,10 +1,11 @@
-use crate::api::post;
+use crate::api::{get, post};
 use anyhow::Error;
 use lemmy_api_common::{
     comment::{CommentResponse, RemoveComment},
     lemmy_db_schema::newtypes::{CommentId, PostId},
     post::{PostResponse, RemovePost},
     sensitive::Sensitive,
+    site::{GetModlog, GetModlogResponse},
 };
 
 pub async fn remove_post(
@@ -33,4 +34,12 @@ pub async fn remove_comment(
         auth,
     };
     post("/comment/remove", &params).await
+}
+
+pub async fn get_mod_log(auth: Option<Sensitive<String>>) -> Result<GetModlogResponse, Error> {
+    let params = GetModlog {
+        auth,
+        ..Default::default()
+    };
+    get("/modlog", &params).await
 }
