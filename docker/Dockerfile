@@ -1,17 +1,6 @@
-FROM rust:1.68-slim-bullseye AS chef
+FROM rust:1.68-slim-bullseye AS builder
 WORKDIR app
-RUN cargo install cargo-chef --locked
-
-FROM chef AS planner
-COPY . .
-RUN cargo chef prepare --recipe-path recipe.json
-
-FROM chef AS builder
-COPY --from=planner /app/recipe.json recipe.json
-# Build dependencies - this is the caching Docker layer!
-RUN cargo chef cook --release --recipe-path recipe.json
 RUN apt update && apt install git --no-install-recommends --yes
-# Build application
 COPY . .
 RUN LEMMYBB_VERSION=$(git describe --tag --always) cargo build --release
 
