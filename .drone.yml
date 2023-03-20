@@ -26,7 +26,7 @@ steps:
       - /root/.cargo/bin/cargo fmt -- --check
 
   - name: cargo check
-    image: rust:1.67-buster
+    image: rust:1.68-buster
     environment:
       CARGO_HOME: .cargo
     commands:
@@ -34,7 +34,7 @@ steps:
       - cargo check --features embed-lemmy
 
   - name: cargo clippy
-    image: rust:1.67-buster
+    image: rust:1.68-buster
     environment:
       CARGO_HOME: .cargo
     commands:
@@ -42,7 +42,7 @@ steps:
       - cargo clippy --workspace --tests --all-targets -- -D warnings -D deprecated -D clippy::perf -D clippy::complexity -D clippy::dbg_macro
 
   - name: cargo test
-    image: rust:1.67-buster
+    image: rust:1.68-buster
     environment:
       LEMMY_DATABASE_URL: postgres://lemmy:password@database:5432/lemmy
       CARGO_HOME: .cargo
@@ -80,7 +80,7 @@ steps:
 
 services:
   - name: database
-    image: postgres:14-alpine
+    image: postgres:15-alpine
     environment:
       POSTGRES_USER: lemmy
       POSTGRES_PASSWORD: password
