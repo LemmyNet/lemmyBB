@@ -38,7 +38,7 @@ struct PersonSafeWrapper(PersonSafe);
 
 impl Eq for PersonSafeWrapper {}
 
-#[allow(clippy::derive_hash_xor_eq)]
+#[allow(clippy::derived_hash_with_manual_eq)]
 impl Hash for PersonSafeWrapper {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.0.actor_id.hash(state)
