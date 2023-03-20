@@ -1,6 +1,6 @@
 [package]
 name = "lemmy_bb"
-version = "0.2.0-rc1"
+version = "0.2.0-rc2"
 edition = "2021"
 
 [profile.release]
