@@ -1,31 +1,22 @@
----
-kind: pipeline
-name: amd64
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-
-  - name: prepare repo
+pipeline:
+  prepare_repo:
     image: rustdocker/rust:nightly
     commands:
       - git submodule init
       - git submodule update
 
-  - name: check css/js formatting
+  check_css_js_formatting:
     image: node:alpine
     commands:
       - npm install --save-dev --save-exact prettier
       - ./node_modules/prettier/bin-prettier.js --check assets
 
-  - name: check rust formatting
+  check_rust_formatting:
     image: rustdocker/rust:nightly
     commands:
       - /root/.cargo/bin/cargo fmt -- --check
 
-  - name: cargo check
+  cargo_check:
     image: rust:1.68-buster
     environment:
       CARGO_HOME: .cargo
@@ -33,7 +24,7 @@ steps:
       - cargo check
       - cargo check --features embed-lemmy
 
-  - name: cargo clippy
+  cargo_clippy:
     image: rust:1.68-buster
     environment:
       CARGO_HOME: .cargo
@@ -41,7 +32,7 @@ steps:
       - rustup component add clippy
       - cargo clippy --workspace --tests --all-targets -- -D warnings -D deprecated -D clippy::perf -D clippy::complexity -D clippy::dbg_macro
 
-  - name: cargo test
+  cargo_test:
     image: rust:1.68-buster
     environment:
       LEMMY_DATABASE_URL: postgres://lemmy:password@database:5432/lemmy
@@ -49,7 +40,7 @@ steps:
     commands:
       - cargo test --workspace --no-fail-fast
 
-  - name: nightly build
+  nightly_build:
     image: plugins/docker
     settings:
       dockerfile: docker/Dockerfile
@@ -64,7 +55,7 @@ steps:
       event:
         - cron
 
-  - name: publish release docker image
+  publish_release_docker_image:
     image: plugins/docker
     settings:
       dockerfile: docker/Dockerfile
@@ -75,11 +66,10 @@ steps:
       repo: lemmynet/lemmybb
       auto_tag: true
     when:
-      ref:
-        - refs/tags/*
+      event: tag
 
 services:
-  - name: database
+  database:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: lemmy
