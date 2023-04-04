@@ -14,6 +14,7 @@ use lemmy_api_common::{
     lemmy_db_schema::{
         newtypes::{CommentId, CommunityId, PostId},
         CommentSortType,
+        ListingType,
     },
     lemmy_db_views::structs::CommentView,
     sensitive::Sensitive,
@@ -26,6 +27,7 @@ pub async fn list_comments(
     let params = GetComments {
         sort: Some(CommentSortType::New),
         post_id: Some(post_id),
+        type_: Some(ListingType::All),
         auth,
         ..Default::default()
     };

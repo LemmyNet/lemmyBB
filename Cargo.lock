@@ -2825,7 +2825,7 @@ dependencies = [
 
 [[package]]
 name = "lemmy_bb"
-version = "0.2.0-rc2"
+version = "0.2.0-rc4"
 dependencies = [
  "actix-rt",
  "anyhow",

@@ -3,6 +3,7 @@ use anyhow::Error;
 use lemmy_api_common::{
     lemmy_db_schema::{
         newtypes::{CommunityId, PostId},
+        ListingType,
         SortType,
     },
     post::{
@@ -30,6 +31,7 @@ pub async fn list_posts(
         sort: Some(SortType::NewComments),
         limit: Some(limit.into()),
         page: Some(page.into()),
+        type_: Some(ListingType::All),
         auth,
         ..Default::default()
     };

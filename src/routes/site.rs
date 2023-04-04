@@ -81,7 +81,7 @@ pub async fn community_list(
     .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
 
     let limit = PageLimit::Unknown(communities.len());
-    let pagination = Pagination::new(page.unwrap_or(1), limit, "/community_list??");
+    let pagination = Pagination::new(page.unwrap_or(1), limit, "/community_list?");
     let ctx = Context::builder()
         .title(main_site_title(&site_data.site))
         .site_data(site_data)
