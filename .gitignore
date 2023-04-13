@@ -1,4 +1,16 @@
+# rust
 /target
+
+# nodejs
+/node_modules/
+/package-lock.json
+/package.json
+
+# ide
 /.idea
-docker/volumes
-lemmybb_categories.hjson
+
+# docker
+/docker/volumes
+
+# lemmybb
+/lemmybb_categories.hjson

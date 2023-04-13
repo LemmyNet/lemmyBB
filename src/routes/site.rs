@@ -11,12 +11,15 @@ use crate::{
     pagination::{PageLimit, Pagination},
     routes::{backend_endpoints::AcceptHeader, build_jwt_cookie, user::RegisterForm, ErrorPage},
     site_fairing::SiteData,
+    utils::{main_site_title, Context},
     BackendResponse,
 };
 use anyhow::Error;
 use futures::future::join_all;
-use lemmy_db_schema::ListingType;
-use lemmy_db_views_actor::structs::CommunityView;
+use lemmy_api_common::{
+    lemmy_db_schema::{source::local_site::RegistrationMode, ListingType},
+    lemmy_db_views_actor::structs::CommunityView,
+};
 use rocket::{form::Form, http::CookieJar, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 use std::{collections::HashMap, str::FromStr};
@@ -40,7 +43,11 @@ pub async fn index(
 
     match get_categories(site_data.auth.clone()).await {
         Ok(categories) => {
-            let ctx = context! { site_data, categories };
+            let ctx = Context::builder()
+                .title(main_site_title(&site_data.site))
+                .site_data(site_data)
+                .other(context! { categories })
+                .build();
             Ok(Left(Right(Template::render("site/index", ctx))))
         }
         Err(e) => {
@@ -74,14 +81,22 @@ pub async fn community_list(
     .collect::<Result<Vec<Option<PostOrComment>>, Error>>()?;
 
     let limit = PageLimit::Unknown(communities.len());
-    let pagination = Pagination::new(page.unwrap_or(1), limit, "/community_list??");
-    let ctx = context! { site_data, communities, last_replies, pagination };
+    let pagination = Pagination::new(page.unwrap_or(1), limit, "/community_list?");
+    let ctx = Context::builder()
+        .title(main_site_title(&site_data.site))
+        .site_data(site_data)
+        .other(context! { communities, last_replies, pagination })
+        .build();
     Ok(Either::Right(Template::render("site/community_list", ctx)))
 }
 
 #[get("/setup")]
 pub async fn setup(site_data: SiteData) -> Result<Template, ErrorPage> {
-    let ctx = context! { site_data };
+    let ctx = Context::builder()
+        .title("Setup")
+        .site_data(site_data)
+        .other(())
+        .build();
     Ok(Template::render("site/setup", ctx))
 }
 
@@ -114,7 +129,7 @@ pub async fn do_setup(
     create_site(
         form.site_name.clone(),
         form.site_description.clone(),
-        true,
+        RegistrationMode::RequireApplication,
         jwt,
     )
     .await?;
@@ -130,7 +145,11 @@ pub async fn legal(site_data: SiteData) -> Result<Template, ErrorPage> {
         .local_site
         .legal_information
         .clone();
-    let ctx = context! { message, site_data };
+    let ctx = Context::builder()
+        .title(format!("Legal - {}", site_data.site.site_view.site.name))
+        .site_data(site_data)
+        .other(context! { message })
+        .build();
     Ok(Template::render("message", ctx))
 }
 
@@ -141,6 +160,13 @@ pub async fn search(keywords: String, site_data: SiteData) -> Result<Template, E
         + search_results.communities.len()
         + search_results.posts.len()
         + search_results.comments.len();
-    let ctx = context! { site_data, keywords, search_results, search_results_count };
+    let ctx = Context::builder()
+        .title(format!(
+            "Search {} - {}",
+            keywords, site_data.site.site_view.site.name
+        ))
+        .site_data(site_data)
+        .other(context! { keywords, search_results, search_results_count })
+        .build();
     Ok(Template::render("site/search", ctx))
 }

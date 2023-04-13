@@ -7,7 +7,8 @@ old_tag=$(head -3 Cargo.toml | tail -1 | cut -d'"' -f 2)
 sed -i "0,/version = \"$old_tag\"/s//version = \"$new_tag\"/g" Cargo.toml
 
 cd lemmybb-translations
-git pull http://weblate.join-lemmy.org/git/lemmy/lemmybb/ main
+git checkout main
+git pull http://weblate.join-lemmy.org/git/lemmy/lemmybb/ main --rebase
 cd ..
 git add lemmybb-translations
 

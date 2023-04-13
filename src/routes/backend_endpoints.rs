@@ -15,6 +15,8 @@ use rocket::{
     response::Redirect,
     Either,
 };
+use serde::{Deserialize, Serialize};
+use serde_json::{Map, Value};
 use std::{collections::HashMap, path::PathBuf, str::FromStr};
 
 type ReturnType = Result<Either<Redirect, BackendResponse>, ErrorPage>;
@@ -189,11 +191,36 @@ pub async fn well_known(
     forward_get_request(url, accept, query).await
 }
 
-/// Federated node metadata, necessary for statistics crawlers.
-#[get("/nodeinfo/<path..>")]
-pub async fn node_info(path: PathBuf, accept: AcceptHeader) -> Result<BackendResponse, ErrorPage> {
-    let url = format!("{}/nodeinfo/{}", lemmy_backend(), path.to_str().unwrap());
-    forward_get_request(url, accept, HashMap::new()).await
+/// Federated node metadata, necessary for statistics crawlers. We rewrite the `software`
+/// part so that lemmybb and lemmy-ui can be distinguished.
+#[get("/nodeinfo/2.0.json")]
+pub async fn node_info() -> Result<BackendResponse, ErrorPage> {
+    let mut node_info: NodeInfo = CLIENT
+        .get(format!("{}/nodeinfo/2.0.json", lemmy_backend()))
+        .send()
+        .await?
+        .json()
+        .await?;
+    node_info.software.name = "lemmybb".to_string();
+    node_info.software.version = env!("CARGO_PKG_VERSION").to_string();
+    Ok(BackendResponse {
+        text: serde_json::to_string(&node_info)?,
+        header: Header::new("content-type", "application/json"),
+    })
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+struct NodeInfo {
+    software: NodeInfoSoftware,
+    #[serde(flatten)]
+    other: Map<String, Value>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct NodeInfoSoftware {
+    name: String,
+    version: String,
 }
 
 /// Site metadata, necessary for lemmy crawler. Note that jwt cookie is not passed through.

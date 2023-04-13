@@ -10,9 +10,9 @@ use crate::{
     rocket_uri_macro_login,
     routes::CLIENT,
     site_fairing::SiteData,
-    utils::replace_smilies,
+    utils::{replace_smilies, Context},
 };
-use lemmy_db_views::structs::CommentView;
+use lemmy_api_common::lemmy_db_views::structs::CommentView;
 use reqwest::header::HeaderName;
 use rocket::{form::Form, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
@@ -44,9 +44,13 @@ pub async fn view_topic(
         is_image_url = content_type.to_str()?.starts_with("image/");
     }
     let limit = PageLimit::Known((all_comments.len() as f32 / PAGE_ITEMS as f32).ceil() as i32);
-    let pagination = Pagination::new(page.unwrap_or(1), limit, format!("/viewtopic?t={}&", t));
+    let pagination = Pagination::new(page.unwrap_or(1), limit, format!("/viewtopic?t={t}&"));
 
-    let ctx = context! { site_data, post, is_image_url, page_comments, all_comments, pagination };
+    let ctx = Context::builder()
+        .title(post.post_view.post.name.clone())
+        .site_data(site_data)
+        .other(context! { post, is_image_url, page_comments, all_comments, pagination })
+        .build();
     Ok(Template::render("view_topic", ctx))
 }
 
@@ -85,7 +89,7 @@ async fn render_editor(
     let community = get_community(NameOrId::Id(community_id), site_data.auth.clone()).await?;
     let mut editor_action = format!("/post?f={}", community.community_view.community.id.0);
     if let Some(edit_post_id) = edit_post_id {
-        editor_action = format!("{}&edit={}", editor_action, edit_post_id);
+        editor_action = format!("{editor_action}&edit={edit_post_id}");
     }
     let subject = subject_and_message
         .as_ref()
@@ -95,10 +99,12 @@ async fn render_editor(
         .as_ref()
         .map(|s| s.1.clone())
         .unwrap_or_default();
-    Ok(Template::render(
-        "thread_editor",
-        context!(site_data, community, editor_action, subject, message),
-    ))
+    let ctx = Context::builder()
+        .title("Post a new topic")
+        .site_data(site_data)
+        .other(context! { community, editor_action, subject, message })
+        .build();
+    Ok(Template::render("thread_editor", ctx))
 }
 
 #[derive(FromForm)]

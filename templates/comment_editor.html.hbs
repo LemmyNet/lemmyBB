@@ -11,7 +11,7 @@
 
 <div id="topicreview" class="topicreview">
     {{#each page_comments}}
-        {{> components/comment site_data=../site_data hide_author=true }}
+        {{> components/comment site_data=../site_data hide_author=true all_comments=../all_comments post=../post }}
     {{/each}}
     {{log (len page_comments)}}
     {{#unless eq (len page_comments) 20}}

@@ -8,9 +8,9 @@ use crate::{
     rocket_uri_macro_login,
     routes::post::rocket_uri_macro_view_topic,
     site_fairing::SiteData,
-    utils::replace_smilies,
+    utils::{replace_smilies, Context},
 };
-use lemmy_db_views::structs::CommentView;
+use lemmy_api_common::lemmy_db_views::structs::CommentView;
 use rocket::{form::Form, response::Redirect, Either};
 use rocket_dyn_templates::{context, Template};
 
@@ -54,10 +54,10 @@ async fn render_editor(
     let post = get_post(post_id, site_data.auth.clone()).await?;
     let mut editor_action = format!("/comment?t={}", post.post_view.post.id.0);
     if let Some(edit_comment_id) = edit_comment_id {
-        editor_action = format!("{}&edit={}", editor_action, edit_comment_id);
+        editor_action = format!("{editor_action}&edit={edit_comment_id}");
     }
     if let Some(reply) = reply {
-        editor_action = format!("{}&reply={}", editor_action, reply);
+        editor_action = format!("{editor_action}&reply={reply}");
     }
     let message = message.unwrap_or_default();
 
@@ -70,17 +70,15 @@ async fn render_editor(
         .cloned()
         .collect();
 
-    Ok(Template::render(
-        "comment_editor",
-        context!(
-            site_data,
-            post,
-            page_comments,
-            message,
-            editor_action,
-            all_comments
-        ),
-    ))
+    let ctx = Context::builder()
+        .title(format!(
+            "Post a reply - {}",
+            site_data.site.site_view.site.name
+        ))
+        .site_data(site_data)
+        .other(context! { post, page_comments, message, editor_action, all_comments })
+        .build();
+    Ok(Template::render("comment_editor", ctx))
 }
 
 #[derive(FromForm)]

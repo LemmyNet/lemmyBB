@@ -21,31 +21,6 @@ body:
         3.
     validations:
       required: true
-  - type: checkboxes
-    id: device
-    attributes:
-      label: On which operating systems are you seeing the problem on?
-      description: On which operating systems can you reproduce the problem?
-      options:
-        - label: Windows
-        - label: Linux
-        - label: macOS
-        - label: Android
-        - label: iOS/iPadOS
-    validations:
-      required: true
-  - type: checkboxes
-    id: browsers
-    attributes:
-      label: On which browsers are you seeing the problem on?
-      options:
-        - label: Firefox
-        - label: Chrome
-        - label: Safari
-        - label: Microsoft Edge
-        - label: Other (please describe in more detail under Additional context)
-    validations:
-      required: true
   - type: input
     id: lemmybb-version
     attributes:

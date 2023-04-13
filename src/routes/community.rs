@@ -11,6 +11,7 @@ use crate::{
     routes::ErrorPage,
     site_fairing::SiteData,
     template_helpers::i18n_,
+    utils::Context,
 };
 use anyhow::Error;
 use futures::future::join_all;
@@ -49,8 +50,15 @@ pub async fn view_forum(
     };
 
     let limit = PageLimit::Unknown(posts.len());
-    let pagination = Pagination::new(page, limit, format!("/viewforum?f={}&", f));
-    let ctx = context! { site_data, community, posts, last_replies, pagination };
+    let pagination = Pagination::new(page, limit, format!("/viewforum?f={f}&"));
+    let ctx = Context::builder()
+        .title(format!(
+            "{} - {}",
+            community.community_view.community.title, site_data.site.site_view.site.name
+        ))
+        .site_data(site_data)
+        .other(context! { community, posts, last_replies, pagination })
+        .build();
     Ok(Template::render("view_forum", ctx))
 }
 
@@ -61,13 +69,20 @@ pub async fn report(
     site_data: SiteData,
 ) -> Result<Template, ErrorPage> {
     let action = if let Some(thread) = thread {
-        format!("/report?thread={}", thread)
+        format!("/report?thread={thread}")
     } else if let Some(reply) = reply {
-        format!("/report?reply={}", reply)
+        format!("/report?reply={reply}")
     } else {
         unreachable!()
     };
-    let ctx = context! { site_data, action };
+    let ctx = Context::builder()
+        .title(format!(
+            "Report content - {}",
+            site_data.site.site_view.site.name
+        ))
+        .site_data(site_data)
+        .other(context! { action })
+        .build();
     Ok(Template::render("report", ctx))
 }
 
@@ -92,5 +107,10 @@ pub async fn do_report(
         unreachable!()
     };
     let message = i18n_(&site_data, "report_created");
-    Ok(Template::render("message", context! { site_data, message }))
+    let ctx = Context::builder()
+        .title(message.clone())
+        .site_data(site_data)
+        .other(context! { message })
+        .build();
+    Ok(Template::render("message", ctx))
 }

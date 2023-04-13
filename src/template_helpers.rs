@@ -2,11 +2,14 @@ use crate::{pagination::PAGE_ITEMS, site_fairing::SiteData};
 use chrono::NaiveDateTime;
 use comrak::ComrakOptions;
 use json_gettext::{JSONGetText, JSONGetTextBuilder};
-use lemmy_db_schema::{
-    newtypes::CommentId,
-    source::{community::CommunitySafe, person::PersonSafe},
+use lemmy_api_common::{
+    lemmy_db_schema::{
+        newtypes::CommentId,
+        source::{community::CommunitySafe, person::PersonSafe},
+    },
+    lemmy_db_views::structs::CommentView,
+    lemmy_db_views_actor::structs::CommunityModeratorView,
 };
-use lemmy_db_views::structs::CommentView;
 use once_cell::sync::{Lazy, OnceCell};
 use rocket_dyn_templates::handlebars::{
     handlebars_helper,
@@ -97,6 +100,14 @@ handlebars_helper!(raw: |s: String| {
     s
 });
 
+handlebars_helper!(is_mod: |user: PersonSafe, moderators: Vec<CommunityModeratorView>| {
+    moderators.iter().any(|m| m.moderator.id == user.id)
+});
+
+handlebars_helper!(is_mod_or_admin: |user: PersonSafe, moderators: Vec<CommunityModeratorView>| {
+    user.admin || moderators.iter().any(|m| m.moderator.id == user.id)
+});
+
 pub fn concat(
     h: &Helper,
     _: &Handlebars,
@@ -107,7 +118,7 @@ pub fn concat(
     let a = h.param(0).map(|v| v.render()).unwrap();
     let b = h.param(1).map(|v| v.value().to_string()).unwrap();
 
-    out.write(&format!("{}{}", a, b))?;
+    out.write(&format!("{a}{b}"))?;
 
     Ok(())
 }

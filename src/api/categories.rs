@@ -5,8 +5,11 @@ use crate::api::{
 use anyhow::Error;
 use deser_hjson::from_str;
 use futures::future::join_all;
-use lemmy_api_common::{sensitive::Sensitive, site::ResolveObjectResponse};
-use lemmy_db_views_actor::structs::CommunityView;
+use lemmy_api_common::{
+    lemmy_db_views_actor::structs::CommunityView,
+    sensitive::Sensitive,
+    site::ResolveObjectResponse,
+};
 use std::fs::read_to_string;
 
 pub static CATEGORIES_FILE: &str = "lemmybb_categories.hjson";

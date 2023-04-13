@@ -2,14 +2,17 @@
     <div class="inner">
 
         {{#unless hide_author }}
-        {{> components/post_profile user=post.post_view.creator }}
+        {{> components/post_profile
+                user=post.post_view.creator
+                moderators=post.moderators
+                banned_from_community=post.post_view.creator_banned_from_community }}
         {{/unless}}
 
         <div class="postbody">
             <div id="post_content1">
 
                 <h3 class="first">
-                    <a href="/view_topic?p={{post.post_view.post.id}}#p1">{{post.post_view.post.name}}</a>
+                    <a href="/view_topic?t={{post.post_view.post.id}}#p1">{{post.post_view.post.name}}</a>
                 </h3>
                 {{#if site_data.site.my_user.local_user_view.person.id}}
                     <ul class="post-buttons">
@@ -17,6 +20,13 @@
                             <li>
                                 <a href="/post_editor?f={{post.post_view.community.id}}&edit={{post.post_view.post.id}}" class="button button-icon-only">
                                 <i class="icon fa-pencil fa-fw" aria-hidden="true"></i><span class="sr-only">{{{i18n site_data "action_edit"}}}</span>
+                                </a>
+                            </li>
+                        {{/if}}
+                        {{#if (is_mod_or_admin site_data.site.my_user.local_user_view.person post.moderators)}}
+                            <li>
+                                <a href="/remove_item?t={{post.post_view.post.id}}" title="Remove" class="button button-icon-only">
+                                    <i class="icon fa-times fa-fw" aria-hidden="true"></i><span class="sr-only">Remove</span>
                                 </a>
                             </li>
                         {{/if}}

@@ -4,7 +4,7 @@
 
 A Lemmy frontend based on [phpBB 3.3](https://www.phpbb.com/).
 
-[Support forum](https://fedibb.ml/viewforum?f=3) | [Matrix chat](https://matrix.to/#/#lemmybb:matrix.org)
+[Support forum](https://fedibb.ml/view_forum?f=3) | [Matrix chat](https://matrix.to/#/#lemmybb:matrix.org)
 
 You can help to translate the project via [Weblate](https://weblate.join-lemmy.org/projects/lemmy/lemmybb/).
 
