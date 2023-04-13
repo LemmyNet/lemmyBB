@@ -18,9 +18,15 @@
             <span>{{{i18n site_data "forum_unsubscribe"}}}</span> <i class="icon fa-minus fa-fw" aria-hidden="true"></i>
         </a>
         {{else}}
-        <a href="/view_forum?f={{community.community_view.community.id}}&action=subscribe" class="button">
-            <span>{{{i18n site_data "forum_subscribe"}}}</span> <i class="icon fa-plus fa-fw" aria-hidden="true"></i>
-        </a>
+            {{#if (eq community.community_view.subscribed "Pending")}}
+            <a href="" class="button">
+                <span>{{{i18n site_data "forum_subscribe_pending"}}}</span> <i class="icon fa-spinner fa-fw" aria-hidden="true"></i>
+            </a>
+            {{else}}
+                <a href="/view_forum?f={{community.community_view.community.id}}&action=subscribe" class="button">
+                    <span>{{{i18n site_data "forum_subscribe"}}}</span> <i class="icon fa-plus fa-fw" aria-hidden="true"></i>
+                </a>
+            {{/if}}
         {{/if}}
     {{/if}}
 

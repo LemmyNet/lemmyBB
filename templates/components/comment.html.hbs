@@ -10,7 +10,6 @@
 
         <div class="postbody">
             <h3>
-                {{log post post.post_view.post.id}}
                 <a href="/view_topic?t={{post.post_view.post.id}}{{#if ../pagination}}&page={{../pagination.current_page}}{{/if}}#p{{this.comment.id}}">{{post.post_view.post.name}}</a>
             </h3>
             {{#if ../site_data.site.my_user.local_user_view.person.id}}
