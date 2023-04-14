@@ -171,7 +171,13 @@ fn i18n_private(lang: String, key: String, args: Vec<&Value>) -> String {
         }
         builder.build().unwrap()
     });
-    let mut text = get_text!(langs, lang, key).unwrap().to_string();
+    let mut text = get_text!(langs, lang, key.clone())
+        .as_ref()
+        .map(ToString::to_string)
+        .unwrap_or_else(|| {
+            warn!("Failed to retrieve translation for key {key}");
+            key
+        });
     if text.contains("{}") {
         let str = &args[2].to_string();
         text = text.replacen("{}", args[2].as_str().unwrap_or(str), 1);

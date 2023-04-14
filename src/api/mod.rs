@@ -89,10 +89,19 @@ where
     let status = response.status();
     info!("{} status: {}", &path, status);
     let text = response.text().await?;
+    debug!("Received API response: {}", &text);
     if status.is_success() {
-        Ok(serde_json::from_str(&text)?)
+        Ok(json_from_str(&text)?)
     } else {
-        let error: ErrorResponse = serde_json::from_str(&text)?;
+        let error: ErrorResponse = json_from_str(&text)?;
         Err(anyhow!(error.error))
     }
+}
+
+fn json_from_str<'a, T: Deserialize<'a>>(text: &'a str) -> serde_json::Result<T> {
+    let res = serde_json::from_str(&text);
+    if res.is_err() {
+        warn!("Failed to deserialize API response: {text}");
+    }
+    res
 }

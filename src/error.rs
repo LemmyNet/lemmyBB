@@ -18,9 +18,9 @@ impl<'r> Responder<'r, 'static> for ErrorPage {
             Some(site_data) => {
                 let message = localize_error_message(error, &site_data.lang);
                 let ctx = Context::builder()
-                    .title(message)
+                    .title(message.clone())
                     .site_data(site_data.clone())
-                    .other(())
+                    .other(context! { message })
                     .build();
                 Template::render("message", ctx)
             }
