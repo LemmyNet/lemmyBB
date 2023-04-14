@@ -145,7 +145,13 @@ pub fn length(
     Ok(())
 }
 
-pub const ALL_LANGUAGES: [(&str, &str); 2] = [("en", "English"), ("de", "Deutsch")];
+pub const ALL_LANGUAGES: [(&str, &str); 5] = [
+    ("en", "English"),
+    ("de", "Deutsch"),
+    ("fi", "Suomi"),
+    ("id", "Bahasa Indonesia"),
+    ("pt", "Português"),
+];
 
 handlebars_helper!(i18n: |site_data: SiteData, key: String, *args| {
     i18n_private(site_data.lang, key, args)
