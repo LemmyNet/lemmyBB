@@ -11,19 +11,30 @@ pub mod user;
 
 use crate::env::lemmy_backend;
 use anyhow::{anyhow, Error};
+use http_cache_reqwest::{CACacheManager, Cache, CacheMode, HttpCache};
 use once_cell::sync::Lazy;
 use reqwest::{Client, Response};
+use reqwest_middleware::{ClientBuilder, ClientWithMiddleware};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{fmt::Debug, time::Duration};
 
 static LEMMY_API_VERSION: &str = "/api/v3";
 
-pub static CLIENT: Lazy<Client> = Lazy::new(|| {
-    Client::builder()
+pub static CLIENT: Lazy<ClientWithMiddleware> = Lazy::new(|| {
+    let client = Client::builder()
         .timeout(Duration::from_secs(30))
         .connect_timeout(Duration::from_secs(30))
         .build()
-        .expect("build client")
+        .expect("build client");
+    let client = ClientBuilder::new(client)
+        .with(Cache(HttpCache {
+            mode: CacheMode::Default,
+            manager: CACacheManager::default(),
+            options: None,
+        }))
+        .build();
+
+    client
 });
 
 pub fn gen_request_url(path: &str) -> String {
@@ -88,8 +99,15 @@ where
 {
     let status = response.status();
     info!("{} status: {}", &path, status);
+    // TODO: check if cache is working
+    let x_cache = response.headers().get("x-cache");
+    let x_cache_lookup = response.headers().get("x-cache-lookup");
+    debug!(
+        "x-cache: {:?}, x-cache-lookup: {:?}",
+        x_cache, x_cache_lookup
+    );
     let text = response.text().await?;
-    debug!("Received API response: {}", &text);
+    trace!("Received API response: {}", &text);
     if status.is_success() {
         Ok(json_from_str(&text)?)
     } else {
