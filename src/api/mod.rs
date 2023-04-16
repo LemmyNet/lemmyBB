@@ -26,15 +26,14 @@ pub static CLIENT: Lazy<ClientWithMiddleware> = Lazy::new(|| {
         .connect_timeout(Duration::from_secs(30))
         .build()
         .expect("build client");
-    let client = ClientBuilder::new(client)
+
+    ClientBuilder::new(client)
         .with(Cache(HttpCache {
             mode: CacheMode::Default,
             manager: CACacheManager::default(),
             options: None,
         }))
-        .build();
-
-    client
+        .build()
 });
 
 pub fn gen_request_url(path: &str) -> String {
@@ -117,7 +116,7 @@ where
 }
 
 fn json_from_str<'a, T: Deserialize<'a>>(text: &'a str) -> serde_json::Result<T> {
-    let res = serde_json::from_str(&text);
+    let res = serde_json::from_str(text);
     if res.is_err() {
         warn!("Failed to deserialize API response: {text}");
     }
