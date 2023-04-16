@@ -43,7 +43,7 @@ use rocket_dyn_templates::Template;
 #[main]
 async fn main() -> Result<(), Error> {
     env_logger::Builder::from_env(
-        Env::default().default_filter_or("warn,lemmybb=debug,rocket=info,handlebars=info"),
+        Env::default().default_filter_or("warn,lemmy_bb=debug,handlebars=info"),
     )
     .init();
     let rocket = init_rocket()?.launch();
