@@ -39,6 +39,7 @@ impl Fairing for SiteFairing {
 
     /// Load site data for everything except /assets paths
     async fn on_request(&self, req: &mut Request<'_>, _data: &mut Data<'_>) {
+        // TODO: might not need this anymore as we have caching
         if !req.uri().path().starts_with("/assets") {
             let _: &Option<SiteData> = req
                 .local_cache_async(async {
@@ -121,6 +122,7 @@ async fn get_site_data(request: &Request<'_>) -> Result<SiteData, Error> {
     let mut site_data = SiteData {
         site,
         notifications: vec![],
+        // TODO: why is this?
         unread_pm_count: 0,
         current_date_time: Local::now().naive_local().format("%a %v %R").to_string(),
         auth: auth.clone(),
