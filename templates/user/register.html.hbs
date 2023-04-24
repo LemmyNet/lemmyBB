@@ -49,8 +49,8 @@
 
             <h3 class="captcha-title">{{{i18n site_data "confirmation_of_registration_title"}}}</h3>
 
-            {{#if site_data.site.site_view.site.require_application}}
-            <p>{{site_data.site.site_view.site.application_question}}</p>
+            {{#if (eq site_data.site.site_view.local_site.registration_mode "requireapplication")}}
+            <p>{{site_data.site.site_view.local_site.application_question}}</p>
 
             <fieldset class="fields2">
                 <dl>
@@ -62,7 +62,7 @@
             </fieldset>
 
             {{/if}}
-            {{#if site_data.site.site_view.site.require_application and captcha.ok}}
+            {{#if (eq site_data.site.site_view.local_site.registration_mode "requireapplication") and captcha.ok}}
             <hr/>
             {{/if}}
             {{#if captcha.ok}}

@@ -41,7 +41,7 @@ pipeline:
       - cargo test --workspace --no-fail-fast
 
   nightly_build:
-    image: plugins/docker
+    image: woodpeckerci/plugin-docker-buildx
     settings:
       dockerfile: docker/Dockerfile
       username:
@@ -56,7 +56,7 @@ pipeline:
         - cron
 
   publish_release_docker_image:
-    image: plugins/docker
+    image: woodpeckerci/plugin-docker-buildx
     settings:
       dockerfile: docker/Dockerfile
       username:

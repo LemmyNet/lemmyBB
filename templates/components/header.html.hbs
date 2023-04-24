@@ -163,7 +163,7 @@
                     <li class="rightside" data-skip-responsive="true">
                         <a href="./login" accesskey="x" role="menuitem"> <i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "login"}}}</span> </a>
                     </li>
-                        {{#if site_data.site.site_view.site.open_registration}}
+                        {{#if (ne site_data.site.site_view.local_site.registration_mode "closed")}}
                         <li class="rightside" data-skip-responsive="true">
                             <a href="./register" role="menuitem"> <i class="icon fa-pencil-square-o fa-fw" aria-hidden="true"></i><span>{{{i18n site_data "register"}}}</span> </a>
                         </li>
