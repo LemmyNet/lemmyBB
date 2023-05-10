@@ -50,7 +50,7 @@ pub async fn view_forum(
     };
 
     let limit = PageLimit::Unknown(posts.len());
-    let pagination = Pagination::new(page, limit, format!("/viewforum?f={f}&"));
+    let pagination = Pagination::new(page, limit, format!("/view_forum?f={f}&"));
     let ctx = Context::builder()
         .title(format!(
             "{} - {}",
