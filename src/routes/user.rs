@@ -2,7 +2,14 @@ use crate::{
     api,
     api::{
         image::upload_image,
-        user::{change_password, get_captcha, get_person, mark_all_as_read, save_settings},
+        user::{
+            ban_user,
+            change_password,
+            get_captcha,
+            get_person,
+            mark_all_as_read,
+            save_settings,
+        },
         NameOrId,
     },
     routes::{auth, build_jwt_cookie, ErrorPage},
@@ -211,4 +218,29 @@ pub async fn do_edit_profile(
         .other(context! { message })
         .build();
     Ok(Template::render("message", ctx))
+}
+
+#[get("/ban_user?<u>")]
+pub async fn ban_form(u: i32, site_data: SiteData) -> Result<Template, ErrorPage> {
+    let person = get_person(NameOrId::Id(u), site_data.auth.clone()).await?;
+    let ctx = Context::builder()
+        .title(i18n_(&site_data, "ban_user"))
+        .site_data(site_data)
+        .other(context! { person })
+        .build();
+    Ok(Template::render("user/ban_form", ctx))
+}
+
+#[derive(FromForm, Debug)]
+pub struct BanUserForm {
+    user_id: i32,
+    reason: String,
+    remove_data: bool,
+}
+
+#[post("/ban_user", data = "<form>")]
+pub async fn ban(form: Form<BanUserForm>, site_data: SiteData) -> Result<Redirect, ErrorPage> {
+    let auth = site_data.auth.clone().unwrap();
+    ban_user(form.user_id, form.reason.clone(), form.remove_data, auth).await?;
+    Ok(Redirect::to(uri!(view_profile(u = form.user_id))))
 }

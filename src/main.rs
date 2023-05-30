@@ -137,7 +137,9 @@ fn init_rocket() -> Result<Rocket<Build>, Error> {
                 api_site,
                 remove_item,
                 do_remove_item,
-                mod_log
+                mod_log,
+                ban_form,
+                ban
             ],
         )
         .mount("/assets", FileServer::from(relative!("assets"))))
