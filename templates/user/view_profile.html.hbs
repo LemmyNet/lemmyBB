@@ -24,6 +24,14 @@
                     <dt>&nbsp;</dt>
                     <dd class="banned-badge">Banned</dd>
                 {{/if}}
+                {{#if site_data.site.my_user.local_user_view.person.admin}}
+                    <dt>&nbsp;</dt>
+                    <dd>
+                        <a href="/ban_user?u={{person.person_view.person.id}}" class="button">
+                             <span>{{{i18n site_data "ban_user"}}}</span> <i class="icon fa-ban fa-fw" aria-hidden="true"></i>
+                         </a>
+                     </dd>
+                 {{/if}}
             </dl>
 
         </div>

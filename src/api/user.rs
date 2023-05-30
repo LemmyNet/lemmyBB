@@ -6,6 +6,8 @@ use anyhow::Error;
 use lemmy_api_common::{
     lemmy_db_schema::newtypes::PersonId,
     person::{
+        BanPerson,
+        BanPersonResponse,
         ChangePassword,
         GetCaptchaResponse,
         GetPersonDetails,
@@ -95,4 +97,21 @@ pub async fn change_password(params: ChangePassword) -> Result<LoginResponse, Er
 }
 pub async fn save_settings(params: SaveUserSettings) -> Result<LoginResponse, Error> {
     put("/user/save_user_settings", &params).await
+}
+
+pub async fn ban_user(
+    user_id: i32,
+    reason: String,
+    remove_data: bool,
+    auth: Sensitive<String>,
+) -> Result<BanPersonResponse, Error> {
+    let params = BanPerson {
+        person_id: PersonId(user_id),
+        ban: true,
+        remove_data: Some(remove_data),
+        reason: Some(reason),
+        expires: None,
+        auth,
+    };
+    post("/user/ban", &params).await
 }
